@@ -34,8 +34,8 @@ const WalletTrackingDetail = () => {
 
   return (
     <FeatureRestricted feature="wallet_tracking">
-      <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="p-4 md:p-6 space-y-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
             Wallet Tracking Table
           </h2>
@@ -59,22 +59,27 @@ const WalletTrackingDetail = () => {
             Wallets Overview
           </button>
         </div>
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <div className="flex items-center space-x-6">
+
+        <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <img
               src={coin?.image}
               alt={coin?.name}
               className="w-16 h-16 rounded-full"
             />
-            <div className="flex-1">
-              <h1 className="text-2xl font-bold">{coin?.name}</h1>
-              <div className="flex items-center space-x-4">
+            <div className="flex-1 space-y-4">
+              <div className="text-center sm:text-left">
+                <h1 className="text-2xl font-bold">{coin?.name}</h1>
                 <span className="text-gray-500">
                   {coin?.symbol?.toUpperCase()}
                 </span>
-                <span className="text-2xl font-medium">
+              </div>
+
+              <div className="flex flex-wrap justify-center sm:justify-start items-center gap-4">
+                <span className="text-xl sm:text-2xl font-medium">
                   ${parseFloat(coin?.price).toFixed(2).toLocaleString()}
                 </span>
+
                 <div
                   className={`flex items-center ${
                     coin?.price_change_24h >= 0
@@ -89,11 +94,12 @@ const WalletTrackingDetail = () => {
                   )}
                   {Math.abs(coin?.price_change_24h)}%
                 </div>
+
                 <a
                   href={coin?.coingecko_url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 flex items-center"
+                  className="text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
                 >
                   <ExternalLink className="h-4 w-4 mr-1" />
                   View on CoinGecko
