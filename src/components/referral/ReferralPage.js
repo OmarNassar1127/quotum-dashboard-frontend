@@ -78,44 +78,47 @@ const ReferralPage = () => {
             )}
           </div>
 
-          {/* Statistics Card */}
-          <div className="bg-[#222] border border-[#333] p-6 rounded-xl shadow-sm">
-            <h2 className="text-lg font-semibold mb-4 text-gray-100">
-              Statistics
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-200">
-              <div>
-                <span className="text-sm text-gray-400">Total Referrals</span>
-                <p className="text-2xl font-bold">
-                  {stats?.total_referrals || 0}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Recent Referrals Card */}
-          {stats?.recent_referrals?.length > 0 && (
+          {/* Grid Layout for Statistics and Referrals */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Statistics Card */}
             <div className="bg-[#222] border border-[#333] p-6 rounded-xl shadow-sm">
               <h2 className="text-lg font-semibold mb-4 text-gray-100">
-                Recent Referrals
+                Statistics
               </h2>
-              <div className="space-y-2">
-                {stats.recent_referrals.map((user) => (
-                  <div
-                    key={user.id}
-                    className="flex justify-between items-center text-gray-300"
-                  >
-                    <span>
-                      {user.first_name} {user.last_name}
-                    </span>
-                    <span className="text-sm text-gray-400">
-                      {new Date(user.created_at).toLocaleDateString()}
-                    </span>
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-200">
+                <div>
+                  <span className="text-sm text-gray-400">Total Referrals</span>
+                  <p className="text-2xl font-bold">
+                    {stats?.total_referrals || 0}
+                  </p>
+                </div>
               </div>
             </div>
-          )}
+
+            {/* Recent Referrals Card */}
+            {stats?.recent_referrals?.length > 0 && (
+              <div className="bg-[#222] border border-[#333] p-6 rounded-xl shadow-sm">
+                <h2 className="text-lg font-semibold mb-4 text-gray-100">
+                  Recent Referrals
+                </h2>
+                <div className="space-y-2">
+                  {stats.recent_referrals.map((user) => (
+                    <div
+                      key={user.id}
+                      className="flex justify-between items-center text-gray-300"
+                    >
+                      <span>
+                        {user.first_name} {user.last_name}
+                      </span>
+                      <span className="text-sm text-gray-400">
+                        {new Date(user.created_at).toLocaleDateString()}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
