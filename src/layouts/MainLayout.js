@@ -84,6 +84,16 @@ const MainLayout = () => {
               Wallet Tracker
             </NavLink>
             <NavLink
+              to="/onchain"
+              className={({ isActive }) =>
+                `${baseLinkClasses} ${
+                  isActive ? activeClasses : inactiveClasses
+                }`
+              }
+            >
+              On-Chain
+            </NavLink>
+            <NavLink
               to="/videos"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
@@ -200,6 +210,15 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Wallet Tracker
+          </NavLink>
+          <NavLink
+            to="/onchain"
+            className={({ isActive }) =>
+              `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
+            }
+            onClick={toggleSidebar}
+          >
+            On-Chain
           </NavLink>
           <NavLink
             to="/videos"

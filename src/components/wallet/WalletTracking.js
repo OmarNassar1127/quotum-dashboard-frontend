@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader } from "lucide-react";
+import { Loader, AlertCircle } from "lucide-react";
 import axios from "../../lib/axios";
 import FeatureRestricted from "../restricted/FeatureRestricted";
 
@@ -51,33 +51,26 @@ const WalletTracking = () => {
     fetchTrackableCoins();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-64 bg-[#111] text-gray-300">
-        <Loader className="h-8 w-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <FeatureRestricted feature="wallet_tracking">
-        <div className="p-6 bg-[#111] text-red-300 min-h-screen">
-          <div className="bg-red-500/10 border border-red-500 rounded-lg p-4">
-            {error}
-          </div>
+  const renderContent = () => {
+    if (loading) {
+      return (
+        <div className="flex justify-center items-center h-64 text-gray-300">
+          <Loader className="h-8 w-8 animate-spin" />
         </div>
-      </FeatureRestricted>
-    );
-  }
+      );
+    }
 
-  return (
-    <FeatureRestricted feature="wallet_tracking">
-      <div className="p-6 bg-[#111] min-h-screen text-white">
-        <h1 className="text-2xl font-bold mb-6 text-gray-100">
-          Wallet Tracking
-        </h1>
+    if (error) {
+      return (
+        <div className="bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
+          <AlertCircle className="h-5 w-5 mr-2" />
+          {error}
+        </div>
+      );
+    }
 
+    return (
+      <>
         {coins.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {coins.map((coin) => (
@@ -93,6 +86,17 @@ const WalletTracking = () => {
             No trackable coins found
           </div>
         )}
+      </>
+    );
+  };
+
+  return (
+    <FeatureRestricted feature="wallet_tracking">
+      <div className="p-6 bg-[#111] min-h-screen text-white">
+        <h1 className="text-2xl font-bold mb-6 text-gray-100">
+          Wallet Tracking
+        </h1>
+        {renderContent()}
       </div>
     </FeatureRestricted>
   );
