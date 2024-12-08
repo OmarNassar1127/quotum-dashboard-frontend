@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
+  HashRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -68,7 +68,7 @@ function App() {
           </Route>
         </Route>
 
-        Protected Admin Routes
+        {/* Protected Admin Routes */}
         <Route element={<ProtectedRoute isAdmin={true} />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboard />} />
