@@ -249,7 +249,7 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FeatureRestricted feature="btc_monthly_chart">
-          <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 text-white">
+          <div className="bg-[#111] rounded-xl shadow-sm text-white">
             <BitcoinMonthlyRsiChart
               bitcoinData={bitcoinData}
               chartError={chartError}
@@ -261,7 +261,7 @@ const Dashboard = () => {
         </FeatureRestricted>
 
         <FeatureRestricted feature="btc_monthly_chart">
-          <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 text-white">
+          <div className="bg-[#111] rounded-xl shadow-sm text-white">
             <BitcoinChartCard
               bitcoinData={bitcoinData}
               chartError={chartError}
@@ -276,13 +276,10 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 text-white">
+        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm text-white">
           <StableCoinChart />
         </div>
-        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 text-white">
-          <h2 className="text-lg font-semibold text-gray-100 mb-4">
-            Bitcoin Fibonacci Curve Chart
-          </h2>
+        <div className="bg-[#111] rounded-xl shadow-sm text-white">
           <BitcoinRainbowChart
             bitcoinData={bitcoinWeeklyData}
             chartError={chartError}
