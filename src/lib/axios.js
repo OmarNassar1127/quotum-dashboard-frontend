@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  // baseURL: "https://app.quotum.cloud/dashboard",
-  baseURL: "http://127.0.0.1:8000/dashboard",
+  baseURL: "https://app.quotum.cloud/dashboard",
+  // baseURL: "http://127.0.0.1:8000/dashboard",
   headers: {
     "Content-Type": "application/json",
   },
