@@ -36,16 +36,16 @@ const PostDetail = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader className="w-6 h-6 mr-2 animate-spin" />
-        <span>Loading...</span>
+      <div className="flex items-center justify-center h-screen bg-[#111] text-white">
+        <Loader className="w-6 h-6 mr-2 animate-spin text-gray-300" />
+        <span className="text-gray-300">Loading...</span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-screen text-red-600">
+      <div className="flex items-center justify-center h-screen bg-[#111] text-red-300">
         <AlertCircle className="w-6 h-6 mr-2" />
         <span>{error}</span>
       </div>
@@ -54,7 +54,7 @@ const PostDetail = () => {
 
   if (!post) {
     return (
-      <div className="flex items-center justify-center h-screen text-gray-600">
+      <div className="flex items-center justify-center h-screen bg-[#111] text-gray-300">
         <AlertCircle className="w-6 h-6 mr-2" />
         <span>Post not found</span>
       </div>
@@ -69,26 +69,25 @@ const PostDetail = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-white min-h-screen">
+      <div className="bg-[#222] border border-[#333] rounded-xl shadow-md overflow-hidden">
         {/* Header Section */}
         <div
           className={`flex items-center justify-between transition-all duration-300 px-6 ${
-            isScrolled ? "sticky top-0 bg-white py-2 z-10" : "py-4"
+            isScrolled ? "sticky top-0 bg-[#222] py-2 z-10 shadow-md" : "py-4"
           }`}
-          style={isScrolled ? { boxShadow: "0 2px 4px rgba(0,0,0,0.1)" } : {}}
         >
           <div className="mb-4">
             <button
               onClick={() => navigate(`/coin/${post.coin?.coingecko_id}`)}
-              className="flex items-center space-x-2 text-sm font-medium text-blue-600 hover:text-blue-800 bg-blue-100 px-3 py-2 rounded-lg shadow-sm hover:bg-blue-200 transition duration-150"
+              className="flex items-center space-x-2 text-sm font-medium text-gray-200 bg-[#333] px-3 py-2 rounded-lg hover:bg-[#444] transition-colors"
             >
               <ChevronLeft className="h-5 w-5" />
               <span>Back</span>
             </button>
           </div>
           <div
-            className={`text-lg font-semibold text-gray-800 transition-all duration-300 ${
+            className={`text-lg font-semibold text-gray-100 transition-all duration-300 ${
               isScrolled ? "opacity-100" : "opacity-0"
             }`}
           >
@@ -98,17 +97,19 @@ const PostDetail = () => {
 
         {/* Content Section */}
         <div
-          className="px-6 pt-0 pb-6 max-h-screen overflow-y-auto"
+          className="px-6 pt-0 pb-6 max-h-[calc(100vh-100px)] overflow-y-auto"
           onScroll={handleScroll}
           ref={contentRef}
         >
-          <h1 className="text-3xl font-bold mb-6 mt-4">{post.title}</h1>
+          <h1 className="text-3xl font-bold mb-6 mt-4 text-gray-100">
+            {post.title}
+          </h1>
 
-          <div className="prose max-w-none">
+          <div className="prose max-w-none text-gray-200">
             {post.content.map((block, index) => (
               <div key={index} className="mb-4">
                 {block.type === "text" && (
-                  <p className="text-gray-700 leading-relaxed">
+                  <p className="leading-relaxed text-gray-300">
                     {block.content}
                   </p>
                 )}
@@ -126,14 +127,17 @@ const PostDetail = () => {
             ))}
           </div>
 
-          {/* Optional: Display additional post metadata */}
+          {/* Additional metadata */}
           {post.created_at && (
-            <div className="mt-8 pt-4 border-t border-gray-200 text-sm text-gray-500">
+            <div className="mt-8 pt-4 border-t border-[#333] text-sm text-gray-400">
               Posted on {new Date(post.created_at).toLocaleDateString()}
               {post.coin && (
                 <span>
                   {" "}
-                  in <span className="font-medium">{post.coin.name}</span>
+                  in{" "}
+                  <span className="font-medium text-gray-300">
+                    {post.coin.name}
+                  </span>
                 </span>
               )}
             </div>

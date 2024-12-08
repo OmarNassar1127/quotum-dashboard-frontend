@@ -16,7 +16,7 @@ const Portfolio = () => {
   const fetchCoins = async () => {
     try {
       const response = await axios.get("/platform/coins");
-      setCoins(response.data); // Directly use the response data
+      setCoins(response.data);
       setError(null);
     } catch (err) {
       setError("Failed to load coins. Please try again.");
@@ -27,35 +27,35 @@ const Portfolio = () => {
   };
 
   const handleCoinClick = (coingecko_id) => {
-    navigate(`/coin/${coingecko_id}`); // Pass the `coingecko_id` directly
+    navigate(`/coin/${coingecko_id}`);
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-gray-500" />
+      <div className="flex items-center justify-center h-64 bg-[#111] text-white">
+        <Loader className="h-8 w-8 animate-spin text-gray-300" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 text-red-500">
+      <div className="flex items-center justify-center h-64 text-red-300 bg-[#111]">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
+    <div className="p-6 space-y-6 bg-[#111] min-h-screen border border-[#222] text-white">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Crypto Portfolio</h1>
+        <h1 className="text-2xl font-bold text-gray-100">Crypto Portfolio</h1>
         <button
           onClick={() => navigate("/")}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white focus:outline-none transition-colors"
         >
           <svg
-            className="w-4 h-4 mr-2"
+            className="w-4 h-4 mr-2 text-gray-300"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -70,36 +70,35 @@ const Portfolio = () => {
           Home
         </button>
       </div>
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {coins.map((coin) => (
           <div
-            key={coin.coingecko_id} // Use `coingecko_id` directly as the key
-            onClick={() => handleCoinClick(coin.coingecko_id)} // Navigate with `coingecko_id`
-            className="bg-white shadow-sm rounded-lg p-6 hover:shadow-lg transition-all duration-200 cursor-pointer"
+            key={coin.coingecko_id}
+            onClick={() => handleCoinClick(coin.coingecko_id)}
+            className="bg-[#222] border border-[#333] rounded-xl p-6 hover:bg-[#333] cursor-pointer transition-colors"
           >
-            <div className="flex flex-col space-y-4">
-              <div className="flex items-center justify-center">
-                <img
-                  src={coin.image}
-                  alt={coin.name}
-                  className="h-12 w-12 rounded-full"
-                />
-              </div>
-              <div className="text-center">
-                <h3 className="text-lg font-semibold text-gray-900">
+            <div className="flex flex-col space-y-4 items-center text-center">
+              <img
+                src={coin.image}
+                alt={coin.name}
+                className="h-12 w-12 rounded-full"
+              />
+              <div>
+                <h3 className="text-lg font-semibold text-gray-100">
                   {coin.name}
                 </h3>
-                <p className="text-sm text-gray-500">{coin.symbol}</p>
+                <p className="text-sm text-gray-400 uppercase">{coin.symbol}</p>
               </div>
-              <div className="text-center space-y-2">
-                <p className="text-lg font-medium text-gray-900">
+              <div className="space-y-2">
+                <p className="text-lg font-medium text-gray-100">
                   ${parseFloat(coin.current_price).toFixed(3).toLocaleString()}
                 </p>
                 <div
                   className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
                     coin.price_change_percentage_24h >= 0
-                      ? "bg-green-100 text-green-800"
-                      : "bg-red-100 text-red-800"
+                      ? "bg-green-800 text-green-200"
+                      : "bg-red-800 text-red-200"
                   }`}
                 >
                   {coin.price_change_percentage_24h >= 0 ? (

@@ -57,38 +57,38 @@ const CoinDetail = () => {
 
   if (!coin) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-gray-500" />
+      <div className="flex items-center justify-center h-64 bg-[#111] text-white">
+        <Loader className="h-8 w-8 animate-spin text-gray-300" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="min-h-screen bg-[#111] text-white px-4 sm:px-6 lg:px-8 py-8">
       {/* Coin Header */}
-      <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+      <div className="bg-[#222] border border-[#333] rounded-xl shadow-sm p-6 mb-8">
         <div className="flex flex-col sm:flex-row items-center sm:space-x-6 space-y-4 sm:space-y-0">
           <img
             src={coin.image}
             alt={coin.name}
-            className="w-12 h-12 sm:w-16 sm:h-16 rounded-full"
+            className="w-16 h-16 rounded-full border border-[#333]"
           />
           <div className="flex-1 text-center sm:text-left">
-            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">
+            <h1 className="text-2xl font-bold text-gray-100 mb-2">
               {coin.name}
             </h1>
-            <div className="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-2 sm:space-y-0">
-              <span className="text-sm sm:text-base text-gray-500">
+            <div className="flex flex-col sm:flex-row items-center sm:space-x-4 space-y-2 sm:space-y-0 text-gray-300">
+              <span className="text-sm sm:text-base uppercase text-gray-400">
                 {coin.symbol.toUpperCase()}
               </span>
-              <span className="text-lg sm:text-2xl font-medium">
+              <span className="text-2xl font-medium text-gray-100">
                 ${parseFloat(coin.current_price).toFixed(3).toLocaleString()}
               </span>
               <div
                 className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
                   coin.price_change_percentage_24h >= 0
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
+                    ? "bg-green-800 text-green-200"
+                    : "bg-red-800 text-red-200"
                 }`}
               >
                 {coin.price_change_percentage_24h >= 0 ? (
@@ -102,7 +102,7 @@ const CoinDetail = () => {
                 href={coin.coingecko_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 flex items-center text-sm sm:text-base"
+                className="text-blue-400 hover:text-blue-300 flex items-center text-sm sm:text-base"
               >
                 <ExternalLink className="h-4 w-4 mr-1" />
                 View on CoinGecko
@@ -115,15 +115,13 @@ const CoinDetail = () => {
       {/* Posts Section */}
       <div className="space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
-            Latest Posts
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-100">Latest Posts</h2>
           <button
             onClick={() => navigate("/portfolio")}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white focus:outline-none transition-colors"
           >
             <svg
-              className="w-4 h-4 mr-2"
+              className="w-4 h-4 mr-2 text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -140,7 +138,7 @@ const CoinDetail = () => {
         </div>
 
         {error && (
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
+          <div className="bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
             <AlertCircle className="h-5 w-5 mr-2" />
             {error}
           </div>
@@ -148,7 +146,7 @@ const CoinDetail = () => {
 
         {loading ? (
           <div className="flex items-center justify-center h-64">
-            <Loader className="h-8 w-8 animate-spin text-gray-500" />
+            <Loader className="h-8 w-8 animate-spin text-gray-300" />
           </div>
         ) : (
           <>
@@ -156,24 +154,24 @@ const CoinDetail = () => {
               {posts.map((post) => (
                 <div
                   key={post.id}
-                  className="bg-white shadow-sm rounded-lg p-6"
+                  className="bg-[#222] border border-[#333] rounded-xl p-6 shadow-sm"
                 >
-                  <h3 className="text-sm sm:text-lg font-semibold text-gray-900 mb-2">
+                  <h3 className="text-lg font-semibold text-gray-100 mb-2">
                     {post.title}
                   </h3>
-                  <div className="prose prose-sm max-w-none text-gray-500 mb-4">
+                  <div className="text-sm text-gray-300 mb-4 line-clamp-3">
                     {post.content
                       ?.find((block) => block.type === "text")
                       ?.content.substring(0, 200)}
                     ...
                   </div>
-                  <div className="flex flex-col sm:flex-row items-center justify-between space-y-2 sm:space-y-0">
-                    <span className="text-xs sm:text-sm text-gray-500">
+                  <div className="flex flex-col sm:flex-row items-center justify-between text-gray-400 text-sm">
+                    <span>
                       {new Date(post.created_at).toLocaleDateString()}
                     </span>
                     <Link
                       to={`/post/${post.id}`}
-                      className="text-blue-600 hover:text-blue-800 text-sm sm:font-medium"
+                      className="text-blue-400 hover:text-blue-300 transition-colors mt-2 sm:mt-0"
                     >
                       Read more
                     </Link>
@@ -190,8 +188,8 @@ const CoinDetail = () => {
                   disabled={currentPage === 1}
                   className={`p-2 rounded-lg ${
                     currentPage === 1
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "text-gray-600 cursor-not-allowed"
+                      : "text-gray-300 hover:bg-[#333]"
                   }`}
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -204,7 +202,7 @@ const CoinDetail = () => {
                     className={`px-3 py-1 sm:px-4 sm:py-2 rounded-lg ${
                       currentPage === i + 1
                         ? "bg-blue-600 text-white"
-                        : "text-gray-600 hover:bg-gray-100"
+                        : "text-gray-300 hover:bg-[#333]"
                     }`}
                   >
                     {i + 1}
@@ -218,8 +216,8 @@ const CoinDetail = () => {
                   disabled={currentPage === totalPages}
                   className={`p-2 rounded-lg ${
                     currentPage === totalPages
-                      ? "text-gray-400 cursor-not-allowed"
-                      : "text-gray-600 hover:bg-gray-100"
+                      ? "text-gray-600 cursor-not-allowed"
+                      : "text-gray-300 hover:bg-[#333]"
                   }`}
                 >
                   <ChevronRight className="h-5 w-5" />

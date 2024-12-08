@@ -58,21 +58,20 @@ const WalletBalanceTable = ({ selectedCoin, selectedChain }) => {
 
   const formatPercentage = (value) => {
     const formattedValue = Number(value).toFixed(2);
+    let colorClass = "text-gray-400";
+    let Icon = null;
+
+    if (value > 0) {
+      colorClass = "text-green-400";
+      Icon = ArrowUpIcon;
+    } else if (value < 0) {
+      colorClass = "text-red-400";
+      Icon = ArrowDownIcon;
+    }
+
     return (
-      <div
-        className={`flex items-center gap-1 ${
-          value > 0
-            ? "text-green-500"
-            : value < 0
-            ? "text-red-500"
-            : "text-gray-500"
-        }`}
-      >
-        {value > 0 ? (
-          <ArrowUpIcon className="h-4 w-4" />
-        ) : value < 0 ? (
-          <ArrowDownIcon className="h-4 w-4" />
-        ) : null}
+      <div className={`flex items-center gap-1 ${colorClass}`}>
+        {Icon && <Icon className="h-4 w-4" />}
         <span>{Math.abs(formattedValue)}%</span>
       </div>
     );
@@ -131,14 +130,14 @@ const WalletBalanceTable = ({ selectedCoin, selectedChain }) => {
     const isActive = sortConfig.key === sortKey;
     return (
       <th
-        className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-500 cursor-pointer hover:bg-gray-50"
+        className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-300 cursor-pointer hover:bg-[#333] transition-colors"
         onClick={() => requestSort(sortKey)}
       >
         <div className="flex items-center gap-1">
           {label}
           <ArrowUpDown
             className={`h-4 w-4 ${
-              isActive ? "text-indigo-600" : "text-gray-400"
+              isActive ? "text-blue-400" : "text-gray-500"
             }`}
           />
         </div>
@@ -150,42 +149,44 @@ const WalletBalanceTable = ({ selectedCoin, selectedChain }) => {
     const explorerUrl = getExplorerUrl(address, chain);
 
     return (
-      <td className="whitespace-nowrap px-4 py-3 font-mono text-sm">
+      <td className="whitespace-nowrap px-4 py-3 font-mono text-sm text-gray-300">
         {explorerUrl ? (
           <a
             href={explorerUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1 text-indigo-600 hover:text-indigo-800"
+            className="flex items-center gap-1 text-blue-400 hover:text-blue-300"
           >
             {formatAddress(address)}
             <ExternalLink className="h-3 w-3" />
           </a>
         ) : (
-          formatAddress(address)
+          <span className="text-gray-300">{formatAddress(address)}</span>
         )}
       </td>
     );
   };
 
   if (loading) {
-    return <div className="mt-4 text-center">Loading...</div>;
+    return (
+      <div className="mt-4 text-center text-gray-300 bg-[#111]">Loading...</div>
+    );
   }
 
   if (error) {
-    return <div className="mt-4 text-red-500">{error}</div>;
+    return <div className="mt-4 text-red-300 bg-[#111]">{error}</div>;
   }
 
   const sortedWallets = getSortedWallets();
 
   return (
     <div className="mt-8">
-      <div className="overflow-x-auto rounded-lg border border-gray-200">
-        <table className="w-full text-left">
-          <thead className="bg-gray-50">
-            <tr className="border-b border-gray-200">
+      <div className="overflow-x-auto rounded-lg border border-[#333] bg-[#222]">
+        <table className="w-full text-left text-sm text-gray-300">
+          <thead className="bg-[#222] border-b border-[#333]">
+            <tr>
               <SortHeader label="Wallet" sortKey="label" />
-              <th className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-500">
+              <th className="whitespace-nowrap px-4 py-3 text-sm font-medium text-gray-300">
                 Address
               </th>
               <SortHeader label="Balance" sortKey="balance" />
@@ -196,9 +197,12 @@ const WalletBalanceTable = ({ selectedCoin, selectedChain }) => {
               <SortHeader label="1m %" sortKey="changes.1m" />
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-[#333]">
             {sortedWallets.map((wallet) => (
-              <tr key={wallet.address} className="hover:bg-gray-50 bg-white">
+              <tr
+                key={wallet.address}
+                className="hover:bg-[#333] transition-colors"
+              >
                 <td className="whitespace-nowrap px-4 py-3">
                   <div className="flex items-center gap-2">
                     <span
@@ -206,14 +210,14 @@ const WalletBalanceTable = ({ selectedCoin, selectedChain }) => {
                         wallet.is_exchange ? "bg-orange-400" : "bg-indigo-400"
                       }`}
                     />
-                    {wallet.label}
+                    <span className="text-gray-200">{wallet.label}</span>
                   </div>
                 </td>
                 <AddressCell address={wallet.address} chain={wallet.chain} />
-                <td className="whitespace-nowrap px-4 py-3">
+                <td className="whitespace-nowrap px-4 py-3 text-gray-200">
                   {formatNumberToUSLocale(wallet.balance)}
                 </td>
-                <td className="whitespace-nowrap px-4 py-3 uppercase">
+                <td className="whitespace-nowrap px-4 py-3 uppercase text-gray-200">
                   {wallet.chain}
                 </td>
                 <td className="whitespace-nowrap px-4 py-3">

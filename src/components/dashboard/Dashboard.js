@@ -139,29 +139,30 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 bg-black min-h-screen">
       <AppRankingCards />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white rounded-lg shadow-sm p-6 min-h-[24rem]">
+        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 min-h-[24rem] text-white">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <FileText className="h-5 w-5 text-gray-500 mr-2" />
-              <h2 className="text-lg font-semibold text-gray-900">
+              <FileText className="h-5 w-5 text-gray-400 mr-2" />
+              <h2 className="text-lg font-semibold text-gray-100">
                 Recent Content
               </h2>
             </div>
           </div>
 
           {error && (
-            <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
-              <AlertCircle className="h-5 w-5 mr-2" />
+            <div className="mb-4 bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
+              <AlertCircle className="h-5 w-5 mr-2 text-red-300" />
               {error}
             </div>
           )}
 
           {loading ? (
             <div className="flex items-center justify-center h-48">
-              <Loader className="h-8 w-8 animate-spin text-gray-500" />
+              <Loader className="h-8 w-8 animate-spin text-gray-300" />
             </div>
           ) : (
             <div className="space-y-4 max-h-[32rem] overflow-y-auto pr-2">
@@ -169,7 +170,7 @@ const Dashboard = () => {
                 <div
                   key={post.id}
                   onClick={() => handlePostClick(post.id)}
-                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50 rounded-lg hover:bg-gray-100 cursor-pointer transition-colors duration-200 gap-4"
+                  className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#1a1a1a] rounded-lg hover:bg-[#222] cursor-pointer transition-colors duration-200 gap-4"
                 >
                   <div className="flex items-start sm:items-center space-x-4 w-full sm:w-auto">
                     <img
@@ -178,10 +179,10 @@ const Dashboard = () => {
                       className="h-10 w-10 rounded-full flex-shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-gray-100 truncate">
                         {post.title}
                       </p>
-                      <div className="flex items-center space-x-2 text-xs text-gray-500">
+                      <div className="flex items-center space-x-2 text-xs text-gray-400">
                         <span>{post.coin.symbol.toUpperCase()}</span>
                         <span>•</span>
                         <span className="truncate">
@@ -194,10 +195,10 @@ const Dashboard = () => {
                   </div>
                   <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-0 w-full sm:w-auto">
                     <div className="flex-1 sm:flex-none w-full sm:w-auto flex justify-between sm:justify-end items-baseline gap-2">
-                      <span className="text-xs text-gray-500 sm:hidden">
+                      <span className="text-xs text-gray-400 sm:hidden">
                         Price:
                       </span>
-                      <span className="text-sm font-medium text-gray-900">
+                      <span className="text-sm font-medium text-gray-100">
                         $
                         {parseFloat(post.coin.current_price)
                           .toFixed(3)
@@ -207,8 +208,8 @@ const Dashboard = () => {
                     <div
                       className={`flex items-center text-xs ${
                         post.coin.price_change_percentage_24h >= 0
-                          ? "text-green-600"
-                          : "text-red-600"
+                          ? "text-green-400"
+                          : "text-red-400"
                       }`}
                     >
                       {post.coin.price_change_percentage_24h >= 0 ? (
@@ -233,11 +234,11 @@ const Dashboard = () => {
           )}
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-6">
+        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 text-white">
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center">
-              <TrendingUp className="h-5 w-5 text-gray-500 mr-2" />
-              <h2 className="text-lg font-semibold text-gray-900">
+              <TrendingUp className="h-5 w-5 text-gray-400 mr-2" />
+              <h2 className="text-lg font-semibold text-gray-100">
                 Altcoin Season Index
               </h2>
             </div>
@@ -248,35 +249,37 @@ const Dashboard = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FeatureRestricted feature="btc_monthly_chart">
-          <BitcoinMonthlyRsiChart
-            bitcoinData={bitcoinData}
-            chartError={chartError}
-            chartLoading={chartLoading}
-            currentMonthColor={currentMonthColor}
-            estimateMonthsUntilHalving={estimateMonthsUntilHalving}
-          />
+          <div className="bg-[#111] rounded-xl shadow-sm text-white">
+            <BitcoinMonthlyRsiChart
+              bitcoinData={bitcoinData}
+              chartError={chartError}
+              chartLoading={chartLoading}
+              currentMonthColor={currentMonthColor}
+              estimateMonthsUntilHalving={estimateMonthsUntilHalving}
+            />
+          </div>
         </FeatureRestricted>
 
         <FeatureRestricted feature="btc_monthly_chart">
-          <BitcoinChartCard
-            bitcoinData={bitcoinData}
-            chartError={chartError}
-            chartLoading={chartLoading}
-            currentMonthOpen={currentMonthOpen}
-            currentMonthColor={currentMonthColor}
-            estimateMonthsUntilHalving={estimateMonthsUntilHalving}
-            mapMonthsToColor={mapMonthsToColor}
-          />
+          <div className="bg-[#111] rounded-xl shadow-sm text-white">
+            <BitcoinChartCard
+              bitcoinData={bitcoinData}
+              chartError={chartError}
+              chartLoading={chartLoading}
+              currentMonthOpen={currentMonthOpen}
+              currentMonthColor={currentMonthColor}
+              estimateMonthsUntilHalving={estimateMonthsUntilHalving}
+              mapMonthsToColor={mapMonthsToColor}
+            />
+          </div>
         </FeatureRestricted>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <StableCoinChart />
-
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">
-            Bitcoin Fibonacci Curve Chart
-          </h2>
+        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm text-white">
+          <StableCoinChart />
+        </div>
+        <div className="bg-[#111] rounded-xl shadow-sm text-white">
           <BitcoinRainbowChart
             bitcoinData={bitcoinWeeklyData}
             chartError={chartError}

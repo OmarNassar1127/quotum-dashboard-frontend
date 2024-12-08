@@ -20,35 +20,41 @@ const PendingActivation = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 text-center">
-        <div className="flex flex-col items-center">
-          <div className="rounded-full bg-yellow-100 p-3">
+    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-12">
+      <div className="bg-[#111] rounded-lg shadow-lg max-w-lg w-full p-8 text-center">
+        {/* Icon Section */}
+        <div className="flex flex-col items-center space-y-4">
+          <div className="rounded-full bg-yellow-200 p-4">
             <ClockIcon className="h-12 w-12 text-yellow-600" />
           </div>
-          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+          <h2 className="text-3xl font-bold text-white">
             Account Pending Activation
           </h2>
-          <p className="mt-4 text-lg text-gray-600">
-            Your account is currently being reviewed.
-          </p>
-          <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-            <p className="text-sm text-yellow-700">
-              Please wait while an administrator verifies and activates your
-              account. This process may take some time. You'll be able to access
-              all features once your account is activated. Please log out
-              through the button below and try again later or wait until u are
-              notified. by the admin.
-            </p>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-          >
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </button>
         </div>
+
+        {/* Message Section */}
+        <div className="mt-6 bg-yellow-50 border border-yellow-300 rounded-lg p-6">
+          <p className="text-base text-yellow-800 leading-relaxed">
+            Your account is currently under review by an administrator. This
+            process may take some time. Once your account is activated, you will
+            be notified via email or by the admins and gain access to all features.
+          </p>
+        </div>
+
+        {/* Instructions */}
+        <p className="mt-6 text-gray-400">
+          Please log out and try again later or wait for a notification from the
+          admin. Thank you for your patience!
+        </p>
+
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="mt-6 inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-all"
+        >
+          <LogOut className="h-5 w-5 mr-2" />
+          Logout
+        </button>
       </div>
     </div>
   );

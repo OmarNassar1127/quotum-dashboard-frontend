@@ -21,7 +21,7 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
 
   const BAND_WIDTH = 0.3; // Matching Python version
   const NUM_BANDS = 9;
-  const I_DECREASE = 1.5; // Adding the decrease factor from Python version
+  const I_DECREASE = 1.5; // Decrease factor from Python version
   const EXTEND_WEEKS = 104; // Extend by two years
 
   useEffect(() => {
@@ -31,24 +31,19 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       chartInstance.current = echarts.init(chartRef.current);
     }
 
-    // Prepare data
+    // --- Existing Logic & Formulas (unchanged) ---
     const preparedData = bitcoinData.map((item) => ({
       date: new Date(item.date).getTime(),
       price: item.price,
     }));
 
-    // Sort data by date to ensure correctness
     preparedData.sort((a, b) => a.date - b.date);
 
-    // Set the start time to the first data point's date
     const startTime = preparedData[0].date;
-
-    // Calculate days since start date and convert to weeks
     const weeksSinceStart = preparedData.map(
       (item) => (item.date - startTime) / (7 * 24 * 60 * 60 * 1000)
     );
 
-    // Ensure weeksSinceStart values are greater than zero
     let startIndex = weeksSinceStart.findIndex((w) => w > 0);
     if (startIndex === -1) startIndex = 0;
 
@@ -57,7 +52,6 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       .slice(startIndex)
       .map((item) => Math.log(item.price));
 
-    // Perform linear regression
     const n = xData.length;
     const sumX = xData.reduce((sum, x) => sum + x, 0);
     const sumY = yData.reduce((sum, y) => sum + y, 0);
@@ -67,10 +61,8 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
     const a_value = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
     const b_value = (sumY - a_value * sumX) / n;
 
-    // Extend dates for projection
     const extendedDates = [];
     const lastDate = preparedData[preparedData.length - 1].date;
-
     for (let i = 1; i <= EXTEND_WEEKS; i++) {
       const nextDate = lastDate + i * 7 * 24 * 60 * 60 * 1000;
       extendedDates.push(nextDate);
@@ -79,13 +71,10 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
     const allDates = preparedData
       .map((item) => item.date)
       .concat(extendedDates);
-
-    // Calculate weeks since start for all dates
     const extendedWeeksSinceStart = allDates.map(
       (date) => (date - startTime) / (7 * 24 * 60 * 60 * 1000)
     );
 
-    // Filter out non-positive values for logarithm
     const validIndices = extendedWeeksSinceStart
       .map((x, idx) => (x > 0 ? idx : null))
       .filter((idx) => idx !== null);
@@ -94,19 +83,12 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       Math.log(extendedWeeksSinceStart[idx])
     );
 
-    // Calculate fitted values
     const extendedFittedYData = extendedXData.map((x) => a_value * x + b_value);
-
-    // Calculate base price curve
     const price_base = extendedFittedYData.map((y) => Math.exp(y));
-
-    // Align dates with valid indices
     const validDates = validIndices.map((idx) => allDates[idx]);
 
-    // Construct rainbow bands
     const bands = [];
     for (let i = 0; i < NUM_BANDS; i++) {
-      // Using the same calculation method as the Python version
       const lowerBound = price_base.map((price) =>
         Math.exp(Math.log(price) + (i - I_DECREASE) * BAND_WIDTH - BAND_WIDTH)
       );
@@ -116,11 +98,9 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
 
       const color = Object.keys(COLORS_LABELS).reverse()[i];
       const label = Object.values(COLORS_LABELS).reverse()[i];
-
       bands.push({ lowerBound, upperBound, color, label });
     }
 
-    // Create band series by stacking the differences
     const bandSeries = [];
     let previousUpperBound = new Array(price_base.length).fill(0);
 
@@ -149,7 +129,6 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       previousUpperBound = band.upperBound;
     });
 
-    // Price series
     const priceSeries = {
       name: "BTC Price",
       type: "line",
@@ -160,7 +139,6 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       smooth: 0.3,
     };
 
-    // Add halving dates
     const halvingDates = [
       new Date("2012-11-28").getTime(),
       new Date("2016-07-09").getTime(),
@@ -183,9 +161,19 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       },
     }));
 
+    // --- Styling changes only ---
     const options = {
+      backgroundColor: "#111",
+      textStyle: { color: "#ccc" },
       tooltip: {
         trigger: "axis",
+        backgroundColor: "rgba(0,0,0,0.8)",
+        borderColor: "#333",
+        borderWidth: 1,
+        textStyle: {
+          color: "#eee",
+          fontSize: 13,
+        },
         formatter: function (params) {
           const param = params.find((p) => p.seriesName === "BTC Price");
           if (param) {
@@ -205,13 +193,13 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
         type: "time",
         boundaryGap: false,
         axisLabel: {
-          color: "white",
+          color: "#aaa",
           fontSize: 12,
           formatter: (value) => format(new Date(value), "yyyy"),
         },
         splitLine: { show: false },
-        axisLine: { lineStyle: { color: "white" } },
-        axisTick: { lineStyle: { color: "white" } },
+        axisLine: { lineStyle: { color: "#333" } },
+        axisTick: { lineStyle: { color: "#333" } },
       },
       yAxis: {
         type: "log",
@@ -219,34 +207,31 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
         min: 0.1,
         max: 1000000,
         axisLabel: {
-          color: "white",
+          color: "#aaa",
           fontSize: 12,
           formatter: (value) => {
             if (value < 1) return `$${value.toFixed(2)}`;
             if (value < 1000) return `$${value}`;
-            if (value < 1000000) return `$${value / 1000}K`;
-            return `$${value / 1000000}M`;
+            if (value < 1000000) return `$${(value / 1000).toFixed(0)}K`;
+            return `$${(value / 1000000).toFixed(0)}M`;
           },
         },
-        splitLine: {
-          show: true,
-          lineStyle: { color: "#444", type: "dashed" },
-        },
-        axisLine: { lineStyle: { color: "white" } },
-        axisTick: { lineStyle: { color: "white" } },
+        splitLine: { lineStyle: { color: "#333", type: "dashed" } },
+        axisLine: { lineStyle: { color: "#333" } },
+        axisTick: { lineStyle: { color: "#333" } },
       },
       series: [...bandSeries, priceSeries],
       legend: {
         data: ["BTC Price", ...Object.values(COLORS_LABELS)],
         textStyle: { color: "white", fontSize: 12 },
-        top: -5,
+        top: "5%",
         itemWidth: 15,
         itemHeight: 15,
       },
       grid: {
         left: "5%",
         right: "5%",
-        top: "8%",
+        top: "20%",
         bottom: "15%",
       },
       dataZoom: [
@@ -257,11 +242,9 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
           end: 100,
           bottom: 0,
           height: 20,
-          borderColor: "transparent",
-          backgroundColor: "#444",
+          borderColor: "#333",
+          backgroundColor: "#222",
           fillerColor: "rgba(255, 255, 255, 0.2)",
-          handleIcon:
-            "path://M-9.35,27.3L-3.65,27.3L-3.65,-27.3L-9.35,-27.3L-9.35,27.3Z M3.65,-27.3L3.65,27.3L9.35,27.3L9.35,-27.3L3.65,-27.3Z",
           handleSize: "80%",
           handleStyle: {
             color: "#fff",
@@ -298,18 +281,25 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
   }, [bitcoinData, chartLoading]);
 
   return (
-    <div className="bg-black rounded-lg shadow-sm p-6 min-h-[24rem]">
+    <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 min-h-[24rem] text-white">
+      <h2 className="text-lg font-semibold text-gray-100 mb-4">
+        Bitcoin Fibonacci Curve Chart
+      </h2>
       {chartError && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
+        <div className="mb-4 bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
           <AlertCircle className="h-5 w-5 mr-2" />
           {chartError}
         </div>
       )}
-      <div className="relative">
-        <div ref={chartRef} className="h-[500px] w-full" />
+      <div className="relative w-full">
+        {/* Responsive height adjustments */}
+        <div
+          ref={chartRef}
+          className="w-full h-[300px] md:h-[400px] lg:h-[500px]"
+        />
         {chartLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-75">
-            <Loader className="h-8 w-8 animate-spin text-white" />
+          <div className="absolute inset-0 flex items-center justify-center bg-[#111] bg-opacity-75">
+            <Loader className="h-8 w-8 animate-spin text-gray-300" />
           </div>
         )}
       </div>
