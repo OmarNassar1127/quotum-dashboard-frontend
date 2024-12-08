@@ -38,8 +38,6 @@ const BitcoinChartCard = ({
 
   useEffect(() => {
     if (!chartRef.current) return;
-
-    // Initialize ECharts instance
     if (!chartInstance.current) {
       chartInstance.current = echarts.init(chartRef.current);
     }
@@ -49,7 +47,6 @@ const BitcoinChartCard = ({
       return;
     }
 
-    // Format data for scatter plot (colored dots)
     const scatterData = bitcoinData.map((item) => ({
       name: format(new Date(item.date), "MMMM yyyy"),
       value: [new Date(item.date).getTime(), item.price],
@@ -60,16 +57,26 @@ const BitcoinChartCard = ({
       },
     }));
 
-    // Format data for line plot
     const lineData = bitcoinData.map((item) => [
       new Date(item.date).getTime(),
       item.price,
     ]);
 
     const options = {
+      backgroundColor: "#111",
+      textStyle: {
+        color: "#ccc",
+      },
       animation: false,
       tooltip: {
         trigger: "axis",
+        backgroundColor: "rgba(0,0,0,0.8)",
+        borderColor: "#333",
+        borderWidth: 1,
+        textStyle: {
+          color: "#eee",
+          fontSize: 13,
+        },
         formatter: function (params) {
           const validParam = params.find(
             (p) => p.value && p.value[1] !== undefined
@@ -91,14 +98,25 @@ const BitcoinChartCard = ({
       },
       xAxis: {
         type: "time",
+        axisLine: { lineStyle: { color: "#333" } },
         axisLabel: {
+          color: "#aaa",
           formatter: (value) => format(new Date(value), "MMM yyyy"),
         },
+        splitLine: { show: false },
       },
       yAxis: {
         type: "log",
+        axisLine: { lineStyle: { color: "#333" } },
         axisLabel: {
+          color: "#aaa",
           formatter: (value) => `$${value.toLocaleString()}`,
+        },
+        splitLine: {
+          lineStyle: {
+            color: "#333",
+            type: "dashed",
+          },
         },
       },
       dataZoom: [
@@ -116,17 +134,13 @@ const BitcoinChartCard = ({
           end: 100,
           minValueSpan: 3600 * 24 * 1000 * 30,
           height: 40,
-          borderColor: "transparent",
-          backgroundColor: "#f1f5f9",
+          borderColor: "#333",
+          backgroundColor: "#222",
           fillerColor: "rgba(167, 182, 194, 0.3)",
-          handleIcon:
-            "path://M-9.35,27.3L-3.65,27.3L-3.65,-27.3L-9.35,-27.3L-9.35,27.3Z M3.65,-27.3L3.65,27.3L9.35,27.3L9.35,-27.3L3.65,-27.3Z",
-          handleSize: "120%",
           handleStyle: {
             color: "#fff",
             borderColor: "#ACB8C1",
           },
-          moveHandleSize: 6,
         },
       ],
       series: [
@@ -152,12 +166,10 @@ const BitcoinChartCard = ({
       ],
     };
 
-    // Add reference line for current month open
     if (currentMonthOpen) {
       options.series.push({
         name: "Current Month Open",
         type: "line",
-        markLine: false,
         showSymbol: false,
         tooltip: { show: false },
         data: [
@@ -174,7 +186,6 @@ const BitcoinChartCard = ({
       });
     }
 
-    // Add vertical line for current month
     if (bitcoinData.length > 0) {
       const lastDate = new Date(
         bitcoinData[bitcoinData.length - 1].date
@@ -182,7 +193,6 @@ const BitcoinChartCard = ({
       options.series.push({
         name: "Current Month Line",
         type: "line",
-        markLine: false,
         showSymbol: false,
         tooltip: { show: false },
         data: [
@@ -201,24 +211,20 @@ const BitcoinChartCard = ({
           show: true,
           position: "end",
           formatter: "Current Month",
+          color: "#eee",
         },
         z: 8,
       });
     }
 
-    // Set options
     chartInstance.current.setOption(options, true);
 
-    // Handle resize
     const handleResize = () => {
-      if (chartInstance.current) {
-        chartInstance.current.resize();
-      }
+      chartInstance.current && chartInstance.current.resize();
     };
 
     window.addEventListener("resize", handleResize);
 
-    // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize);
       if (chartInstance.current) {
@@ -235,18 +241,18 @@ const BitcoinChartCard = ({
   ]);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 min-h-[24rem]">
+    <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 min-h-[24rem] text-white">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <TrendingUp className="h-5 w-5 text-gray-500 mr-2" />
-          <h2 className="text-lg font-semibold text-gray-900">
+          <TrendingUp className="h-5 w-5 text-gray-400 mr-2" />
+          <h2 className="text-lg font-semibold text-gray-100">
             BTC Monthly Rainbow Chart
           </h2>
         </div>
       </div>
 
       {chartError && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
+        <div className="mb-4 bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
           <AlertCircle className="h-5 w-5 mr-2" />
           {chartError}
         </div>
@@ -255,8 +261,8 @@ const BitcoinChartCard = ({
       <div className="relative">
         <div ref={chartRef} className="h-[300px] w-full" />
         {chartLoading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
-            <Loader className="h-8 w-8 animate-spin text-gray-500" />
+          <div className="absolute inset-0 flex items-center justify-center bg-[#111] bg-opacity-75">
+            <Loader className="h-8 w-8 animate-spin text-gray-300" />
           </div>
         )}
       </div>
