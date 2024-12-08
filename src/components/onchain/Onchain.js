@@ -18,10 +18,10 @@ const Onchain = () => {
       route: "/onchain/bitcoin-risk-levels",
     },
     {
-      name: "Coming Soon!!",
+      name: "Bitcoin Waves",
       description:
-        "Watch and learn.",
-      route: "/onchain/tool-a",
+        "The best cyclical bitcoin chart out there",
+      route: "/onchain/bitcoin-waves",
     },
     {
       name: "Coming Soon!!",

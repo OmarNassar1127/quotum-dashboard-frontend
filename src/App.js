@@ -20,6 +20,7 @@ import CoinDetail from "./components/portfolio/CoinDetail";
 import PostDetail from "./components/portfolio/PostDetail";
 import Onchain from "./components/onchain/Onchain";
 import BitcoinRiskLevels from "./components/onchain/BitcoinRiskLevels";
+import BitcoinRainbowWave from "./components/onchain/BitcoinRainbowWave";
 import CoinManagement from "./components/admin/CoinManagement";
 import PostManagement from "./components/admin/PostManagement";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -64,6 +65,7 @@ function App() {
             <Route path="wallet-tracking/:coinId" element={<WalletTrackingDetail />} />
             <Route path="onchain" element={<Onchain />} />
             <Route path="/onchain/bitcoin-risk-levels" element={<BitcoinRiskLevels />} />
+            <Route path="/onchain/bitcoin-waves" element={<BitcoinRainbowWave />} />
             <Route path="coin/:coinId" element={<CoinDetail />} />
             <Route path="post/:postId" element={<PostDetail />} />
             <Route path="videos" element={<Videos />} />
