@@ -13,34 +13,9 @@ import {
 import { formatDistanceToNow } from "date-fns";
 import axios from "../../lib/axios";
 
-const ImageUpload = ({ onChange }) => {
-  const handlePaste = async (e) => {
-    const clipboardItems = await navigator.clipboard.read();
-    for (const clipboardItem of clipboardItems) {
-      for (const type of clipboardItem.types) {
-        if (type.startsWith("image/")) {
-          const blob = await clipboardItem.getType(type);
-          onChange(blob);
-          return;
-        }
-      }
-    }
-  };
-
-  return (
-    <div
-      className="border-2 border-dashed border-gray-300 p-4 rounded-lg text-center cursor-pointer"
-      onPaste={handlePaste}
-    >
-      <p className="text-gray-500">Paste an image here</p>
-    </div>
-  );
-};
-
 // Helper function to fix image URLs
 const fixImageUrl = (url) => {
   if (!url) return url;
-  // Remove double slashes after http:// or https://
   return url.replace(/(https?:\/\/)\/+/g, "$1").replace(/([^:]\/)\/+/g, "$1");
 };
 
@@ -49,7 +24,7 @@ const ContentBlock = ({ block, index, onChange, onDelete }) => {
 
   const handlePaste = (e) => {
     const item = e.clipboardData.items[0];
-    if (item.type.indexOf("image") === 0) {
+    if (item && item.type && item.type.indexOf("image") === 0) {
       const file = item.getAsFile();
       onChange(index, { ...block, file });
       const reader = new FileReader();
@@ -68,15 +43,15 @@ const ContentBlock = ({ block, index, onChange, onDelete }) => {
           onChange={(e) =>
             onChange(index, { ...block, content: e.target.value })
           }
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           rows={4}
         />
         <button
           type="button"
           onClick={() => onDelete(index)}
-          className="p-1 hover:bg-gray-100 rounded-full"
+          className="p-1 hover:bg-[#333] rounded-full"
         >
-          <X className="h-4 w-4 text-gray-500 hover:text-red-600" />
+          <X className="h-4 w-4 text-gray-400 hover:text-red-400" />
         </button>
       </div>
     );
@@ -89,16 +64,16 @@ const ContentBlock = ({ block, index, onChange, onDelete }) => {
           <img
             src={fixImageUrl(block.url)}
             alt={`Image ${index}`}
-            className="w-24 h-24 object-cover rounded-lg"
+            className="w-24 h-24 object-cover rounded-lg border border-[#333]"
           />
         ) : (
-          <div className="relative mb-4">
-            <div className="w-full border-2 border-dashed border-gray-300 rounded-lg p-2">
+          <div className="relative mb-4 flex-1">
+            <div className="w-full border-2 border-dashed border-[#333] rounded-lg p-2 bg-[#111]">
               <input
                 type="text"
                 placeholder="Paste image here"
                 onPaste={handlePaste}
-                className="w-full px-3 py-2 text-gray-500 bg-transparent focus:outline-none"
+                className="w-full px-3 py-2 text-gray-400 bg-transparent focus:outline-none"
                 disabled
               />
               {imagePreview && (
@@ -116,9 +91,9 @@ const ContentBlock = ({ block, index, onChange, onDelete }) => {
         <button
           type="button"
           onClick={() => onDelete(index)}
-          className="p-1 hover:bg-gray-100 rounded-full"
+          className="p-1 hover:bg-[#333] rounded-full"
         >
-          <X className="h-4 w-4 text-gray-500 hover:text-red-600" />
+          <X className="h-4 w-4 text-gray-400 hover:text-red-400" />
         </button>
       </div>
     );
@@ -281,7 +256,7 @@ const PostManagement = () => {
       {post.content.map((block, index) => (
         <div key={index}>
           {block.type === "text" ? (
-            <p className="text-sm text-gray-600 whitespace-pre-wrap">
+            <p className="text-sm text-gray-300 whitespace-pre-wrap">
               {block.content}
             </p>
           ) : (
@@ -304,19 +279,19 @@ const PostManagement = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-gray-500" />
+      <div className="flex items-center justify-center h-64 bg-[#111] text-white">
+        <Loader className="h-8 w-8 animate-spin text-gray-300" />
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#111] text-white min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Post Management</h1>
+        <h1 className="text-2xl font-bold text-gray-100">Post Management</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <Plus className="h-5 w-5 mr-2" />
           Create New Post
@@ -324,18 +299,20 @@ const PostManagement = () => {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
+        <div className="mb-6 bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
           <AlertCircle className="h-5 w-5 mr-2" />
           {error}
         </div>
       )}
 
       {showForm && (
-        <div className="mb-6 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold mb-4">Create New Post</h2>
+        <div className="mb-6 bg-[#222] border border-[#333] rounded-lg shadow-sm p-6">
+          <h2 className="text-lg font-semibold mb-4 text-gray-100">
+            Create New Post
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Title
               </label>
               <input
@@ -344,13 +321,13 @@ const PostManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, title: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Related Coin
               </label>
               <select
@@ -358,7 +335,7 @@ const PostManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, coin_id: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="">Select a coin</option>
@@ -372,14 +349,14 @@ const PostManagement = () => {
 
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-300">
                   Content Blocks
                 </label>
                 <div className="flex space-x-2">
                   <button
                     type="button"
                     onClick={() => addContentBlock("text")}
-                    className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center"
+                    className="px-3 py-2 bg-[#333] text-gray-200 rounded-lg hover:bg-[#444] flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <Type className="h-4 w-4 mr-2" />
                     Add Text
@@ -387,7 +364,7 @@ const PostManagement = () => {
                   <button
                     type="button"
                     onClick={() => addContentBlock("image")}
-                    className="px-3 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 flex items-center"
+                    className="px-3 py-2 bg-[#333] text-gray-200 rounded-lg hover:bg-[#444] flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <ImageIcon className="h-4 w-4 mr-2" />
                     Add Image
@@ -409,7 +386,7 @@ const PostManagement = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Status
               </label>
               <select
@@ -417,7 +394,7 @@ const PostManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, status: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="draft">Draft</option>
@@ -437,13 +414,13 @@ const PostManagement = () => {
                     status: "draft",
                   });
                 }}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-[#333] text-gray-200 bg-[#222] rounded-lg hover:bg-[#333] focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Create Post
               </button>
@@ -456,9 +433,9 @@ const PostManagement = () => {
         {posts.map((post) => (
           <div
             key={post.id}
-            className="bg-white rounded-lg shadow-sm overflow-hidden"
+            className="bg-[#222] border border-[#333] rounded-lg shadow-sm overflow-hidden"
           >
-            <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+            <div className="p-4 border-b border-[#333] flex justify-between items-center bg-[#1a1a1a]">
               <div className="flex items-center space-x-3">
                 <select
                   value={post.status}
@@ -475,14 +452,14 @@ const PostManagement = () => {
                   className={`text-xs font-medium px-2.5 py-1 rounded-full 
                     ${
                       post.status === "published"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    } cursor-pointer`}
+                        ? "bg-green-800 text-green-200"
+                        : "bg-yellow-800 text-yellow-200"
+                    } cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500`}
                 >
                   <option value="draft">Draft</option>
                   <option value="published">Published</option>
                 </select>
-                <span className="text-sm text-gray-500 flex items-center">
+                <span className="text-xs text-gray-400 flex items-center">
                   <Calendar className="h-4 w-4 mr-1" />
                   {formatDistanceToNow(new Date(post.created_at), {
                     addSuffix: true,
@@ -491,27 +468,27 @@ const PostManagement = () => {
               </div>
               <button
                 onClick={() => handleDelete(post.id)}
-                className="p-1 hover:bg-gray-100 rounded-full"
+                className="p-1 hover:bg-[#333] rounded-full"
               >
-                <X className="h-4 w-4 text-gray-500 hover:text-red-600" />
+                <X className="h-4 w-4 text-gray-400 hover:text-red-400" />
               </button>
             </div>
 
             <div className="p-4">
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-lg font-semibold text-gray-900 truncate">
+                <h3 className="text-lg font-semibold text-gray-100 truncate">
                   {post.title}
                 </h3>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-gray-400">
                   {coins.find((coin) => coin.id === post.coin_id)?.name}
                 </span>
               </div>
 
               <div className="relative">
-                <div className="h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                <div className="h-[600px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-[#222]">
                   {renderPostContent(post)}
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent pointer-events-none" />
+                <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#111] to-transparent pointer-events-none" />
               </div>
             </div>
           </div>
@@ -519,7 +496,7 @@ const PostManagement = () => {
       </div>
 
       {pagination.last_page > 1 && (
-        <div className="mt-6 flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+        <div className="mt-6 flex items-center justify-between border-t border-[#333] bg-[#222] px-4 py-3 sm:px-6 rounded-lg">
           <div className="flex flex-1 justify-between sm:hidden">
             <button
               onClick={() => fetchData(pagination.current_page - 1)}
@@ -527,8 +504,8 @@ const PostManagement = () => {
               className={`relative inline-flex items-center rounded-md px-4 py-2 text-sm font-medium
                 ${
                   pagination.current_page === 1
-                    ? "bg-gray-100 text-gray-400"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-[#333] text-gray-400 cursor-not-allowed"
+                    : "bg-[#222] text-gray-200 hover:bg-[#333]"
                 }`}
             >
               Previous
@@ -539,16 +516,16 @@ const PostManagement = () => {
               className={`relative ml-3 inline-flex items-center rounded-md px-4 py-2 text-sm font-medium
                 ${
                   pagination.current_page === pagination.last_page
-                    ? "bg-gray-100 text-gray-400"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
+                    ? "bg-[#333] text-gray-400 cursor-not-allowed"
+                    : "bg-[#222] text-gray-200 hover:bg-[#333]"
                 }`}
             >
               Next
             </button>
           </div>
-          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+          <div className="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between text-gray-200">
             <div>
-              <p className="text-sm text-gray-700">
+              <p className="text-sm">
                 Showing{" "}
                 <span className="font-medium">
                   {(pagination.current_page - 1) * pagination.per_page + 1}
@@ -575,8 +552,8 @@ const PostManagement = () => {
                   className={`relative inline-flex items-center rounded-l-md px-2 py-2
                     ${
                       pagination.current_page === 1
-                        ? "bg-gray-100 text-gray-400"
-                        : "bg-white text-gray-500 hover:bg-gray-50"
+                        ? "bg-[#333] text-gray-400 cursor-not-allowed"
+                        : "bg-[#222] text-gray-200 hover:bg-[#333]"
                     }`}
                 >
                   <ChevronLeft className="h-5 w-5" />
@@ -597,7 +574,7 @@ const PostManagement = () => {
                           ${
                             pagination.current_page === page
                               ? "z-10 bg-blue-600 text-white"
-                              : "bg-white text-gray-500 hover:bg-gray-50"
+                              : "bg-[#222] text-gray-200 hover:bg-[#333]"
                           }`}
                       >
                         {page}
@@ -611,7 +588,7 @@ const PostManagement = () => {
                     return (
                       <span
                         key={page}
-                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700"
+                        className="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200"
                       >
                         ...
                       </span>
@@ -625,8 +602,8 @@ const PostManagement = () => {
                   className={`relative inline-flex items-center rounded-r-md px-2 py-2
                     ${
                       pagination.current_page === pagination.last_page
-                        ? "bg-gray-100 text-gray-400"
-                        : "bg-white text-gray-500 hover:bg-gray-50"
+                        ? "bg-[#333] text-gray-400 cursor-not-allowed"
+                        : "bg-[#222] text-gray-200 hover:bg-[#333]"
                     }`}
                 >
                   <ChevronRight className="h-5 w-5" />

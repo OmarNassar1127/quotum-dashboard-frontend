@@ -3,10 +3,8 @@ import {
   Plus,
   Loader,
   AlertCircle,
-  ChevronDown,
   Trash2,
   Edit,
-  ChevronUp,
   Search,
   ArrowUpDown,
 } from "lucide-react";
@@ -39,7 +37,6 @@ const WalletManagement = () => {
     fetchCoins();
   }, []);
 
-  // Fetch grouped wallets by coin
   const fetchGroupedWallets = async () => {
     try {
       const response = await axios.get("/wallets");
@@ -59,7 +56,6 @@ const WalletManagement = () => {
     }
   };
 
-  // Fetch coins
   const fetchCoins = async () => {
     try {
       const response = await axios.get("/coins");
@@ -74,7 +70,6 @@ const WalletManagement = () => {
     }
   };
 
-  // Handle coin selection
   const handleCoinChange = (coinId) => {
     const selectedCoin = coins.find((coin) => coin.id === parseInt(coinId, 10));
     const smartContracts = selectedCoin?.smart_contracts || [];
@@ -91,7 +86,6 @@ const WalletManagement = () => {
     );
   };
 
-  // Handle chain selection
   const handleChainChange = (chain) => {
     const selectedChain = availableChains.find((c) => c.chain === chain);
 
@@ -102,7 +96,6 @@ const WalletManagement = () => {
     });
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -135,7 +128,6 @@ const WalletManagement = () => {
     setEditingWallet(null);
   };
 
-  // Handle wallet deletion
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this wallet?")) return;
     try {
@@ -147,7 +139,6 @@ const WalletManagement = () => {
     }
   };
 
-  // Generate blockchain explorer URL
   const getExplorerUrl = (chain, address) => {
     const explorers = {
       ethereum: `https://etherscan.io/address/${address}`,
@@ -157,7 +148,6 @@ const WalletManagement = () => {
     return explorers[chain.toLowerCase()] || "#";
   };
 
-  // New sorting function
   const handleSort = (field) => {
     setSortBy((prev) => ({
       field,
@@ -166,18 +156,15 @@ const WalletManagement = () => {
     }));
   };
 
-  // New filtering and sorting function
   const filterAndSortWallets = (wallets) => {
     let filtered = wallets;
 
-    // Apply search filter
     if (searchTerm) {
       filtered = wallets.filter((wallet) =>
         wallet.label.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
-    // Apply sorting
     if (sortBy.field) {
       filtered = [...filtered].sort((a, b) => {
         let comparison = 0;
@@ -193,7 +180,6 @@ const WalletManagement = () => {
     return filtered;
   };
 
-  // New pagination function
   const getPaginatedWallets = (wallets) => {
     const filtered = filterAndSortWallets(wallets);
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -207,19 +193,19 @@ const WalletManagement = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-gray-500" />
+      <div className="flex items-center justify-center h-64 bg-[#111] text-white">
+        <Loader className="h-8 w-8 animate-spin text-gray-300" />
       </div>
     );
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-6 bg-[#111] text-white min-h-screen">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold text-gray-900">Wallet Management</h1>
+        <h1 className="text-2xl font-bold text-gray-100">Wallet Management</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <Plus className="h-5 w-5 mr-2" />
           Add Wallet
@@ -227,20 +213,20 @@ const WalletManagement = () => {
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
+        <div className="bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
           <AlertCircle className="h-5 w-5 mr-2" />
           {error}
         </div>
       )}
 
       {showForm && (
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold mb-4">
+        <div className="bg-[#222] border border-[#333] rounded-lg shadow-sm p-6">
+          <h2 className="text-lg font-semibold mb-4 text-gray-100">
             {editingWallet ? "Edit Wallet" : "Add New Wallet"}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Wallet Address
               </label>
               <input
@@ -249,13 +235,13 @@ const WalletManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, address: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Label
               </label>
               <input
@@ -264,19 +250,19 @@ const WalletManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, label: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Coin
               </label>
               <select
                 value={formData.coin_id}
                 onChange={(e) => handleCoinChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               >
                 <option value="">Select a Coin</option>
@@ -289,13 +275,13 @@ const WalletManagement = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Chain
               </label>
               <select
                 value={formData.chain}
                 onChange={(e) => handleChainChange(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
                 disabled={!availableChains.length}
               >
@@ -309,7 +295,7 @@ const WalletManagement = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Notes
               </label>
               <textarea
@@ -317,7 +303,7 @@ const WalletManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, notes: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows="3"
               />
             </div>
@@ -326,13 +312,13 @@ const WalletManagement = () => {
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-[#333] text-gray-200 bg-[#222] rounded-lg hover:bg-[#333] focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 {editingWallet ? "Update Wallet" : "Add Wallet"}
               </button>
@@ -341,9 +327,11 @@ const WalletManagement = () => {
         </div>
       )}
 
-      {/* Grouped Wallets */}
       {groupedWallets.map((group, index) => (
-        <div key={index} className="bg-white rounded-lg shadow-md p-4 mb-4">
+        <div
+          key={index}
+          className="bg-[#222] border border-[#333] rounded-lg shadow-md p-4 mb-4"
+        >
           <div
             className="flex justify-between items-center cursor-pointer"
             onClick={() => {
@@ -356,18 +344,21 @@ const WalletManagement = () => {
               <img
                 src={group.coin_logo}
                 alt={group.coin_name}
-                className="w-8 h-8"
+                className="w-8 h-8 border border-[#333] rounded-full"
               />
-              <h3 className="text-xl font-bold">
+              <h3 className="text-xl font-bold text-gray-100">
                 {group.coin_name} ({group.wallets.length} addresses)
               </h3>
             </div>
-            {group.isCollapsed ? <ChevronDown /> : <ChevronUp />}
+            {group.isCollapsed ? (
+              <ArrowUpDown className="h-5 w-5 text-gray-300 rotate-180 transform" />
+            ) : (
+              <ArrowUpDown className="h-5 w-5 text-gray-300" />
+            )}
           </div>
 
           {!group.isCollapsed && (
             <>
-              {/* Search and Sort Controls */}
               <div className="mt-4 mb-4 space-y-4">
                 <div className="flex items-center space-x-4">
                   <div className="flex-1 relative">
@@ -379,20 +370,20 @@ const WalletManagement = () => {
                         setSearchTerm(e.target.value);
                         setCurrentPage(1);
                       }}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full pl-10 pr-4 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                     <Search className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
                   </div>
                   <button
                     onClick={() => handleSort("amount")}
-                    className="px-4 py-2 border border-gray-300 rounded-lg flex items-center space-x-2 hover:bg-gray-50"
+                    className="px-4 py-2 border border-[#333] rounded-lg flex items-center space-x-2 hover:bg-[#333] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <span>Amount</span>
                     <ArrowUpDown className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => handleSort("chain")}
-                    className="px-4 py-2 border border-gray-300 rounded-lg flex items-center space-x-2 hover:bg-gray-50"
+                    className="px-4 py-2 border border-[#333] rounded-lg flex items-center space-x-2 hover:bg-[#333] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                   >
                     <span>Chain</span>
                     <ArrowUpDown className="h-4 w-4" />
@@ -400,11 +391,41 @@ const WalletManagement = () => {
                 </div>
               </div>
 
-              {/* Paginated Wallets */}
               <div className="mt-4 space-y-2">
                 {(() => {
-                  const { paginatedWallets, totalPages, totalItems } =
-                    getPaginatedWallets(group.wallets);
+                  const { paginatedWallets, totalPages, totalItems } = (() => {
+                    const filtered = (() => {
+                      let filtered = group.wallets;
+                      if (searchTerm) {
+                        filtered = filtered.filter((wallet) =>
+                          wallet.label
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                        );
+                      }
+                      if (sortBy.field) {
+                        filtered = [...filtered].sort((a, b) => {
+                          let comparison = 0;
+                          if (sortBy.field === "amount") {
+                            comparison = a.current_balance - b.current_balance;
+                          } else if (sortBy.field === "chain") {
+                            comparison = a.chain.localeCompare(b.chain);
+                          }
+                          return sortBy.direction === "asc"
+                            ? comparison
+                            : -comparison;
+                        });
+                      }
+                      return filtered;
+                    })();
+                    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                    const endIndex = startIndex + ITEMS_PER_PAGE;
+                    return {
+                      paginatedWallets: filtered.slice(startIndex, endIndex),
+                      totalPages: Math.ceil(filtered.length / ITEMS_PER_PAGE),
+                      totalItems: filtered.length,
+                    };
+                  })();
 
                   return (
                     <>
@@ -412,10 +433,10 @@ const WalletManagement = () => {
                         {paginatedWallets.map((wallet) => (
                           <div
                             key={wallet.id}
-                            className="flex justify-between items-center bg-gray-50 rounded-lg p-3"
+                            className="flex justify-between items-center bg-[#1a1a1a] rounded-lg p-3"
                           >
                             <div>
-                              <h4 className="text-sm font-medium">
+                              <h4 className="text-sm font-medium text-gray-100">
                                 {wallet.label}
                               </h4>
                               <div className="flex items-center space-x-2">
@@ -426,7 +447,7 @@ const WalletManagement = () => {
                                   )}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs text-blue-500 hover:underline"
+                                  className="text-xs text-blue-400 hover:underline"
                                 >
                                   {wallet.address}
                                 </a>
@@ -444,7 +465,7 @@ const WalletManagement = () => {
                                       });
                                       setShowForm(true);
                                     }}
-                                    className="p-1 text-gray-500 hover:text-blue-600"
+                                    className="p-1 text-gray-400 hover:text-blue-400 focus:outline-none"
                                   >
                                     <Edit className="h-4 w-4" />
                                   </button>
@@ -453,7 +474,7 @@ const WalletManagement = () => {
                                       e.stopPropagation();
                                       handleDelete(wallet.id);
                                     }}
-                                    className="p-1 text-gray-500 hover:text-red-600"
+                                    className="p-1 text-gray-400 hover:text-red-400 focus:outline-none"
                                   >
                                     <Trash2 className="h-4 w-4" />
                                   </button>
@@ -465,51 +486,46 @@ const WalletManagement = () => {
                                 <img
                                   src={wallet.chain_logo}
                                   alt={wallet.chain}
-                                  className="w-5 h-5"
+                                  className="w-5 h-5 border border-[#333] rounded-full"
                                 />
-                                <span className="text-sm text-gray-600">
+                                <span className="text-sm text-gray-300">
                                   {wallet.chain}
                                 </span>
                               </div>
-                              <p className="text-sm font-medium">
+                              <p className="text-sm font-medium text-gray-100">
                                 {wallet.current_balance.toLocaleString(
                                   "en-US",
                                   {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,
                                   }
-                                )}{" "}
+                                )}
                               </p>
                             </div>
                           </div>
                         ))}
                       </div>
 
-                      {/* Pagination Controls */}
                       {totalPages > 1 && (
-                        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-200">
-                          <p className="text-sm text-gray-600">
+                        <div className="flex justify-between items-center mt-4 pt-4 border-t border-[#333]">
+                          <p className="text-sm text-gray-300">
                             Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
                             {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}{" "}
                             of {totalItems} wallets
                           </p>
                           <div className="flex space-x-2">
-                            {/* Previous Page Button */}
                             {currentPage > 1 && (
                               <button
                                 onClick={() =>
                                   setCurrentPage((curr) => curr - 1)
                                 }
-                                className="px-3 py-1 rounded bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                className="px-3 py-1 rounded bg-[#333] text-gray-200 hover:bg-[#444]"
                               >
                                 Previous
                               </button>
                             )}
-
-                            {/* Page Numbers */}
                             {Array.from({ length: totalPages }, (_, i) => {
                               const pageNumber = i + 1;
-                              // Show first page, last page, current page, and pages around current page
                               if (
                                 pageNumber === 1 ||
                                 pageNumber === totalPages ||
@@ -523,7 +539,7 @@ const WalletManagement = () => {
                                     className={`px-3 py-1 rounded ${
                                       currentPage === pageNumber
                                         ? "bg-blue-600 text-white"
-                                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                        : "bg-[#333] text-gray-200 hover:bg-[#444]"
                                     }`}
                                   >
                                     {pageNumber}
@@ -534,21 +550,22 @@ const WalletManagement = () => {
                                 pageNumber === currentPage + 2
                               ) {
                                 return (
-                                  <span key={pageNumber} className="px-2">
+                                  <span
+                                    key={pageNumber}
+                                    className="px-2 text-gray-400"
+                                  >
                                     ...
                                   </span>
                                 );
                               }
                               return null;
                             })}
-
-                            {/* Next Page Button */}
                             {currentPage < totalPages && (
                               <button
                                 onClick={() =>
                                   setCurrentPage((curr) => curr + 1)
                                 }
-                                className="px-3 py-1 rounded bg-gray-100 text-gray-600 hover:bg-gray-200"
+                                className="px-3 py-1 rounded bg-[#333] text-gray-200 hover:bg-[#444]"
                               >
                                 Next
                               </button>

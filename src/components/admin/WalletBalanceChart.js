@@ -10,6 +10,7 @@ const TIME_FRAMES = {
   "4h": 4 * 60 * 60 * 1000,
   "1d": 24 * 60 * 60 * 1000,
   "1w": 7 * 24 * 60 * 60 * 1000,
+  "1m": 30 * 24 * 60 * 60 * 1000,
 };
 
 const WalletBalanceChart = () => {
@@ -79,39 +80,16 @@ const WalletBalanceChart = () => {
 
   const handleTimeframeChange = (tf) => {
     setTimeframe(tf);
+    // We won't manually set the dataZoom here; we rely on user interaction and a default view.
+    // The timeframe now primarily changes how we format the dates and potentially the initial zoom.
     if (chartInstance.current) {
+      // Adjust dataZoom based on timeframe
       const endTime = new Date().getTime();
       const startTime = endTime - TIME_FRAMES[tf];
-
-      chartInstance.current.setOption({
-        dataZoom: [
-          {
-            type: "inside",
-            startValue: startTime,
-            endValue: endTime,
-            minValueSpan: 3600 * 1000,
-          },
-          {
-            type: "slider",
-            startValue: startTime,
-            endValue: endTime,
-            show: true,
-            bottom: 10,
-            height: 40,
-            borderColor: "transparent",
-            backgroundColor: "#f1f5f9",
-            fillerColor: "rgba(167, 182, 194, 0.3)",
-            handleIcon:
-              "path://M-9.35,27.3L-3.65,27.3L-3.65,-27.3L-9.35,-27.3L-9.35,27.3Z M3.65,-27.3L3.65,27.3L9.35,27.3L9.35,-27.3L3.65,-27.3Z",
-            handleSize: "120%",
-            handleStyle: {
-              color: "#fff",
-              borderColor: "#ACB8C1",
-            },
-            moveHandleSize: 6,
-            rangeMode: ["value", "value"],
-          },
-        ],
+      chartInstance.current.dispatchAction({
+        type: "dataZoom",
+        startValue: startTime,
+        endValue: endTime,
       });
     }
   };
@@ -143,19 +121,6 @@ const WalletBalanceChart = () => {
             : !wallet.is_exchange))
     );
 
-    let minValue = Infinity;
-    let maxValue = -Infinity;
-    filteredWallets.forEach((wallet) => {
-      if (!hiddenWallets.has(wallet.label)) {
-        wallet.balances.forEach((balance) => {
-          if (balance.balance > 0) {
-            minValue = Math.min(minValue, balance.balance);
-            maxValue = Math.max(maxValue, balance.balance);
-          }
-        });
-      }
-    });
-
     const endTime = new Date().getTime();
     const startTime = endTime - TIME_FRAMES[timeframe];
 
@@ -178,6 +143,7 @@ const WalletBalanceChart = () => {
           data: timeSeriesData,
           lineStyle: {
             width: 2,
+            // Differentiate exchange vs. non-exchange with color
             color: wallet.is_exchange ? "#f97316" : "#4f46e5",
           },
           emphasis: {
@@ -187,93 +153,102 @@ const WalletBalanceChart = () => {
       });
 
     const options = {
+      backgroundColor: "#111",
       animation: false,
       tooltip: {
         trigger: "axis",
+        backgroundColor: "rgba(0,0,0,0.8)",
+        borderColor: "#333",
+        borderWidth: 1,
+        textStyle: {
+          color: "#eee",
+          fontSize: 13,
+        },
         formatter: function (params) {
+          if (!params || !params.length) return "";
           const date = format(
             new Date(params[0].value[0]),
-            timeframe === "1h" ? "HH:mm:ss" : "MMM d, yyyy HH:mm"
+            timeframe === "1h" || timeframe === "4h"
+              ? "MMM d HH:mm"
+              : "MMM d, yyyy HH:mm"
           );
-          let result = `${date}<br/>`;
+          let result = `<div class="font-medium">${date}</div>`;
           params.forEach((param) => {
             const value = param.value[1];
-            result += `${param.seriesName}: ${value.toLocaleString()}<br/>`;
+            result += `<div class="text-sm">${param.marker}${
+              param.seriesName
+            }: ${value.toLocaleString()}</div>`;
           });
           return result;
         },
       },
       legend: {
-        type: "plain",
+        type: "scroll",
         top: 0,
         height: 50,
-        data: filteredWallets
-          .filter((wallet) => !hiddenWallets.has(wallet.label))
-          .map((wallet) => ({
-            name: wallet.label,
-            itemStyle: {
-              color: wallet.is_exchange ? "#f97316" : "#4f46e5",
-            },
-          })),
-        textStyle: { fontSize: 12 },
+        textStyle: { fontSize: 12, color: "#ccc" },
         itemGap: 10,
-        padding: [0, 0, 20, 0],
+        padding: [10, 10, 10, 10],
       },
       grid: {
         left: "10%",
-        right: "5%",
-        top: "100px",
-        bottom: "70px",
+        right: "10%",
+        top: 80,
+        bottom: 70,
         containLabel: true,
       },
       xAxis: {
         type: "time",
+        axisLine: { lineStyle: { color: "#333" } },
         axisLabel: {
+          color: "#aaa",
           formatter: (value) =>
             format(
               new Date(value),
-              timeframe === "1h"
-                ? "HH:mm"
-                : timeframe === "4h"
+              timeframe === "1h" || timeframe === "4h"
                 ? "HH:mm"
                 : timeframe === "1d"
                 ? "MMM d HH:mm"
-                : "MMM d"
+                : timeframe === "1w"
+                ? "MMM d"
+                : "MMM yyyy"
             ),
+        },
+        splitLine: {
+          show: true,
+          lineStyle: { color: "#333", type: "dotted" },
         },
       },
       yAxis: {
         type: "log",
-        min: yAxisMin || undefined,
-        max: yAxisMax || undefined,
+        min: yAxisMin || null,
+        max: yAxisMax || null,
+        axisLine: { lineStyle: { color: "#333" } },
         axisLabel: {
+          color: "#aaa",
           formatter: (value) => {
-            if (value >= 1000000) return (value / 1000000).toFixed(1) + "M";
-            if (value >= 1000) return (value / 1000).toFixed(1) + "K";
+            if (value >= 1_000_000) return (value / 1_000_000).toFixed(1) + "M";
+            if (value >= 1_000) return (value / 1_000).toFixed(1) + "K";
             return value.toLocaleString();
           },
+        },
+        splitLine: {
+          lineStyle: { color: "#333", type: "dashed" },
         },
       },
       dataZoom: [
         {
           type: "inside",
-          startValue: startTime,
-          endValue: endTime,
           minValueSpan: 3600 * 1000,
         },
         {
           type: "slider",
-          startValue: startTime,
-          endValue: endTime,
           show: true,
           bottom: 10,
-          height: 40,
-          borderColor: "transparent",
-          backgroundColor: "#f1f5f9",
-          fillerColor: "rgba(167, 182, 194, 0.3)",
-          handleIcon:
-            "path://M-9.35,27.3L-3.65,27.3L-3.65,-27.3L-9.35,-27.3L-9.35,27.3Z M3.65,-27.3L3.65,27.3L9.35,27.3L9.35,-27.3L3.65,-27.3Z",
-          handleSize: "120%",
+          height: 20,
+          borderColor: "#333",
+          backgroundColor: "#222",
+          fillerColor: "rgba(255, 255, 255, 0.2)",
           handleStyle: {
             color: "#fff",
             borderColor: "#ACB8C1",
@@ -286,6 +261,13 @@ const WalletBalanceChart = () => {
     };
 
     chartInstance.current.setOption(options, true);
+
+    // Apply initial timeframe zoom
+    chartInstance.current.dispatchAction({
+      type: "dataZoom",
+      startValue: startTime,
+      endValue: endTime,
+    });
 
     const handleResize = () => {
       if (chartInstance.current) {
@@ -314,19 +296,19 @@ const WalletBalanceChart = () => {
     if (chartInstance.current) {
       chartInstance.current.setOption({
         yAxis: {
-          min: yAxisMin || undefined,
-          max: yAxisMax || undefined,
+          min: yAxisMin || null,
+          max: yAxisMax || null,
         },
       });
     }
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm p-6 min-h-[24rem]">
-      <div className="flex items-center justify-between mb-6">
-        <div className="flex items-center">
-          <TrendingUp className="h-5 w-5 text-gray-500 mr-2" />
-          <h2 className="text-lg font-semibold text-gray-900">
+    <div className="bg-[#111] text-white rounded-lg shadow-sm p-6 min-h-[24rem]">
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <TrendingUp className="h-5 w-5 text-gray-300" />
+          <h2 className="text-lg font-semibold text-gray-100">
             Wallet Balances
           </h2>
         </div>
@@ -334,7 +316,7 @@ const WalletBalanceChart = () => {
           <select
             value={selectedCoin || ""}
             onChange={(e) => setSelectedCoin(e.target.value)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="rounded-md border-[#333] bg-[#222] text-gray-200 px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {coins.map((coin) => (
               <option key={coin.id} value={coin.id}>
@@ -346,7 +328,7 @@ const WalletBalanceChart = () => {
           <select
             value={selectedChain}
             onChange={(e) => setSelectedChain(e.target.value)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="rounded-md border-[#333] bg-[#222] text-gray-200 px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">ALL</option>
             {Object.keys(data).map((chain) => (
@@ -359,36 +341,35 @@ const WalletBalanceChart = () => {
           <select
             value={selectedExchangeFilter}
             onChange={(e) => setSelectedExchangeFilter(e.target.value)}
-            className="rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            className="rounded-md border-[#333] bg-[#222] text-gray-200 px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">All Wallets</option>
             <option value="exchange">Exchange Only</option>
             <option value="non-exchange">Non-Exchange Only</option>
           </select>
-
-          <div className="flex rounded-md shadow-sm">
-            {Object.keys(TIME_FRAMES).map((tf) => (
-              <button
-                key={tf}
-                onClick={() => handleTimeframeChange(tf)}
-                className={`px-4 py-2 text-sm font-medium ${
-                  timeframe === tf
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-50"
-                } border ${
-                  timeframe === tf ? "border-indigo-600" : "border-gray-300"
-                } first:rounded-l-md last:rounded-r-md -ml-px first:ml-0`}
-              >
-                {tf.toUpperCase()}
-              </button>
-            ))}
-          </div>
         </div>
       </div>
 
-      <form onSubmit={handleYAxisSubmit} className="flex gap-4 mb-4">
+      {/* Timeframe Selector */}
+      <div className="flex space-x-2 mb-4">
+        {["1h", "4h", "1d", "1w", "1m"].map((tf) => (
+          <button
+            key={tf}
+            onClick={() => handleTimeframeChange(tf)}
+            className={`px-3 py-1 text-sm font-medium rounded ${
+              timeframe === tf
+                ? "bg-blue-600 text-white"
+                : "bg-[#222] text-gray-200 hover:bg-[#333]"
+            } focus:outline-none focus:ring-2 focus:ring-blue-500`}
+          >
+            {tf.toUpperCase()}
+          </button>
+        ))}
+      </div>
+
+      <form onSubmit={handleYAxisSubmit} className="flex items-end gap-4 mb-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Min Balance
           </label>
           <input
@@ -397,12 +378,12 @@ const WalletBalanceChart = () => {
             onChange={(e) =>
               setYAxisMin(e.target.value ? Number(e.target.value) : "")
             }
-            className="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            placeholder="Min value"
+            className="w-32 px-3 py-1 border border-[#333] bg-[#222] text-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Min"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700">
+          <label className="block text-sm font-medium text-gray-300 mb-1">
             Max Balance
           </label>
           <input
@@ -411,39 +392,41 @@ const WalletBalanceChart = () => {
             onChange={(e) =>
               setYAxisMax(e.target.value ? Number(e.target.value) : "")
             }
-            className="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            placeholder="Max value"
+            className="w-32 px-3 py-1 border border-[#333] bg-[#222] text-gray-200 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Max"
           />
         </div>
         <button
           type="submit"
-          className="mt-auto mb-[1px] px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
         >
-          Apply Range
+          Apply
         </button>
       </form>
 
       {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex itemsflex items-center">
+        <div className="mb-4 bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
           <AlertCircle className="h-5 w-5 mr-2" />
           {error}
         </div>
       )}
 
-      <div className="relative">
+      <div className="relative bg-[#222] border border-[#333] rounded-md">
         <div ref={chartRef} className="h-[400px] w-full" />
         {loading && (
-          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
-            <Loader className="h-8 w-8 animate-spin text-gray-500" />
+          <div className="absolute inset-0 flex items-center justify-center bg-[#111] bg-opacity-75">
+            <Loader className="h-8 w-8 animate-spin text-gray-300" />
           </div>
         )}
       </div>
 
-      <WalletBalanceTable
-        selectedCoin={selectedCoin}
-        selectedChain={selectedChain}
-        selectedExchangeFilter={selectedExchangeFilter}
-      />
+      {/* Wallet Balance Table below */}
+      <div className="mt-6 bg-[#222] border border-[#333] rounded-lg p-4">
+        <WalletBalanceTable
+          selectedCoin={selectedCoin}
+          selectedChain={selectedChain}
+        />
+      </div>
     </div>
   );
 };

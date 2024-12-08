@@ -11,7 +11,7 @@ import {
   ChartArea,
   Binoculars,
   X,
-  Link,
+  Link as LinkIcon,
 } from "lucide-react";
 import axios from "../lib/axios";
 
@@ -21,46 +21,18 @@ const AdminLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
 
   const menuItems = [
-    {
-      title: "Dashboard",
-      icon: Layout,
-      path: "/admin", // Changed from /admin/dashboard to match your routes
-    },
-    {
-      title: "Coin Management",
-      icon: Database,
-      path: "/admin/coins",
-    },
-    {
-      title: "Post Management",
-      icon: FileText,
-      path: "/admin/posts",
-    },
-    {
-      title: "User Settings",
-      icon: Settings,
-      path: "/admin/user-settings",
-    },
+    { title: "Dashboard", icon: Layout, path: "/admin" },
+    { title: "Coin Management", icon: Database, path: "/admin/coins" },
+    { title: "Post Management", icon: FileText, path: "/admin/posts" },
+    { title: "User Settings", icon: Settings, path: "/admin/user-settings" },
     {
       title: "Wallet Tracker",
       icon: Binoculars,
       path: "/admin/wallet-trackers",
     },
-    {
-      title: "Wallet Chart",
-      icon: ChartArea,
-      path: "/admin/wallet-chart",
-    },
-    {
-      title: "Referral",
-      icon: Link,
-      path: "/admin/referral",
-    },
-    {
-      title: "User panel",
-      icon: User,
-      path: "/",
-    },
+    { title: "Wallet Chart", icon: ChartArea, path: "/admin/wallet-chart" },
+    { title: "Referral", icon: LinkIcon, path: "/admin/referral" },
+    { title: "User panel", icon: User, path: "/" },
   ];
 
   const handleLogout = async () => {
@@ -84,29 +56,30 @@ const AdminLayout = () => {
   };
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-[#111] text-white">
       {/* Sidebar */}
       <div
-        className={`fixed md:static inset-y-0 left-0 bg-white shadow-sm transform transition-transform duration-300 z-40 ${
+        className={`fixed md:static inset-y-0 left-0 bg-[#222] border-r border-[#333] shadow-sm transform transition-transform duration-300 z-40 ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } w-64 md:w-64`}
       >
         <div className="flex flex-col h-full">
-          <div className="flex items-center justify-center h-16 border-b">
-            <h1 className="text-xl font-bold text-gray-900">Admin Panel</h1>
+          <div className="flex items-center justify-center h-16 border-b border-[#333]">
+            <h1 className="text-xl font-bold text-gray-100">Admin Panel</h1>
           </div>
-          <nav className="flex-1 p-4">
+          <nav className="flex-1 p-4 overflow-auto">
             <ul className="space-y-2">
               {menuItems.map((item) => {
                 const Icon = item.icon;
+                const isActive = location.pathname === item.path;
                 return (
                   <li key={item.path}>
                     <button
                       onClick={() => navigate(item.path)}
-                      className={`w-full flex items-center px-4 py-2 text-sm rounded-lg ${
-                        location.pathname === item.path
-                          ? "bg-blue-50 text-blue-700"
-                          : "text-gray-700 hover:bg-gray-50"
+                      className={`w-full flex items-center px-4 py-2 text-sm rounded-lg transition-colors ${
+                        isActive
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-300 hover:bg-[#333]"
                       }`}
                     >
                       <Icon className="h-5 w-5 mr-3" />
@@ -117,10 +90,10 @@ const AdminLayout = () => {
               })}
             </ul>
           </nav>
-          <div className="p-4 border-t">
+          <div className="p-4 border-t border-[#333]">
             <button
               onClick={handleLogout}
-              className="w-full flex items-center px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg"
+              className="w-full flex items-center px-4 py-2 text-sm text-red-300 hover:bg-red-600 hover:text-white rounded-lg transition-colors"
             >
               <LogOut className="h-5 w-5 mr-3" />
               Logout
@@ -132,10 +105,10 @@ const AdminLayout = () => {
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
         {/* Sticky Header */}
-        <div className="h-16 bg-white shadow-sm flex items-center px-6 sticky top-0 z-30">
+        <div className="h-16 bg-[#222] border-b border-[#333] flex items-center px-6 sticky top-0 z-30">
           <button
             onClick={toggleSidebar}
-            className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
+            className="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-300 hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
           >
             {isSidebarOpen ? (
               <X className="h-6 w-6" />
@@ -143,7 +116,7 @@ const AdminLayout = () => {
               <Menu className="h-6 w-6" />
             )}
           </button>
-          <h2 className="text-lg font-semibold text-gray-900 ml-4 md:ml-0">
+          <h2 className="text-lg font-semibold text-gray-100 ml-4 md:ml-0">
             {menuItems.find((item) => item.path === location.pathname)?.title ||
               "Admin"}
           </h2>

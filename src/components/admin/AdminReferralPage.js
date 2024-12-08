@@ -29,79 +29,84 @@ const AdminReferralPage = () => {
   );
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#111] text-white min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Referral Management</h1>
-        <div className="relative">
+        <h1 className="text-2xl font-bold text-gray-100">
+          Referral Management
+        </h1>
+        <div className="relative text-gray-300">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
           <input
             type="text"
             placeholder="Search users..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-9 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="pl-9 pr-4 py-2 border border-[#333] rounded-lg bg-[#222] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
 
       {loading ? (
         <div className="flex justify-center">
-          <Loader className="h-8 w-8 animate-spin text-gray-500" />
+          <Loader className="h-8 w-8 animate-spin text-gray-300" />
         </div>
       ) : (
-        <div className="bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className="bg-[#222] border border-[#333] rounded-lg shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full text-sm text-gray-300">
+              <thead className="bg-[#222] border-b border-[#333]">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium uppercase tracking-wider text-gray-400">
                     User
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium uppercase tracking-wider text-gray-400">
                     Code
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium uppercase tracking-wider text-gray-400">
                     Times Used
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium uppercase tracking-wider text-gray-400">
                     Total Discount Given
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left font-medium uppercase tracking-wider text-gray-400">
                     Referred Users
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="divide-y divide-[#333]">
                 {filteredData.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50">
+                  <tr
+                    key={item.id}
+                    className="hover:bg-[#333] transition-colors"
+                  >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="font-medium text-gray-900">
+                        <div className="font-medium text-gray-100">
                           {item.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-gray-400">
                           {item.email}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap font-mono">
+                    <td className="px-6 py-4 whitespace-nowrap font-mono text-gray-200">
                       {item.referral_code}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-200">
                       {item.times_used}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4 whitespace-nowrap text-gray-200">
                       ${item.total_discount_given}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4 text-gray-200">
                       <div className="space-y-2">
                         {item.referred_users.map((user) => (
                           <div key={user.email} className="text-sm">
-                            <div className="font-medium text-gray-900">
+                            <div className="font-medium text-gray-100">
                               {user.name}
                             </div>
-                            <div className="text-gray-500">{user.email}</div>
-                            <div className="text-gray-500 text-xs">
+                            <div className="text-gray-400">{user.email}</div>
+                            <div className="text-gray-400 text-xs">
                               Joined{" "}
                               {new Date(user.joined_at).toLocaleDateString()} •
                               ${user.discount} discount

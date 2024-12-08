@@ -72,19 +72,19 @@ const CoinManagement = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader className="h-8 w-8 animate-spin text-gray-500" />
+      <div className="flex items-center justify-center h-64 bg-[#111] text-white">
+        <Loader className="h-8 w-8 animate-spin text-gray-300" />
       </div>
     );
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 bg-[#111] text-white min-h-screen">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Coin Management</h1>
+        <h1 className="text-2xl font-bold text-gray-100">Coin Management</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center"
+          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
           <Plus className="h-5 w-5 mr-2" />
           Add New Coin
@@ -92,18 +92,20 @@ const CoinManagement = () => {
       </div>
 
       {error && (
-        <div className="mb-6 bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 flex items-center">
+        <div className="mb-6 bg-red-500/10 border border-red-500 rounded-lg p-4 text-red-300 flex items-center">
           <AlertCircle className="h-5 w-5 mr-2" />
           {error}
         </div>
       )}
 
       {showForm && (
-        <div className="mb-6 bg-white rounded-lg shadow-sm p-6">
-          <h2 className="text-lg font-semibold mb-4">Add New Coin</h2>
+        <div className="mb-6 bg-[#222] border border-[#333] rounded-lg shadow-sm p-6">
+          <h2 className="text-lg font-semibold mb-4 text-gray-100">
+            Add New Coin
+          </h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Name
               </label>
               <input
@@ -112,12 +114,12 @@ const CoinManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, name: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Symbol
               </label>
               <input
@@ -126,12 +128,12 @@ const CoinManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, symbol: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Image URL
               </label>
               <input
@@ -140,32 +142,29 @@ const CoinManagement = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, image: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 CoinGecko Link
               </label>
               <input
                 type="url"
                 value={formData.coingecko_link}
                 onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    coingecko_link: e.target.value,
-                  })
+                  setFormData({ ...formData, coingecko_link: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-400">
                 The CoinGecko page URL for this coin
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 CoinGecko ID
               </label>
               <input
@@ -177,10 +176,10 @@ const CoinManagement = () => {
                     coingecko_id: e.target.value.toLowerCase(),
                   })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
               />
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-sm text-gray-400">
                 The ID used in CoinGecko's API (e.g., "bitcoin", "ethereum")
               </p>
             </div>
@@ -188,13 +187,13 @@ const CoinManagement = () => {
               <button
                 type="button"
                 onClick={() => setShowForm(false)}
-                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                className="px-4 py-2 border border-[#333] text-gray-200 bg-[#222] rounded-lg hover:bg-[#333] focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Add Coin
               </button>
@@ -205,19 +204,22 @@ const CoinManagement = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {coins.map((coin) => (
-          <div key={coin.id} className="bg-white rounded-lg shadow-sm p-6">
+          <div
+            key={coin.id}
+            className="bg-[#222] border border-[#333] rounded-lg shadow-sm p-6"
+          >
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center">
                 <img
                   src={coin.image_url}
                   alt={coin.name}
-                  className="h-10 w-10 rounded-full"
+                  className="h-10 w-10 rounded-full border border-[#333]"
                 />
                 <div className="ml-3">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                  <h3 className="text-lg font-semibold text-gray-100">
                     {coin.name}
                   </h3>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-gray-400">
                     {coin.symbol.toUpperCase()}
                   </p>
                 </div>
@@ -225,14 +227,14 @@ const CoinManagement = () => {
               <div className="flex space-x-2">
                 <button
                   onClick={() => handleDelete(coin.id)}
-                  className="p-2 text-gray-500 hover:text-red-600"
+                  className="p-2 text-gray-400 hover:text-red-400 transition-colors"
                 >
                   <Trash2 className="h-5 w-5" />
                 </button>
               </div>
             </div>
             <div className="mt-2">
-              <span className="text-sm text-gray-500">
+              <span className="text-sm text-gray-400">
                 CoinGecko ID: {coin.coingecko_id}
               </span>
             </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { formatDistanceToNow } from "date-fns";
-import { Search, AlertCircle, Clock, UserPlus } from "lucide-react";
+import { Search, AlertCircle, Clock } from "lucide-react";
 import axios from "../../lib/axios";
 
 const SubscriptionManagement = () => {
@@ -81,13 +81,15 @@ const SubscriptionManagement = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center h-64">Loading...</div>
+      <div className="flex justify-center items-center h-64 bg-[#111] text-white">
+        Loading...
+      </div>
     );
   }
 
   if (error) {
     return (
-      <div className="rounded-lg bg-red-50 p-4 text-red-700">
+      <div className="rounded-lg bg-red-500/10 border border-red-500 p-4 text-red-300">
         <AlertCircle className="inline-block mr-2" size={20} />
         {error}
       </div>
@@ -95,12 +97,14 @@ const SubscriptionManagement = () => {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-6 bg-[#111] text-white min-h-screen">
       {/* Users without subscription */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-[#222] border border-[#333] rounded-lg shadow-sm p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold">Users Without Subscription</h2>
-          <div className="relative">
+          <h2 className="text-lg font-semibold text-gray-100">
+            Users Without Subscription
+          </h2>
+          <div className="relative text-gray-300">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={20}
@@ -110,29 +114,35 @@ const SubscriptionManagement = () => {
               value={userSearch}
               onChange={(e) => setUserSearch(e.target.value)}
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 pr-4 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-sm text-gray-200">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="px-4 py-3 text-left">User</th>
-                <th className="px-4 py-3 text-left">Email</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+              <tr className="border-b border-[#333] bg-[#222]">
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  User
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#333]">
               {filteredUsers.map((user) => (
-                <tr key={user.id} className="hover:bg-gray-50">
+                <tr key={user.id} className="hover:bg-[#333] transition-colors">
                   <td className="px-4 py-3">{user.first_name}</td>
                   <td className="px-4 py-3">{user.email}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <select
-                        className="rounded border-gray-300 text-sm"
+                        className="rounded border-[#333] bg-[#111] text-sm text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         onChange={(e) => {
                           if (e.target.value) {
                             addSubscription(user.id, e.target.value);
@@ -148,7 +158,7 @@ const SubscriptionManagement = () => {
                       </select>
                       <button
                         onClick={() => activateUser(user.id)}
-                        className="px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                       >
                         Add Subscription
                       </button>
@@ -162,10 +172,12 @@ const SubscriptionManagement = () => {
       </div>
 
       {/* Expiring subscriptions */}
-      <div className="bg-white rounded-lg shadow-sm p-6">
+      <div className="bg-[#222] border border-[#333] rounded-lg shadow-sm p-6">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-semibold">Expiring Subscriptions</h2>
-          <div className="relative">
+          <h2 className="text-lg font-semibold text-gray-100">
+            Expiring Subscriptions
+          </h2>
+          <div className="relative text-gray-300">
             <Search
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
               size={20}
@@ -175,30 +187,41 @@ const SubscriptionManagement = () => {
               value={expiringSearch}
               onChange={(e) => setExpiringSearch(e.target.value)}
               placeholder="Search users..."
-              className="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+              className="pl-10 pr-4 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
             />
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table className="w-full text-sm text-gray-200">
             <thead>
-              <tr className="border-b border-gray-200">
-                <th className="px-4 py-3 text-left">User</th>
-                <th className="px-4 py-3 text-left">Current Plan</th>
-                <th className="px-4 py-3 text-left">Expires</th>
-                <th className="px-4 py-3 text-left">Actions</th>
+              <tr className="border-b border-[#333] bg-[#222]">
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  User
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  Current Plan
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  Expires
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  Actions
+                </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-[#333]">
               {filteredExpiring.map((subscription) => (
-                <tr key={subscription.id} className="hover:bg-gray-50">
+                <tr
+                  key={subscription.id}
+                  className="hover:bg-[#333] transition-colors"
+                >
                   <td className="px-4 py-3">{subscription.user.first_name}</td>
                   <td className="px-4 py-3">{subscription.plan.name}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
-                      <Clock size={16} className="text-red-500" />
-                      <span className="text-red-600 font-medium">
+                      <Clock size={16} className="text-red-400" />
+                      <span className="text-red-300 font-medium">
                         {formatDistanceToNow(new Date(subscription.end_date), {
                           addSuffix: true,
                         })}
@@ -208,7 +231,7 @@ const SubscriptionManagement = () => {
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
                       <select
-                        className="rounded border-gray-300 text-sm"
+                        className="rounded border-[#333] bg-[#111] text-sm text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
                         onChange={(e) =>
                           addSubscription(subscription.user.id, e.target.value)
                         }
@@ -222,7 +245,7 @@ const SubscriptionManagement = () => {
                       </select>
                       <button
                         onClick={() => deactivateSubscription(subscription.id)}
-                        className="px-3 py-1 text-sm text-red-600 hover:text-red-800"
+                        className="px-3 py-1 text-sm text-red-300 hover:text-red-400 focus:outline-none"
                       >
                         Deactivate
                       </button>
