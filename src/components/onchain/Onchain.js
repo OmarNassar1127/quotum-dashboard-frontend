@@ -20,7 +20,7 @@ const Onchain = () => {
     {
       name: "Bitcoin Waves",
       description:
-        "The best cyclical bitcoin chart out there",
+        "Shows wave bands following Bitcoin's halving cycles, mapping price oscillations onto logarithmic trends. Each band represents different market phases, helping identify potential tops and bottoms for strategic entry and exit points.",
       route: "/onchain/bitcoin-waves",
     },
     {
