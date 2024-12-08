@@ -25,26 +25,29 @@ const WalletTrackingDetail = () => {
     fetchCoin();
   }, [coinId]);
 
-  if (loading)
+  if (loading) {
     return (
-      <div className="flex justify-center p-6">
-        <Loader className="h-8 w-8 animate-spin" />
-      </div>
+      <FeatureRestricted feature="wallet_tracking">
+        <div className="flex justify-center items-center h-64 bg-[#111] text-white">
+          <Loader className="h-8 w-8 animate-spin text-gray-300" />
+        </div>
+      </FeatureRestricted>
     );
+  }
 
   return (
     <FeatureRestricted feature="wallet_tracking">
-      <div className="p-4 md:p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-6 bg-[#111] border border-[#222] min-h-screen text-white">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
+          <h2 className="text-xl font-semibold text-gray-100">
             Wallet Tracking Table
           </h2>
           <button
             onClick={() => navigate("/wallet-tracking")}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] transition-colors"
           >
             <svg
-              className="w-4 h-4 mr-2"
+              className="w-4 h-4 mr-2 text-gray-300"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -60,31 +63,33 @@ const WalletTrackingDetail = () => {
           </button>
         </div>
 
-        <div className="bg-white rounded-lg shadow-sm p-4 md:p-6">
+        <div className="bg-[#222] border border-[#333] rounded-xl p-4 md:p-6 shadow-sm">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
             <img
               src={coin?.image}
               alt={coin?.name}
-              className="w-16 h-16 rounded-full"
+              className="w-16 h-16 rounded-full border border-[#333]"
             />
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 space-y-2 sm:space-y-4">
               <div className="text-center sm:text-left">
-                <h1 className="text-2xl font-bold">{coin?.name}</h1>
-                <span className="text-gray-500">
+                <h1 className="text-2xl font-bold text-gray-100 mb-1">
+                  {coin?.name}
+                </h1>
+                <span className="text-gray-400 uppercase">
                   {coin?.symbol?.toUpperCase()}
                 </span>
               </div>
 
-              <div className="flex flex-wrap justify-center sm:justify-start items-center gap-4">
-                <span className="text-xl sm:text-2xl font-medium">
+              <div className="flex flex-wrap justify-center sm:justify-start items-center gap-4 text-gray-300">
+                <span className="text-xl sm:text-2xl font-medium text-gray-100">
                   ${parseFloat(coin?.price).toFixed(2).toLocaleString()}
                 </span>
 
                 <div
                   className={`flex items-center ${
                     coin?.price_change_24h >= 0
-                      ? "text-green-600"
-                      : "text-red-600"
+                      ? "text-green-400"
+                      : "text-red-400"
                   }`}
                 >
                   {coin?.price_change_24h >= 0 ? (
@@ -95,21 +100,24 @@ const WalletTrackingDetail = () => {
                   {Math.abs(coin?.price_change_24h)}%
                 </div>
 
-                <a
-                  href={coin?.coingecko_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:text-blue-800 flex items-center whitespace-nowrap"
-                >
-                  <ExternalLink className="h-4 w-4 mr-1" />
-                  View on CoinGecko
-                </a>
+                {coin?.coingecko_url && (
+                  <a
+                    href={coin?.coingecko_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:text-blue-300 flex items-center whitespace-nowrap transition-colors"
+                  >
+                    <ExternalLink className="h-4 w-4 mr-1" />
+                    View on CoinGecko
+                  </a>
+                )}
               </div>
             </div>
           </div>
         </div>
 
-        <WalletBalanceTable selectedCoin={coinId} selectedChain="all" />
+          <WalletBalanceTable selectedCoin={coinId} selectedChain="all" />
+        
       </div>
     </FeatureRestricted>
   );
