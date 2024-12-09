@@ -45,7 +45,7 @@ const MainLayout = () => {
             <NavLink to="/" className="flex items-center space-x-2">
               <img src={logo} alt="Quotum Logo" className="h-8 w-auto" />
               <span className="text-xl font-semibold text-white">
-                Dashboard
+                Quotum.cloud
               </span>
             </NavLink>
           </div>
