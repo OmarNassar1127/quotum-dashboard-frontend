@@ -14,6 +14,7 @@ import {
 import { Loader2, Info } from "lucide-react";
 import axios from "../../lib/axios";
 import { format, addMonths } from "date-fns";
+import FeatureRestricted from "../restricted/FeatureRestricted";
 
 const NUPLIndicator = () => {
   const [data, setData] = useState([]);
@@ -146,153 +147,158 @@ const NUPLIndicator = () => {
       </h1>
 
       <div className="relative bg-[#222] border border-[#333] rounded-md p-4">
-        <div ref={chartContainerRef} className="h-[400px] md:h-[600px] w-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={data}
-              margin={{
-                top: 20,
-                right: 30,
-                left: 20,
-                bottom: 50,
-              }}
-            >
-              {/* Color Backgrounds */}
-              <ReferenceArea
-                yAxisId="left"
-                y1={0.75}
-                y2={1}
-                stroke="none"
-                fill="#FF0000"
-                fillOpacity={0.1}
-              />
-              <ReferenceArea
-                yAxisId="left"
-                y1={0.5}
-                y2={0.75}
-                stroke="none"
-                fill="#FF7F00"
-                fillOpacity={0.1}
-              />
-              <ReferenceArea
-                yAxisId="left"
-                y1={0.25}
-                y2={0.5}
-                stroke="none"
-                fill="#FFFF00"
-                fillOpacity={0.1}
-              />
-              <ReferenceArea
-                yAxisId="left"
-                y1={0}
-                y2={0.25}
-                stroke="none"
-                fill="#00FF00"
-                fillOpacity={0.1}
-              />
-              <ReferenceArea
-                yAxisId="left"
-                y1={-1.5}
-                y2={0}
-                stroke="none"
-                fill="#333333"
-                fillOpacity={0.3}
-              />
-
-              {/* Reference Lines */}
-              <ReferenceLine
-                yAxisId="left"
-                y={1}
-                strokeDasharray="3 3"
-                stroke="#FF0000"
-              />
-              <ReferenceLine
-                yAxisId="left"
-                y={0.75}
-                strokeDasharray="3 3"
-                stroke="#FF7F00"
-              />
-              <ReferenceLine
-                yAxisId="left"
-                y={0.5}
-                strokeDasharray="3 3"
-                stroke="#FFFF00"
-              />
-              <ReferenceLine
-                yAxisId="left"
-                y={0.25}
-                strokeDasharray="3 3"
-                stroke="#00FF00"
-              />
-              <ReferenceLine
-                yAxisId="left"
-                y={0}
-                strokeDasharray="3 3"
-                stroke="#666"
-              />
-
-              <XAxis
-                dataKey="date"
-                tickFormatter={(timestamp) =>
-                  format(new Date(timestamp), "yyyy")
-                }
-                ticks={getCustomTicks()}
-                stroke="#aaa"
-                domain={["dataMin", "dataMax"]}
-              />
-              <YAxis
-                yAxisId="left"
-                tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
-                domain={[-1.5, 1]}
-                stroke="#aaa"
-              />
-              <YAxis
-                yAxisId="right"
-                orientation="right"
-                scale="log"
-                domain={[1, 200000]}
-                tickFormatter={(value) => {
-                  if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
-                  return value.toLocaleString();
+        <FeatureRestricted feature="btc_nupl">
+          <div
+            ref={chartContainerRef}
+            className="h-[400px] md:h-[600px] w-full"
+          >
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart
+                data={data}
+                margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 50,
                 }}
-                stroke="#aaa"
-              />
-              <Line
-                yAxisId="right"
-                type="monotone"
-                dataKey="price"
-                stroke="#fff"
-                dot={false}
-                strokeWidth={1.7}
-                name="BTC Price"
-                connectNulls={true}
-              />
-              <Line
-                yAxisId="left"
-                type="monotone"
-                dataKey="nupl"
-                stroke="#00FFFF"
-                dot={false}
-                strokeWidth={1.7}
-                name="NUPL"
-                connectNulls={true}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Legend />
-              <Brush
-                dataKey="date"
-                height={40}
-                stroke="#666"
-                fill="#222"
-                tickFormatter={(timestamp) =>
-                  format(new Date(timestamp), "yyyy")
-                }
-                startIndex={0}
-                endIndex={data.length - 1}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </div>
+              >
+                {/* Color Backgrounds */}
+                <ReferenceArea
+                  yAxisId="left"
+                  y1={0.75}
+                  y2={1}
+                  stroke="none"
+                  fill="#FF0000"
+                  fillOpacity={0.1}
+                />
+                <ReferenceArea
+                  yAxisId="left"
+                  y1={0.5}
+                  y2={0.75}
+                  stroke="none"
+                  fill="#FF7F00"
+                  fillOpacity={0.1}
+                />
+                <ReferenceArea
+                  yAxisId="left"
+                  y1={0.25}
+                  y2={0.5}
+                  stroke="none"
+                  fill="#FFFF00"
+                  fillOpacity={0.1}
+                />
+                <ReferenceArea
+                  yAxisId="left"
+                  y1={0}
+                  y2={0.25}
+                  stroke="none"
+                  fill="#00FF00"
+                  fillOpacity={0.1}
+                />
+                <ReferenceArea
+                  yAxisId="left"
+                  y1={-1.5}
+                  y2={0}
+                  stroke="none"
+                  fill="#333333"
+                  fillOpacity={0.3}
+                />
+
+                {/* Reference Lines */}
+                <ReferenceLine
+                  yAxisId="left"
+                  y={1}
+                  strokeDasharray="3 3"
+                  stroke="#FF0000"
+                />
+                <ReferenceLine
+                  yAxisId="left"
+                  y={0.75}
+                  strokeDasharray="3 3"
+                  stroke="#FF7F00"
+                />
+                <ReferenceLine
+                  yAxisId="left"
+                  y={0.5}
+                  strokeDasharray="3 3"
+                  stroke="#FFFF00"
+                />
+                <ReferenceLine
+                  yAxisId="left"
+                  y={0.25}
+                  strokeDasharray="3 3"
+                  stroke="#00FF00"
+                />
+                <ReferenceLine
+                  yAxisId="left"
+                  y={0}
+                  strokeDasharray="3 3"
+                  stroke="#666"
+                />
+
+                <XAxis
+                  dataKey="date"
+                  tickFormatter={(timestamp) =>
+                    format(new Date(timestamp), "yyyy")
+                  }
+                  ticks={getCustomTicks()}
+                  stroke="#aaa"
+                  domain={["dataMin", "dataMax"]}
+                />
+                <YAxis
+                  yAxisId="left"
+                  tickFormatter={(value) => `${(value * 100).toFixed(0)}%`}
+                  domain={[-1.5, 1]}
+                  stroke="#aaa"
+                />
+                <YAxis
+                  yAxisId="right"
+                  orientation="right"
+                  scale="log"
+                  domain={[1, 200000]}
+                  tickFormatter={(value) => {
+                    if (value >= 1000) return `${(value / 1000).toFixed(0)}K`;
+                    return value.toLocaleString();
+                  }}
+                  stroke="#aaa"
+                />
+                <Line
+                  yAxisId="right"
+                  type="monotone"
+                  dataKey="price"
+                  stroke="#fff"
+                  dot={false}
+                  strokeWidth={1.7}
+                  name="BTC Price"
+                  connectNulls={true}
+                />
+                <Line
+                  yAxisId="left"
+                  type="monotone"
+                  dataKey="nupl"
+                  stroke="#00FFFF"
+                  dot={false}
+                  strokeWidth={1.7}
+                  name="NUPL"
+                  connectNulls={true}
+                />
+                <Tooltip content={<CustomTooltip />} />
+                <Legend />
+                <Brush
+                  dataKey="date"
+                  height={40}
+                  stroke="#666"
+                  fill="#222"
+                  tickFormatter={(timestamp) =>
+                    format(new Date(timestamp), "yyyy")
+                  }
+                  startIndex={0}
+                  endIndex={data.length - 1}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </FeatureRestricted>
       </div>
 
       <div className="mt-6 space-y-6 text-gray-300">
