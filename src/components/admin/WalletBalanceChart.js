@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import * as echarts from "echarts";
 import { format } from "date-fns";
 import { AlertCircle, Loader, TrendingUp } from "lucide-react";
@@ -6,15 +6,33 @@ import WalletBalanceTable from "./WalletBalanceTable";
 import axios from "../../lib/axios";
 
 const TIME_FRAMES = {
-  "1h": 60 * 60 * 1000,
-  "4h": 4 * 60 * 60 * 1000,
-  "1d": 24 * 60 * 60 * 1000,
-  "1w": 7 * 24 * 60 * 60 * 1000,
-  "1m": 30 * 24 * 60 * 60 * 1000,
+  "1h": { duration: 60 * 60 * 1000, interval: 5 * 60 * 1000 }, // 5min intervals
+  "4h": { duration: 4 * 60 * 60 * 1000, interval: 15 * 60 * 1000 }, // 15min intervals
+  "1d": { duration: 24 * 60 * 60 * 1000, interval: 1 * 60 * 60 * 1000 }, // 1hr intervals
+  "1w": { duration: 7 * 24 * 60 * 60 * 1000, interval: 6 * 60 * 60 * 1000 }, // 6hr intervals
+  "1m": { duration: 30 * 24 * 60 * 60 * 1000, interval: 24 * 60 * 60 * 1000 }, // 1day intervals
+};
+
+const aggregateDataPoints = (data, interval) => {
+  const aggregated = {};
+
+  data.forEach(({ timestamp, balance }) => {
+    const intervalTimestamp = Math.floor(timestamp / interval) * interval;
+    if (
+      !aggregated[intervalTimestamp] ||
+      balance > aggregated[intervalTimestamp]
+    ) {
+      aggregated[intervalTimestamp] = balance;
+    }
+  });
+
+  return Object.entries(aggregated)
+    .map(([timestamp, balance]) => [Number(timestamp), balance])
+    .sort((a, b) => a[0] - b[0]);
 };
 
 const WalletBalanceChart = () => {
-  const [data, setData] = useState({});
+  const [rawData, setRawData] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [timeframe, setTimeframe] = useState("1d");
@@ -58,16 +76,66 @@ const WalletBalanceChart = () => {
     };
   }, [selectedCoin, selectedChain]);
 
+  const processedData = useMemo(() => {
+    if (!rawData || Object.keys(rawData).length === 0) return [];
+
+    const allWallets = Object.entries(rawData).flatMap(([chain, wallets]) =>
+      wallets.map((wallet) => ({ ...wallet, chain }))
+    );
+
+    const filteredWallets = allWallets.filter(
+      (wallet) =>
+        (selectedChain === "all" ||
+          wallet.chain.toLowerCase() === selectedChain.toLowerCase()) &&
+        (selectedExchangeFilter === "all" ||
+          (selectedExchangeFilter === "exchange"
+            ? wallet.is_exchange
+            : !wallet.is_exchange)) &&
+        !hiddenWallets.has(wallet.label)
+    );
+
+    const currentTime = Date.now();
+    const startTime = currentTime - TIME_FRAMES[timeframe].duration;
+    const interval = TIME_FRAMES[timeframe].interval;
+
+    return filteredWallets.map((wallet) => {
+      const timeframeData = wallet.balances.filter(
+        (point) =>
+          point.timestamp >= startTime && point.timestamp <= currentTime
+      );
+
+      return {
+        name: wallet.label,
+        type: "line",
+        smooth: true,
+        symbol: "none",
+        data: aggregateDataPoints(timeframeData, interval),
+        lineStyle: {
+          width: 2,
+          color: wallet.is_exchange ? "#f97316" : "#4f46e5",
+        },
+        emphasis: {
+          focus: "series",
+        },
+      };
+    });
+  }, [
+    rawData,
+    timeframe,
+    selectedChain,
+    selectedExchangeFilter,
+    hiddenWallets,
+  ]);
+
   const fetchData = async () => {
     try {
       setLoading(true);
       const response = await axios.get(`/wallets/chart-data`, {
         params: {
           coin_id: selectedCoin,
-          chain: selectedChain !== "all" ? selectedChain : undefined,
         },
       });
-      setData(response.data);
+      setRawData(response.data);
       setError(null);
       setHiddenWallets(new Set());
     } catch (err) {
@@ -80,12 +148,9 @@ const WalletBalanceChart = () => {
 
   const handleTimeframeChange = (tf) => {
     setTimeframe(tf);
-    // We won't manually set the dataZoom here; we rely on user interaction and a default view.
-    // The timeframe now primarily changes how we format the dates and potentially the initial zoom.
     if (chartInstance.current) {
-      // Adjust dataZoom based on timeframe
-      const endTime = new Date().getTime();
-      const startTime = endTime - TIME_FRAMES[tf];
+      const endTime = Date.now();
+      const startTime = endTime - TIME_FRAMES[tf].duration;
       chartInstance.current.dispatchAction({
         type: "dataZoom",
         startValue: startTime,
@@ -95,62 +160,14 @@ const WalletBalanceChart = () => {
   };
 
   useEffect(() => {
-    if (!chartRef.current || loading || !data || Object.keys(data).length === 0)
-      return;
+    if (!chartRef.current || loading || processedData.length === 0) return;
 
     if (!chartInstance.current) {
       chartInstance.current = echarts.init(chartRef.current);
     }
 
-    const allWallets = Object.entries(data).flatMap(([chain, wallets]) =>
-      wallets.map((wallet) => ({ ...wallet, chain }))
-    );
-
-    if (allWallets.length === 0) {
-      setError("No data available");
-      return;
-    }
-
-    const filteredWallets = allWallets.filter(
-      (wallet) =>
-        (selectedChain === "all" ||
-          wallet.chain.toLowerCase() === selectedChain.toLowerCase()) &&
-        (selectedExchangeFilter === "all" ||
-          (selectedExchangeFilter === "exchange"
-            ? wallet.is_exchange
-            : !wallet.is_exchange))
-    );
-
-    const endTime = new Date().getTime();
-    const startTime = endTime - TIME_FRAMES[timeframe];
-
-    const series = filteredWallets
-      .filter((wallet) => !hiddenWallets.has(wallet.label))
-      .map((wallet) => {
-        const timeSeriesData = wallet.balances
-          .filter((balance) => balance.balance > 0)
-          .map((balance) => [
-            new Date(balance.recorded_at).getTime(),
-            balance.balance,
-          ])
-          .sort((a, b) => a[0] - b[0]);
-
-        return {
-          name: wallet.label,
-          type: "line",
-          smooth: true,
-          symbol: "none",
-          data: timeSeriesData,
-          lineStyle: {
-            width: 2,
-            // Differentiate exchange vs. non-exchange with color
-            color: wallet.is_exchange ? "#f97316" : "#4f46e5",
-          },
-          emphasis: {
-            focus: "series",
-          },
-        };
-      });
+    const endTime = Date.now();
+    const startTime = endTime - TIME_FRAMES[timeframe].duration;
 
     const options = {
       backgroundColor: "#111",
@@ -239,7 +256,7 @@ const WalletBalanceChart = () => {
       dataZoom: [
         {
           type: "inside",
-          minValueSpan: 3600 * 1000,
+          minValueSpan: TIME_FRAMES[timeframe].interval * 10,
         },
         {
           type: "slider",
@@ -257,7 +274,7 @@ const WalletBalanceChart = () => {
           rangeMode: ["value", "value"],
         },
       ],
-      series,
+      series: processedData,
     };
 
     chartInstance.current.setOption(options, true);
@@ -280,16 +297,7 @@ const WalletBalanceChart = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [
-    data,
-    loading,
-    hiddenWallets,
-    yAxisMin,
-    yAxisMax,
-    selectedChain,
-    selectedExchangeFilter,
-    timeframe,
-  ]);
+  }, [processedData, loading, yAxisMin, yAxisMax, timeframe]);
 
   const handleYAxisSubmit = (e) => {
     e.preventDefault();
@@ -331,7 +339,7 @@ const WalletBalanceChart = () => {
             className="rounded-md border-[#333] bg-[#222] text-gray-200 px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             <option value="all">ALL</option>
-            {Object.keys(data).map((chain) => (
+            {Object.keys(rawData).map((chain) => (
               <option key={chain} value={chain}>
                 {chain.toUpperCase()}
               </option>
@@ -350,9 +358,8 @@ const WalletBalanceChart = () => {
         </div>
       </div>
 
-      {/* Timeframe Selector */}
       <div className="flex space-x-2 mb-4">
-        {["1h", "4h", "1d", "1w", "1m"].map((tf) => (
+        {Object.keys(TIME_FRAMES).map((tf) => (
           <button
             key={tf}
             onClick={() => handleTimeframeChange(tf)}
