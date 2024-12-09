@@ -24,10 +24,10 @@ const Onchain = () => {
       route: "/onchain/bitcoin-waves",
     },
     {
-      name: "Coming Soon!!",
+      name: "NUPL",
       description:
         "Watch and learn.",
-      route: "/onchain/tool-b",
+      route: "/onchain/nupl",
     },
     // Add more tools as needed...
   ];
