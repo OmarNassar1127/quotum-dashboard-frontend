@@ -26,7 +26,7 @@ const Onchain = () => {
     {
       name: "NUPL",
       description:
-        "Watch and learn.",
+        "The Net Unrealized Profit Loss (NUPL) indicator is a powerful tool for analyzing Bitcoin market sentiment and cycles",
       route: "/onchain/nupl",
     },
     // Add more tools as needed...
