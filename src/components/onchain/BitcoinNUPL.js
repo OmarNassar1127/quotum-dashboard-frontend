@@ -31,17 +31,28 @@ const NUPLIndicator = () => {
           axios.get("/platform/bitcoin/nupl"),
         ]);
 
-        const combinedData = nuplResponse.data.map((nuplPoint) => {
-          const matchingPrice = pricesResponse.data.find(
-            (pricePoint) => pricePoint.time === nuplPoint.time
-          );
+        // Extract timestamps from both datasets
+        const priceTimestamps = pricesResponse.data.map((p) => p.time);
+        const nuplTimestamps = nuplResponse.data.map((n) => n.time);
 
+        // Create a unique set of all timestamps
+        const allTimestamps = Array.from(
+          new Set([...priceTimestamps, ...nuplTimestamps])
+        ).sort((a, b) => a - b);
+
+        // Map over all unique timestamps to combine data
+        const combinedData = allTimestamps.map((time) => {
+          const pricePoint = pricesResponse.data.find((p) => p.time === time);
+          const nuplPoint = nuplResponse.data.find((n) => n.time === time);
           return {
-            date: nuplPoint.time * 1000,
-            price: matchingPrice ? Number(matchingPrice.value) : null,
-            nupl: Number(nuplPoint.value),
+            date: time * 1000, // Convert to milliseconds
+            price: pricePoint ? Number(pricePoint.value) : null,
+            nupl: nuplPoint ? Number(nuplPoint.value) : null,
           };
         });
+
+        // Optionally, sort the combined data by date to ensure correct order
+        combinedData.sort((a, b) => a.date - b.date);
 
         const lastDate = new Date(combinedData[combinedData.length - 1].date);
         const futureData = Array.from({ length: 12 }, (_, i) => ({
@@ -86,7 +97,7 @@ const NUPLIndicator = () => {
         <p className="text-sm font-medium">
           {format(new Date(label), "MMM d, yyyy")}
         </p>
-        {priceValue && (
+        {priceValue !== null && priceValue !== undefined && (
           <p className="text-sm">Price: ${priceValue.toLocaleString()}</p>
         )}
         {nuplValue !== undefined && nuplValue !== null && (
