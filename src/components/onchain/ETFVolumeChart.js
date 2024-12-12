@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReactECharts from "echarts-for-react";
 import { format } from "date-fns";
 import axios from "../../lib/axios";
@@ -11,6 +11,7 @@ const ETFVolumeChart = () => {
   const [percentageChange, setPercentageChange] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const chartRef = useRef(null);
 
   useEffect(() => {
     fetchData();
@@ -71,7 +72,7 @@ const ETFVolumeChart = () => {
       },
       formatter: function (params) {
         const date = format(new Date(params[0].value[0] * 1000), "MMM d, yyyy");
-        const value = params[0].value[1] / 1e9; // Convert to billions
+        const value = params[0].value[1] / 1e9;
         return `<div class="font-medium">${date}</div>
                 <div class="text-sm mt-1">Volume: <span class="text-blue-400">$${value.toFixed(
                   2
@@ -95,13 +96,37 @@ const ETFVolumeChart = () => {
         show: false,
       },
       axisLabel: {
-        formatter: (value) => format(new Date(value), "MMM yyyy"),
+        formatter: function (value) {
+          const date = new Date(value);
+          const now = new Date();
+          const diffDays = Math.floor((now - date) / (1000 * 60 * 60 * 24));
+
+          if (diffDays < 7) {
+            return format(date, "MMM d");
+          } else if (diffDays < 30) {
+            return format(date, "MMM d");
+          } else if (diffDays < 365) {
+            return format(date, "MMM d");
+          } else {
+            return format(date, "MMM yyyy");
+          }
+        },
         color: "#aaa",
         fontSize: 11,
         margin: 15,
+        interval: "auto",
+        rotate: 0,
       },
       splitLine: {
         show: false,
+      },
+      minInterval: 3600 * 24 * 1000,
+      axisPointer: {
+        label: {
+          formatter: function (params) {
+            return format(new Date(params.value), "MMM d, yyyy");
+          },
+        },
       },
     },
     yAxis: {
@@ -164,11 +189,21 @@ const ETFVolumeChart = () => {
       },
     ],
     animation: true,
+    dataZoom: [
+      {
+        type: "inside",
+        start: 0,
+        end: 100,
+      },
+      {
+        start: 0,
+        end: 100,
+      },
+    ],
   };
 
   return (
     <div className="space-y-6">
-      {/* Chart Container */}
       <div className="bg-[#111] rounded-xl shadow-sm p-6 text-white">
         <h2 className="text-lg font-semibold text-gray-100 mb-4">
           Cumulative Spot Bitcoin ETF Volume
@@ -219,12 +254,27 @@ const ETFVolumeChart = () => {
               <Loader className="h-8 w-8 animate-spin text-gray-300" />
             </div>
           ) : (
-            <ReactECharts option={options} style={{ height: "360px" }} />
+            <ReactECharts
+              ref={chartRef}
+              option={options}
+              style={{ height: "360px" }}
+              opts={{ renderer: "canvas" }}
+              notMerge={true}
+              lazyUpdate={true}
+              onEvents={{
+                datazoom: () => {
+                  setTimeout(() => {
+                    if (chartRef.current) {
+                      chartRef.current.getEchartsInstance().resize();
+                    }
+                  }, 0);
+                },
+              }}
+            />
           )}
         </FeatureRestricted>
       </div>
 
-      {/* Description Container */}
       <div className="bg-[#111] rounded-xl shadow-sm p-6 text-white">
         <div className="flex items-start gap-2">
           <Info className="h-5 w-5 flex-shrink-0 mt-0.5" />
