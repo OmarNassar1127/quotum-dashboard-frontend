@@ -13,7 +13,7 @@ import {
 } from "recharts";
 import { Loader2, Info } from "lucide-react";
 import axios from "../../lib/axios";
-import { format, addMonths } from "date-fns";
+import { format, addMonths, startOfDay } from "date-fns";
 import FeatureRestricted from "../restricted/FeatureRestricted";
 
 const NUPLIndicator = () => {
@@ -31,27 +31,43 @@ const NUPLIndicator = () => {
           axios.get("/platform/bitcoin/nupl"),
         ]);
 
-        // Extract timestamps from both datasets
-        const priceTimestamps = pricesResponse.data.map((p) => p.time);
-        const nuplTimestamps = nuplResponse.data.map((n) => n.time);
+        // Convert timestamps to start of day for comparison
+        const pricesData = pricesResponse.data.map((p) => ({
+          ...p,
+          dayTimestamp: startOfDay(new Date(p.time * 1000)).getTime() / 1000,
+        }));
 
-        // Create a unique set of all timestamps
-        const allTimestamps = Array.from(
-          new Set([...priceTimestamps, ...nuplTimestamps])
+        const nuplData = nuplResponse.data.map((n) => ({
+          ...n,
+          dayTimestamp: startOfDay(new Date(n.time * 1000)).getTime() / 1000,
+        }));
+
+        // Extract day timestamps from both datasets
+        const priceDayTimestamps = pricesData.map((p) => p.dayTimestamp);
+        const nuplDayTimestamps = nuplData.map((n) => n.dayTimestamp);
+
+        // Create a unique set of all day timestamps
+        const allDayTimestamps = Array.from(
+          new Set([...priceDayTimestamps, ...nuplDayTimestamps])
         ).sort((a, b) => a - b);
 
-        // Map over all unique timestamps to combine data
-        const combinedData = allTimestamps.map((time) => {
-          const pricePoint = pricesResponse.data.find((p) => p.time === time);
-          const nuplPoint = nuplResponse.data.find((n) => n.time === time);
+        // Map over all unique day timestamps to combine data
+        const combinedData = allDayTimestamps.map((dayTimestamp) => {
+          const pricePoint = pricesData.find(
+            (p) => p.dayTimestamp === dayTimestamp
+          );
+          const nuplPoint = nuplData.find(
+            (n) => n.dayTimestamp === dayTimestamp
+          );
+
           return {
-            date: time * 1000, // Convert to milliseconds
+            date: dayTimestamp * 1000, // Convert to milliseconds
             price: pricePoint ? Number(pricePoint.value) : null,
             nupl: nuplPoint ? Number(nuplPoint.value) : null,
           };
         });
 
-        // Optionally, sort the combined data by date to ensure correct order
+        // Sort the combined data by date
         combinedData.sort((a, b) => a.date - b.date);
 
         const lastDate = new Date(combinedData[combinedData.length - 1].date);
@@ -107,7 +123,6 @@ const NUPLIndicator = () => {
     );
   };
 
-  // Calculate ticks for every 2 years
   const getCustomTicks = () => {
     if (!data.length) return [];
     const years = data.map((item) => new Date(item.date).getFullYear());
