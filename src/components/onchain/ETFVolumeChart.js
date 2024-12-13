@@ -33,8 +33,7 @@ const ETFVolumeChart = () => {
         const sevenDaysAgoIndex = data.length - 8;
         if (sevenDaysAgoIndex >= 0) {
           const sevenDaysAgoVolume = data[sevenDaysAgoIndex].value;
-          const change =
-            ((latestVolume - sevenDaysAgoVolume) / sevenDaysAgoVolume) * 100;
+          const change = ((latestVolume - sevenDaysAgoVolume) / sevenDaysAgoVolume) * 100;
           setPercentageChange(change);
         }
       }
@@ -71,12 +70,10 @@ const ETFVolumeChart = () => {
         fontSize: 13,
       },
       formatter: function (params) {
-        const date = format(new Date(params[0].value[0] * 1000), "MMM d, yyyy");
+        const date = format(new Date(params[0].value[0]), "MMM d, yyyy");
         const value = params[0].value[1] / 1e9;
         return `<div class="font-medium">${date}</div>
-                <div class="text-sm mt-1">Volume: <span class="text-blue-400">$${value.toFixed(
-                  2
-                )}b</span></div>`;
+                <div class="text-sm mt-1">Volume: <span class="text-blue-400">$${value.toFixed(2)}b</span></div>`;
       },
     },
     grid: {
@@ -196,9 +193,12 @@ const ETFVolumeChart = () => {
         end: 100,
       },
       {
+        show: true,
+        type: 'slider',
+        top: '90%',
         start: 0,
-        end: 100,
-      },
+        end: 100
+      }
     ],
   };
 
@@ -213,29 +213,19 @@ const ETFVolumeChart = () => {
           {!loading && totalVolume !== null && (
             <div className="flex flex-col sm:flex-row items-start sm:items-center space-x-0 sm:space-x-12 space-y-4 sm:space-y-0 mb-6">
               <div className="flex flex-col">
-                <div className="text-base font-bold text-gray-400">
-                  Total Volume
-                </div>
+                <div className="text-base font-bold text-gray-400">Total Volume</div>
                 <div className="text-3xl font-bold text-gray-100">
-                  $
-                  {(totalVolume / 1e9).toLocaleString(undefined, {
+                  ${(totalVolume / 1e9).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
-                  })}
-                  b
+                  })}b
                 </div>
               </div>
 
               {percentageChange !== null && (
                 <div className="flex flex-col">
-                  <div className="text-base font-bold text-gray-400">
-                    7-Day Change
-                  </div>
-                  <div
-                    className={`text-3xl font-bold ${
-                      percentageChange >= 0 ? "text-green-400" : "text-red-400"
-                    }`}
-                  >
+                  <div className="text-base font-bold text-gray-400">7-Day Change</div>
+                  <div className={`text-3xl font-bold ${percentageChange >= 0 ? "text-green-400" : "text-red-400"}`}>
                     {percentageChange >= 0 ? "+" : ""}
                     {percentageChange.toFixed(2)}%
                   </div>
@@ -280,17 +270,13 @@ const ETFVolumeChart = () => {
           <Info className="h-5 w-5 flex-shrink-0 mt-0.5" />
           <div className="space-y-4">
             <p className="text-sm text-gray-400">
-              This chart shows the cumulative trading volume for all spot
-              Bitcoin ETFs, including BlackRock (IBIT), Grayscale (GBTC),
-              Fidelity (FBTC), Ark/21Shares (ARKB), and others. The data is
-              aggregated daily and represents the total USD volume traded since
-              the ETFs' launch in January 2024.
+              This chart shows the cumulative trading volume for all spot Bitcoin ETFs, including BlackRock (IBIT), 
+              Grayscale (GBTC), Fidelity (FBTC), Ark/21Shares (ARKB), and others. The data is aggregated daily 
+              and represents the total USD volume traded since the ETFs' launch in January 2024.
             </p>
             <p className="text-sm text-gray-400">
-              Data is sourced from Yahoo Finance and updated daily. The
-              cumulative volume provides a clear picture of the growing market
-              participation and adoption of Bitcoin ETFs in traditional
-              financial markets.
+              Data is sourced from Yahoo Finance and updated daily. The cumulative volume provides a clear picture 
+              of the growing market participation and adoption of Bitcoin ETFs in traditional financial markets.
             </p>
           </div>
         </div>
