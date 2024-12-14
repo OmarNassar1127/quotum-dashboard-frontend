@@ -188,6 +188,8 @@ const BitcoinLTH = () => {
         type: "inside",
         start: 0,
         end: 100,
+        zoomLock: false, 
+        throttle: 100
       },
       {
         show: true,
@@ -195,7 +197,19 @@ const BitcoinLTH = () => {
         top: "90%",
         start: 0,
         end: 100,
-      },
+        height: 20,
+        borderColor: '#333',
+        backgroundColor: '#222',
+        fillerColor: 'rgba(80,80,80,0.2)',
+        textStyle: {
+          color: '#aaa',
+          fontSize: 11
+        },
+        
+        showDetail: false,
+        moveHandleSize: 7,
+        zoomOnMouseWheel: true
+      }
     ],
   };
 
