@@ -47,6 +47,12 @@ const Onchain = () => {
         "Long Term Holders retain Bitcoin for over 155 days, signaling greater market confidence and more stable accumulation patterns.",
       route: "/onchain/long-term-holders",
     },
+    {
+      name: "Bitcoin ETF Daily Flows",
+      description:
+        "The ETF Inflows shows the inflows volume in Bitcoin ETFs, by ETF holders, that way we can pin point who is buying and who is selling!",
+      route: "/onchain/etf-inflows",
+    },
   ];
 
   useEffect(() => {
