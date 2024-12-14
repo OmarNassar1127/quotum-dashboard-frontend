@@ -23,6 +23,8 @@ import BitcoinRiskLevels from "./components/onchain/BitcoinRiskLevels";
 import BitcoinRainbowWave from "./components/onchain/BitcoinRainbowWave";
 import NUPLIndicator from "./components/onchain/BitcoinNUPL";
 import ETFVolumeChart from "./components/onchain/ETFVolumeChart";
+import BitcoinSTH from "./components/onchain/BitcoinSTH";
+import BitcoinLTH from "./components/onchain/BitcoinLTH";
 import CoinManagement from "./components/admin/CoinManagement";
 import PostManagement from "./components/admin/PostManagement";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -70,6 +72,8 @@ function App() {
             <Route path="/onchain/bitcoin-waves" element={<BitcoinRainbowWave />} />
             <Route path="/onchain/nupl" element={<NUPLIndicator />} />
             <Route path="/onchain/etf" element={<ETFVolumeChart />} />
+            <Route path="/onchain/short-term-holders" element={<BitcoinSTH />} />
+            <Route path="/onchain/long-term-holders" element={<BitcoinLTH />} />
             <Route path="coin/:coinId" element={<CoinDetail />} />
             <Route path="post/:postId" element={<PostDetail />} />
             <Route path="videos" element={<Videos />} />

@@ -35,6 +35,18 @@ const Onchain = () => {
         "The ETF Volumes shows the cumulative volume in Bitcoin ETFs, with this we now what major players of the markets are doing!",
       route: "/onchain/etf",
     },
+    {
+      name: "Bitcoin Short Term Holders",
+      description:
+        "Short Term Holders hold Bitcoin for under 155 days, reflecting immediate market sentiment and often moving coins in response to short-term price shifts.",
+      route: "/onchain/short-term-holders",
+    },
+    {
+      name: "Bitcoin Long Term Holders",
+      description:
+        "Long Term Holders retain Bitcoin for over 155 days, signaling greater market confidence and more stable accumulation patterns.",
+      route: "/onchain/long-term-holders",
+    },
   ];
 
   useEffect(() => {
