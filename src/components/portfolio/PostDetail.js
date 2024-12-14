@@ -30,9 +30,17 @@ const PostDetail = () => {
   };
 
   const handleScroll = (e) => {
-    const scrollTop = e.target.scrollTop;
+    const scrollTop = window.scrollY;
     setIsScrolled(scrollTop > 50);
   };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   if (loading) {
     return (
@@ -96,11 +104,7 @@ const PostDetail = () => {
         </div>
 
         {/* Content Section */}
-        <div
-          className="px-6 pt-0 pb-6 max-h-[calc(100vh-100px)] overflow-y-auto"
-          onScroll={handleScroll}
-          ref={contentRef}
-        >
+        <div className="px-6 pt-0 pb-6" ref={contentRef}>
           <h1 className="text-3xl font-bold mb-6 mt-4 text-gray-100">
             {post.title}
           </h1>
