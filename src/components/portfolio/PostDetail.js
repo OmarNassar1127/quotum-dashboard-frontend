@@ -29,17 +29,14 @@ const PostDetail = () => {
     }
   };
 
-  const handleScroll = (e) => {
+  const handleScroll = () => {
     const scrollTop = window.scrollY;
     setIsScrolled(scrollTop > 50);
   };
 
   useEffect(() => {
     window.addEventListener("scroll", handleScroll, { passive: true });
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   if (loading) {
@@ -78,25 +75,25 @@ const PostDetail = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-white min-h-screen">
-      <div className="bg-[#222] border border-[#333] rounded-xl shadow-md overflow-hidden">
+      <div className="bg-[#222] border border-[#333] rounded-xl shadow-md">
         {/* Header Section */}
         <div
-          className={`flex items-center justify-between transition-all duration-300 px-6 ${
+          className={`flex flex-col sm:flex-row items-start sm:items-center justify-between transition-all duration-300 px-4 sm:px-6 ${
             isScrolled ? "sticky top-0 bg-[#222] py-2 z-10 shadow-md" : "py-4"
           }`}
         >
-          <div className="mb-4">
-            <button
-              onClick={() => navigate(`/coin/${post.coin?.coingecko_id}`)}
-              className="flex items-center space-x-2 text-sm font-medium text-gray-200 bg-[#333] px-3 py-2 rounded-lg hover:bg-[#444] transition-colors"
-            >
-              <ChevronLeft className="h-5 w-5" />
-              <span>Back</span>
-            </button>
-          </div>
+          <button
+            onClick={() => navigate(`/coin/${post.coin?.coingecko_id}`)}
+            className="flex items-center space-x-2 text-sm sm:text-base font-medium text-gray-200 bg-[#333] px-3 py-2 rounded-lg hover:bg-[#444] transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5" />
+            <span>Back</span>
+          </button>
           <div
-            className={`text-lg font-semibold text-gray-100 transition-all duration-300 ${
-              isScrolled ? "opacity-100" : "opacity-0"
+            className={`font-semibold text-gray-100 transition-all duration-300 mt-2 sm:mt-0 sm:ml-4 ${
+              isScrolled
+                ? "text-base sm:text-lg md:text-xl opacity-100"
+                : "opacity-0 text-lg sm:text-xl md:text-2xl"
             }`}
           >
             {post.title}
@@ -104,8 +101,8 @@ const PostDetail = () => {
         </div>
 
         {/* Content Section */}
-        <div className="px-6 pt-0 pb-6" ref={contentRef}>
-          <h1 className="text-3xl font-bold mb-6 mt-4 text-gray-100">
+        <div className="px-4 sm:px-6 pt-0 pb-6" ref={contentRef}>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 mt-4 text-gray-100">
             {post.title}
           </h1>
 
