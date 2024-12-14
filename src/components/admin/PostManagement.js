@@ -155,9 +155,13 @@ const PostManagement = () => {
       ...prev,
       content: [
         ...prev.content,
-        type === "text"
-          ? { type: "text", content: "" }
-          : { type: "image", url: "" },
+        {
+          id: crypto.randomUUID(), // A stable unique identifier
+          type: type,
+          content: type === "text" ? "" : "",
+          file: null,
+          url: "",
+        },
       ],
     }));
   };
@@ -165,10 +169,7 @@ const PostManagement = () => {
   const updateContentBlock = (index, updatedBlock) => {
     const newContent = [...formData.content];
     newContent[index] = updatedBlock;
-    setFormData((prev) => ({
-      ...prev,
-      content: newContent,
-    }));
+    setFormData((prev) => ({ ...prev, content: newContent }));
   };
 
   const deleteContentBlock = (index) => {
@@ -180,37 +181,30 @@ const PostManagement = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      setLoading(true);
       const formDataToSend = new FormData();
-
       formDataToSend.append("title", formData.title);
       formDataToSend.append("coin_id", formData.coin_id);
       formDataToSend.append("status", formData.status);
 
-      const processedContent = await Promise.all(
-        formData.content.map(async (block, index) => {
-          if (block.type === "text") {
-            return {
-              type: "text",
-              content: block.content,
-            };
-          } else if (block.type === "image") {
-            if (block.file) {
-              formDataToSend.append(`images[${index}]`, block.file);
-              return {
-                type: "image",
-                index: index,
-              };
-            } else if (block.url) {
-              return {
-                type: "image",
-                url: block.url,
-              };
-            }
+      // We'll build processedContent here
+      const processedContent = [];
+      let imageCount = 0;
+
+      for (const block of formData.content) {
+        if (block.type === "text") {
+          processedContent.push({ type: "text", content: block.content });
+        } else if (block.type === "image") {
+          if (block.file) {
+            formDataToSend.append(`images[${imageCount}]`, block.file);
+            processedContent.push({ type: "image", index: imageCount });
+            imageCount++;
+          } else if (block.url) {
+            processedContent.push({ type: "image", url: block.url });
           }
-        })
-      );
+        }
+      }
 
       formDataToSend.append("content", JSON.stringify(processedContent));
 
