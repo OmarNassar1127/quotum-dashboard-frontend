@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Loader, AlertCircle, ChevronLeft } from "lucide-react";
+import { Loader, AlertCircle, ChevronLeft, X } from "lucide-react";
 import axios from "../../lib/axios";
 
 const PostDetail = () => {
@@ -11,6 +11,7 @@ const PostDetail = () => {
   const [error, setError] = useState(null);
   const [isScrolled, setIsScrolled] = useState(false);
   const contentRef = useRef(null);
+  const [expandedImageUrl, setExpandedImageUrl] = useState(null);
 
   useEffect(() => {
     fetchPost();
@@ -73,6 +74,14 @@ const PostDetail = () => {
     return null;
   };
 
+  const handleImageClick = (url) => {
+    setExpandedImageUrl(url);
+  };
+
+  const closeExpandedImage = () => {
+    setExpandedImageUrl(null);
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 text-white min-h-screen">
       <div className="bg-[#222] border border-[#333] rounded-xl shadow-md">
@@ -115,12 +124,13 @@ const PostDetail = () => {
                   </p>
                 )}
                 {block.type === "image" && getMediaUrl(block) && (
-                  <div className="my-8">
+                  <div className="my-8 cursor-zoom-in">
                     <img
                       src={getMediaUrl(block)}
                       alt={`Content for ${post.title}`}
                       className="w-full rounded-lg object-contain shadow-lg"
                       loading="lazy"
+                      onClick={() => handleImageClick(getMediaUrl(block))}
                     />
                   </div>
                 )}
@@ -145,6 +155,29 @@ const PostDetail = () => {
           )}
         </div>
       </div>
+
+      {/* Expanded Image Modal */}
+      {expandedImageUrl && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+          onClick={closeExpandedImage}
+        >
+          <div className="relative max-w-[90vw] max-h-[90vh]">
+            <button
+              className="absolute top-4 right-4 text-white bg-black bg-opacity-50 rounded-full p-1 hover:bg-opacity-70 transition-colors"
+              onClick={closeExpandedImage}
+            >
+              <X className="w-6 h-6" />
+            </button>
+            <img
+              src={expandedImageUrl}
+              alt="Expanded"
+              className="max-w-full max-h-full rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
