@@ -7,6 +7,7 @@ import {
   Edit,
   Search,
   ArrowUpDown,
+  AlertTriangle,
 } from "lucide-react";
 import axios from "../../lib/axios";
 
@@ -19,6 +20,8 @@ const WalletManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState({ field: null, direction: "asc" });
+  const [showApiLimitWarning, setShowApiLimitWarning] = useState(false);
+  const [apiLimitDetails, setApiLimitDetails] = useState(null);
   const ITEMS_PER_PAGE = 20;
 
   const [formData, setFormData] = useState({
@@ -27,10 +30,13 @@ const WalletManagement = () => {
     coin_id: "",
     chain: "",
     chain_id: "",
+    is_exchange: false,
     notes: "",
   });
+
   const [availableChains, setAvailableChains] = useState([]);
   const [editingWallet, setEditingWallet] = useState(null);
+  const [pendingSubmission, setPendingSubmission] = useState(null);
 
   useEffect(() => {
     fetchGroupedWallets();
@@ -96,13 +102,44 @@ const WalletManagement = () => {
     });
   };
 
+  const checkApiLimits = async (chainId) => {
+    try {
+      const response = await axios.get(`/wallets/check-api-limits/${chainId}`);
+      const { currentCalls, isWithinLimit, estimatedDailyCalls } =
+        response.data;
+
+      if (!isWithinLimit) {
+        setApiLimitDetails({
+          currentCalls,
+          estimatedDailyCalls,
+          limit: 100000,
+          chainId,
+        });
+        setShowApiLimitWarning(true);
+        setPendingSubmission({ ...formData });
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.error("Error checking API limits:", err);
+      return false;
+    }
+  };
+
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+
+    const dataToSubmit = pendingSubmission || formData;
+    if (!pendingSubmission) {
+      const withinLimits = await checkApiLimits(dataToSubmit.chain_id);
+      if (!withinLimits) return;
+    }
+
     try {
       if (editingWallet) {
-        await axios.put(`/wallets/${editingWallet.id}`, formData);
+        await axios.put(`/wallets/${editingWallet.id}`, dataToSubmit);
       } else {
-        const payload = { ...formData };
+        const payload = { ...dataToSubmit };
         delete payload.chain_id;
         await axios.post("/wallets", payload);
       }
@@ -111,6 +148,8 @@ const WalletManagement = () => {
     } catch (err) {
       setError("Failed to save wallet");
       console.error("Error saving wallet:", err);
+    } finally {
+      setPendingSubmission(null);
     }
   };
 
@@ -121,11 +160,14 @@ const WalletManagement = () => {
       coin_id: "",
       chain: "",
       chain_id: "",
+      is_exchange: false,
       notes: "",
     });
     setAvailableChains([]);
     setShowForm(false);
     setEditingWallet(null);
+    setPendingSubmission(null);
+    setShowApiLimitWarning(false);
   };
 
   const handleDelete = async (id) => {
@@ -138,6 +180,65 @@ const WalletManagement = () => {
       console.error("Error deleting wallet:", err);
     }
   };
+
+  const ApiLimitWarningModal = () => (
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center ${
+        showApiLimitWarning ? "" : "hidden"
+      }`}
+    >
+      <div className="bg-[#222] border border-[#333] rounded-lg p-6 max-w-md w-full mx-4">
+        <div className="flex items-center gap-2 mb-4">
+          <AlertTriangle className="h-5 w-5 text-yellow-500" />
+          <h3 className="text-lg font-semibold text-white">
+            API Limit Warning
+          </h3>
+        </div>
+
+        <div className="text-gray-300 mb-6">
+          <p className="mb-2">
+            Adding this wallet could exceed the API call limits for this
+            blockchain:
+          </p>
+          {apiLimitDetails && (
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Current daily calls: {apiLimitDetails.currentCalls}</li>
+              <li>
+                Estimated daily calls after adding:{" "}
+                {apiLimitDetails.estimatedDailyCalls}
+              </li>
+              <li>Daily limit: {apiLimitDetails.limit}</li>
+            </ul>
+          )}
+          <p className="mt-2">
+            Adding this wallet might affect the ability to track balances
+            accurately. Consider removing unused wallets first.
+          </p>
+        </div>
+
+        <div className="flex justify-end space-x-3">
+          <button
+            onClick={() => {
+              setShowApiLimitWarning(false);
+              setPendingSubmission(null);
+            }}
+            className="px-4 py-2 bg-[#333] text-white rounded-lg hover:bg-[#444]"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => {
+              setShowApiLimitWarning(false);
+              handleSubmit();
+            }}
+            className="px-4 py-2 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700"
+          >
+            Add Anyway
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 
   const getExplorerUrl = (chain, address) => {
     const explorers = {
@@ -178,17 +279,6 @@ const WalletManagement = () => {
     }
 
     return filtered;
-  };
-
-  const getPaginatedWallets = (wallets) => {
-    const filtered = filterAndSortWallets(wallets);
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return {
-      paginatedWallets: filtered.slice(startIndex, endIndex),
-      totalPages: Math.ceil(filtered.length / ITEMS_PER_PAGE),
-      totalItems: filtered.length,
-    };
   };
 
   if (loading) {
@@ -296,6 +386,26 @@ const WalletManagement = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-1">
+                Exchange
+              </label>
+              <select
+                value={formData.is_exchange.toString()}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    is_exchange: e.target.value === "true",
+                  })
+                }
+                className="w-full px-3 py-2 border border-[#333] rounded-lg bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+              >
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-300 mb-1">
                 Notes
               </label>
               <textarea
@@ -393,39 +503,13 @@ const WalletManagement = () => {
 
               <div className="mt-4 space-y-2">
                 {(() => {
-                  const { paginatedWallets, totalPages, totalItems } = (() => {
-                    const filtered = (() => {
-                      let filtered = group.wallets;
-                      if (searchTerm) {
-                        filtered = filtered.filter((wallet) =>
-                          wallet.label
-                            .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                        );
-                      }
-                      if (sortBy.field) {
-                        filtered = [...filtered].sort((a, b) => {
-                          let comparison = 0;
-                          if (sortBy.field === "amount") {
-                            comparison = a.current_balance - b.current_balance;
-                          } else if (sortBy.field === "chain") {
-                            comparison = a.chain.localeCompare(b.chain);
-                          }
-                          return sortBy.direction === "asc"
-                            ? comparison
-                            : -comparison;
-                        });
-                      }
-                      return filtered;
-                    })();
-                    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-                    const endIndex = startIndex + ITEMS_PER_PAGE;
-                    return {
-                      paginatedWallets: filtered.slice(startIndex, endIndex),
-                      totalPages: Math.ceil(filtered.length / ITEMS_PER_PAGE),
-                      totalItems: filtered.length,
-                    };
-                  })();
+                  const filtered = filterAndSortWallets(group.wallets);
+                  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+                  const endIndex = startIndex + ITEMS_PER_PAGE;
+                  const paginatedWallets = filtered.slice(startIndex, endIndex);
+                  const totalPages = Math.ceil(
+                    filtered.length / ITEMS_PER_PAGE
+                  );
 
                   return (
                     <>
@@ -436,9 +520,16 @@ const WalletManagement = () => {
                             className="flex justify-between items-center bg-[#1a1a1a] rounded-lg p-3"
                           >
                             <div>
-                              <h4 className="text-sm font-medium text-gray-100">
-                                {wallet.label}
-                              </h4>
+                              <div className="flex items-center space-x-2">
+                                <h4 className="text-sm font-medium text-gray-100">
+                                  {wallet.label}
+                                </h4>
+                                {wallet.is_exchange && (
+                                  <span className="px-2 py-0.5 text-xs bg-blue-500/20 text-blue-300 rounded-full">
+                                    Exchange
+                                  </span>
+                                )}
+                              </div>
                               <div className="flex items-center space-x-2">
                                 <a
                                   href={getExplorerUrl(
@@ -461,6 +552,7 @@ const WalletManagement = () => {
                                         label: wallet.label,
                                         coin_id: wallet.coin_id.toString(),
                                         chain: wallet.chain,
+                                        is_exchange: wallet.is_exchange,
                                         notes: wallet.notes || "",
                                       });
                                       setShowForm(true);
@@ -509,9 +601,9 @@ const WalletManagement = () => {
                       {totalPages > 1 && (
                         <div className="flex justify-between items-center mt-4 pt-4 border-t border-[#333]">
                           <p className="text-sm text-gray-300">
-                            Showing {(currentPage - 1) * ITEMS_PER_PAGE + 1} to{" "}
-                            {Math.min(currentPage * ITEMS_PER_PAGE, totalItems)}{" "}
-                            of {totalItems} wallets
+                            Showing {startIndex + 1} to{" "}
+                            {Math.min(endIndex, filtered.length)} of{" "}
+                            {filtered.length} wallets
                           </p>
                           <div className="flex space-x-2">
                             {currentPage > 1 && (
@@ -581,6 +673,8 @@ const WalletManagement = () => {
           )}
         </div>
       ))}
+
+      <ApiLimitWarningModal />
     </div>
   );
 };
