@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { TrendingUp, TrendingDown, ExternalLink, Loader } from "lucide-react";
 import axios from "../../lib/axios";
 import WalletBalanceTable from "../admin/WalletBalanceTable";
+import CumulativeWalletsTable from "../admin/CumulativeWalletsTable";
 import FeatureRestricted from "../restricted/FeatureRestricted";
 
 const WalletTrackingDetail = () => {
@@ -10,6 +11,7 @@ const WalletTrackingDetail = () => {
   const navigate = useNavigate();
   const [coin, setCoin] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("holders");
 
   useEffect(() => {
     const fetchCoin = async () => {
@@ -24,6 +26,23 @@ const WalletTrackingDetail = () => {
     };
     fetchCoin();
   }, [coinId]);
+
+  const renderTabContent = () => {
+    switch (activeTab) {
+      case "holders":
+        return <WalletBalanceTable selectedCoin={coinId} selectedChain="all" />;
+      case "cumulative":
+        return <CumulativeWalletsTable selectedCoin={coinId} />;
+      case "chart":
+        return (
+          <div className="text-gray-400 p-4 text-center">
+            Chart Cumulative view coming soon
+          </div>
+        );
+      default:
+        return <WalletBalanceTable selectedCoin={coinId} selectedChain="all" />;
+    }
+  };
 
   if (loading) {
     return (
@@ -116,8 +135,44 @@ const WalletTrackingDetail = () => {
           </div>
         </div>
 
-          <WalletBalanceTable selectedCoin={coinId} selectedChain="all" />
-        
+        {/* Tabs */}
+        <div className="border-b border-[#333]">
+          <nav className="flex space-x-4" aria-label="Tabs">
+            <button
+              onClick={() => setActiveTab("holders")}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "holders"
+                  ? "border-blue-500 text-blue-500"
+                  : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
+              }`}
+            >
+              Holders Table
+            </button>
+            <button
+              onClick={() => setActiveTab("cumulative")}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "cumulative"
+                  ? "border-blue-500 text-blue-500"
+                  : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
+              }`}
+            >
+              Cumulative Wallets
+            </button>
+            <button
+              onClick={() => setActiveTab("chart")}
+              className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "chart"
+                  ? "border-blue-500 text-blue-500"
+                  : "border-transparent text-gray-400 hover:text-gray-300 hover:border-gray-300"
+              }`}
+            >
+              Chart Cumulative
+            </button>
+          </nav>
+        </div>
+
+        {/* Tab Content */}
+        <div className="mt-4">{renderTabContent()}</div>
       </div>
     </FeatureRestricted>
   );
