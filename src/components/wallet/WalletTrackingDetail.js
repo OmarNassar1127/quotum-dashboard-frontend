@@ -4,6 +4,7 @@ import { TrendingUp, TrendingDown, ExternalLink, Loader } from "lucide-react";
 import axios from "../../lib/axios";
 import WalletBalanceTable from "../admin/WalletBalanceTable";
 import CumulativeWalletsTable from "../admin/CumulativeWalletsTable";
+import CumulativeWalletsChart from "../admin/CumulativeWalletsChart";
 import FeatureRestricted from "../restricted/FeatureRestricted";
 
 const WalletTrackingDetail = () => {
@@ -34,11 +35,7 @@ const WalletTrackingDetail = () => {
       case "cumulative":
         return <CumulativeWalletsTable selectedCoin={coinId} />;
       case "chart":
-        return (
-          <div className="text-gray-400 p-4 text-center">
-            Chart Cumulative view coming soon
-          </div>
-        );
+        return <CumulativeWalletsChart selectedCoin={coinId} />;
       default:
         return <WalletBalanceTable selectedCoin={coinId} selectedChain="all" />;
     }
