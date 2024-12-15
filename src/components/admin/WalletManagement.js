@@ -92,18 +92,30 @@ const WalletManagement = () => {
     );
   };
 
-  const handleChainChange = (chain) => {
-    const selectedChain = availableChains.find((c) => c.chain === chain);
+  const getChainId = (chain) => {
+    if (!chain || typeof chain !== "string") {
+      console.error("Invalid chain value:", chain);
+      return null;
+    }
 
-    setFormData({
-      ...formData,
-      chain: selectedChain.chain,
-      chain_id: selectedChain.chain_id,
-    });
+    const chainMapping = {
+      ethereum: 1,
+      bsc: 56,
+      polygon: 137,
+    };
+    return chainMapping[chain.toLowerCase()];
   };
 
-  const checkApiLimits = async (chainId) => {
+  const checkApiLimits = async (chain) => {
+    console.log("Checking API limits for chain:", chain, "type:", typeof chain);
+
     try {
+      const chainId = getChainId(chain);
+      if (!chainId) {
+        console.error("Unsupported chain:", chain);
+        return false;
+      }
+
       const response = await axios.get(`/wallets/check-api-limits/${chainId}`);
       const { currentCalls, isWithinLimit, estimatedDailyCalls } =
         response.data;
@@ -113,7 +125,7 @@ const WalletManagement = () => {
           currentCalls,
           estimatedDailyCalls,
           limit: 100000,
-          chainId,
+          chain,
         });
         setShowApiLimitWarning(true);
         setPendingSubmission({ ...formData });
@@ -130,17 +142,26 @@ const WalletManagement = () => {
     if (e) e.preventDefault();
 
     const dataToSubmit = pendingSubmission || formData;
+
     if (!pendingSubmission) {
-      const withinLimits = await checkApiLimits(dataToSubmit.chain_id);
+      const withinLimits = await checkApiLimits(dataToSubmit.chain);
       if (!withinLimits) return;
     }
 
     try {
+      const payload = {
+        address: dataToSubmit.address,
+        label: dataToSubmit.label,
+        coin_id: dataToSubmit.coin_id,
+        chain: dataToSubmit.chain,
+        is_exchange: dataToSubmit.is_exchange,
+        is_active: true, // Changed from active to is_active
+        notes: dataToSubmit.notes,
+      };
+
       if (editingWallet) {
-        await axios.put(`/wallets/${editingWallet.id}`, dataToSubmit);
+        await axios.put(`/wallets/${editingWallet.id}`, payload);
       } else {
-        const payload = { ...dataToSubmit };
-        delete payload.chain_id;
         await axios.post("/wallets", payload);
       }
       resetForm();
@@ -151,6 +172,16 @@ const WalletManagement = () => {
     } finally {
       setPendingSubmission(null);
     }
+  };
+
+  const handleChainChange = (chain) => {
+    const selectedChain = availableChains.find((c) => c.chain === chain);
+    console.log("Selected chain:", selectedChain);
+
+    setFormData({
+      ...formData,
+      chain: selectedChain.chain,
+    });
   };
 
   const resetForm = () => {
