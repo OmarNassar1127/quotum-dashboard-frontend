@@ -32,6 +32,10 @@ const Modal = ({ open, onClose, children }) => {
 
 // Device Limit Dialog Component
 export const DeviceLimitDialog = ({ open, onClose }) => {
+  const handleEmailClick = () => {
+    window.location.href = "mailto:quotum.consulting@gmail.com";
+  };
+
   return (
     <Modal open={open} onClose={onClose}>
       <div className="mb-6">
@@ -43,14 +47,19 @@ export const DeviceLimitDialog = ({ open, onClose }) => {
         </div>
         <div className="text-gray-400 space-y-4">
           <p>
-            You've reached the maximum number of devices (2) that can be used
-            with this account.
+            To enhance security and prevent account sharing, we limit each
+            account to 2 devices.
           </p>
           <p>
-            To log in on this device, please log out from one of your other
-            devices first.
+            If you need to use this device, please email us at{" "}
+            <button
+              onClick={handleEmailClick}
+              className="text-blue-400 hover:text-blue-300 transition-colors"
+            >
+              quotum.consulting@gmail.com
+            </button>{" "}
+            and we'll help you manage your devices.
           </p>
-          <p>You can manage your devices in the Account Settings page.</p>
         </div>
       </div>
       <div className="flex justify-end gap-3">
@@ -61,10 +70,10 @@ export const DeviceLimitDialog = ({ open, onClose }) => {
           Cancel
         </button>
         <button
-          onClick={onClose}
+          onClick={handleEmailClick}
           className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
         >
-          Manage Devices
+          Contact Support
         </button>
       </div>
     </Modal>
