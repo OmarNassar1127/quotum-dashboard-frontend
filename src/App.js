@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import MainLayout from "./layouts/MainLayout";
 import Login from "./components/auth/Login";
+import DeviceManagement from "./components/auth/DeviceManagement";
 import Register from "./components/auth/Register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Dashboard from "./components/dashboard/Dashboard";
@@ -69,6 +70,7 @@ function App() {
             <Route path="wallet-tracking" element={<WalletTracking />} />
             <Route path="wallet-tracking/:coinId" element={<WalletTrackingDetail />} />
             <Route path="onchain" element={<Onchain />} />
+            <Route path="account/devices" element={<DeviceManagement />} />
             <Route path="/onchain/bitcoin-risk-levels" element={<BitcoinRiskLevels />} />
             <Route path="/onchain/bitcoin-waves" element={<BitcoinRainbowWave />} />
             <Route path="/onchain/nupl" element={<NUPLIndicator />} />

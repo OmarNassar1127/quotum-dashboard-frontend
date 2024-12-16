@@ -3,10 +3,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { User, Lock, ArrowRight } from "lucide-react";
 import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
+import { DeviceLimitDialog } from "./DeviceManagement";
 
 const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [showDeviceLimitDialog, setShowDeviceLimitDialog] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -38,7 +40,11 @@ const Login = () => {
         navigate("/");
       }
     } catch (err) {
-      setError(err.response?.data?.message || "Invalid credentials");
+      if (err.response?.data?.errors?.device) {
+        setShowDeviceLimitDialog(true);
+      } else {
+        setError(err.response?.data?.message || "Invalid credentials");
+      }
     }
   };
 
@@ -47,6 +53,11 @@ const Login = () => {
       ...formData,
       [e.target.name]: e.target.value,
     });
+  };
+
+  const handleDeviceLimitDialogClose = () => {
+    setShowDeviceLimitDialog(false);
+    navigate("/account/devices");
   };
 
   return (
@@ -119,7 +130,7 @@ const Login = () => {
         </form>
 
         <p className="text-sm text-gray-400 text-center pt-4">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link
             to="/register"
             className="inline-flex items-center font-medium text-blue-400 hover:text-blue-300 transition-colors"
@@ -128,6 +139,11 @@ const Login = () => {
             <ArrowRight className="ml-1 h-4 w-4" />
           </Link>
         </p>
+
+        <DeviceLimitDialog
+          open={showDeviceLimitDialog}
+          onClose={handleDeviceLimitDialogClose}
+        />
       </div>
     </div>
   );
