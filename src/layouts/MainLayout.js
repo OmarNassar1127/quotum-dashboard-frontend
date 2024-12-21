@@ -93,7 +93,7 @@ const MainLayout = () => {
             >
               On-Chain
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="/videos"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
@@ -102,8 +102,8 @@ const MainLayout = () => {
               }
             >
               Videos
-            </NavLink>
-            <NavLink
+            </NavLink> */}
+            {/* <NavLink
               to="/help"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
@@ -112,7 +112,7 @@ const MainLayout = () => {
               }
             >
               Help
-            </NavLink>
+            </NavLink> */}
             <NavLink
               to="/referrals"
               className={({ isActive }) =>
@@ -122,6 +122,16 @@ const MainLayout = () => {
               }
             >
               Referrals
+            </NavLink>
+            <NavLink
+              to="/telegram"
+              className={({ isActive }) =>
+                `${baseLinkClasses} ${
+                  isActive ? activeClasses : inactiveClasses
+                }`
+              }
+            >
+              Telegram
             </NavLink>
             {userRole === "admin" && (
               <NavLink
@@ -220,7 +230,7 @@ const MainLayout = () => {
           >
             On-Chain
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/videos"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
@@ -228,8 +238,8 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Videos
-          </NavLink>
-          <NavLink
+          </NavLink> */}
+          {/* <NavLink
             to="/help"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
@@ -237,7 +247,7 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Help
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/referrals"
             className={({ isActive }) =>
@@ -246,6 +256,15 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Referrals
+          </NavLink>
+          <NavLink
+            to="/telegram"
+            className={({ isActive }) =>
+              `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
+            }
+            onClick={toggleSidebar}
+          >
+            Telegram
           </NavLink>
           {userRole === "admin" && (
             <NavLink

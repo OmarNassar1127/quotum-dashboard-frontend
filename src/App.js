@@ -15,6 +15,7 @@ import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
 import WalletTrackingDetail from "./components/wallet/WalletTrackingDetail";
 import ReferralPage from "./components/referral/ReferralPage";
+import TelegramPage from "./components/referral/TelegramPage";
 import AdminReferralPage from "./components/admin/AdminReferralPage";
 import Videos from "./components/videos/Videos";
 import CoinDetail from "./components/portfolio/CoinDetail";
@@ -83,6 +84,7 @@ function App() {
             <Route path="videos" element={<Videos />} />
             <Route path="help" element={<div>Help Page</div>} />
             <Route path="referrals" element={<ReferralPage />} />
+            <Route path="telegram" element={<TelegramPage />} />
           </Route>
         </Route>
 

@@ -24,6 +24,7 @@ const Login = () => {
       localStorage.setItem("token", response.data.access_token);
       localStorage.setItem("role", response.data.user.role);
       localStorage.setItem("active", response.data.user.active.toString());
+      localStorage.setItem("user_id", response.data.user.id);
 
       axios.defaults.headers.common[
         "Authorization"
