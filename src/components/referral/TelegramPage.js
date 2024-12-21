@@ -75,6 +75,15 @@ const TelegramPage = () => {
     }, 90); // Will take 3 seconds to complete
   };
 
+  const handleInviteLinkClick = async () => {
+    try {
+      await axios.post(`/telegram/${userId}/link-clicked`);
+      window.open(status.telegram_invite_link, "_blank");
+    } catch (error) {
+      console.error("Failed to update link click status", error);
+    }
+  };
+
   const renderStep = () => {
     switch (currentStep) {
       case "start":
@@ -164,7 +173,7 @@ const TelegramPage = () => {
             <div className="max-w-md mx-auto p-4 bg-[#222] rounded-lg border border-[#333]">
               <a
                 href={status?.telegram_invite_link}
-                target="_blank"
+                onClick={handleInviteLinkClick}
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300"
               >
