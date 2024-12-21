@@ -6,6 +6,8 @@ import {
   AlertCircle,
   TrendingUp,
   TrendingDown,
+  X,
+  Group,
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import axios from "../../lib/axios";
@@ -19,6 +21,7 @@ import FeatureRestricted from "../restricted/FeatureRestricted";
 
 const Dashboard = () => {
   const navigate = useNavigate();
+
   const [recentPosts, setRecentPosts] = useState([]);
   const [bitcoinData, setBitcoinData] = useState([]);
   const [bitcoinWeeklyData, setbitcoinWeeklyData] = useState([]);
@@ -29,11 +32,41 @@ const Dashboard = () => {
   const [currentMonthColor, setCurrentMonthColor] = useState("#0000ff");
   const [currentMonthOpen, setCurrentMonthOpen] = useState(0);
 
+  // NEW: Telegram link usage
+  const [telegramLinkUsed, setTelegramLinkUsed] = useState(true); // Assume true until fetched
+  // NEW: Show/hide the toast in this session
+  const [showTelegramToast, setShowTelegramToast] = useState(false);
+
   useEffect(() => {
     fetchRecentPosts();
     fetchBitcoinData();
     fetchBitcoinWeeklyData();
+
+    // Check Telegram status after mount
+    fetchTelegramStatus();
   }, []);
+
+  /**
+   * Fetch whether user has used their Telegram link.
+   * If not used, display the toast.
+   */
+  const fetchTelegramStatus = async () => {
+    try {
+      const userId = localStorage.getItem("user_id");
+      if (!userId) return; // no user => no check
+
+      const response = await axios.get(`/telegram/${userId}/status`);
+      const { link_used } = response.data;
+      setTelegramLinkUsed(link_used);
+
+      if (!link_used) {
+        setShowTelegramToast(true);
+      }
+    } catch (err) {
+      console.error("Error fetching Telegram status:", err);
+      // If it fails, do nothing or handle fallback
+    }
+  };
 
   const fetchRecentPosts = async () => {
     try {
@@ -95,6 +128,9 @@ const Dashboard = () => {
     navigate(`/post/${postId}`);
   };
 
+  /**
+   * For color mapping logic
+   */
   const estimateMonthsUntilHalving = (currentDate) => {
     const halvingDates = [
       new Date("2012-11-28"),
@@ -110,7 +146,6 @@ const Dashboard = () => {
         return Math.floor(delta / (1000 * 60 * 60 * 24 * 30));
       }
     }
-
     return 0;
   };
 
@@ -138,8 +173,57 @@ const Dashboard = () => {
     return colors[colors.length - 1];
   };
 
+  // NEW: navigate user to Telegram page on button click
+  const handleJoinTelegram = () => {
+    navigate("/telegram");
+  };
+
+  // NEW: user clicked the X to close the toast
+  const dismissToast = () => {
+    setShowTelegramToast(false);
+  };
+
   return (
     <div className="p-6 space-y-6 bg-black min-h-screen">
+      {/* 
+        NEW: Telegram toast (slide-in from right).
+        Show if user hasn't used link & we haven't dismissed it.
+      */}
+      {!telegramLinkUsed && showTelegramToast && (
+        <div
+          className="
+            fixed bottom-6 right-6 w-80
+            bg-[#111] border border-[#222] text-white
+            rounded-lg shadow-lg p-4
+            animate-slide-in-right
+            flex items-start gap-3
+          "
+          style={{ zIndex: 9999 }}
+        >
+          <div className="mt-1">
+            <Group className="h-6 w-6 text-blue-400" />
+          </div>
+          <div className="flex-1">
+            <p className="text-sm">
+              <strong>Join our Telegram!</strong> Stay updated with the latest
+              news and discussions.
+            </p>
+            <button
+              onClick={handleJoinTelegram}
+              className="mt-2 inline-block bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-2 rounded"
+            >
+              Join Now
+            </button>
+          </div>
+          <button
+            className="ml-2 text-gray-400 hover:text-gray-200"
+            onClick={dismissToast}
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
       <AppRankingCards />
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -179,7 +263,6 @@ const Dashboard = () => {
                       className="h-10 w-10 rounded-full flex-shrink-0"
                     />
                     <div className="min-w-0 flex-1">
-                      {/* Title with truncate and title attribute for tooltip */}
                       <p
                         className="text-sm font-medium text-gray-100 truncate max-w-[200px] sm:max-w-[300px] lg:max-w-[350px]"
                         title={post.title}
