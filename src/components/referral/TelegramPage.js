@@ -10,7 +10,7 @@ const TelegramPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const userId = localStorage.getItem("user_id"); // Assuming `user_id` is stored on login
+  const userId = localStorage.getItem("user_id"); // Assuming user_id is stored on login
 
   useEffect(() => {
     fetchStatus();
@@ -20,6 +20,7 @@ const TelegramPage = () => {
     try {
       const response = await axios.get(`/telegram/${userId}/status`);
       setStatus(response.data);
+
       if (!response.data.has_telegram_id) {
         setCurrentStep("start");
       } else if (!response.data.has_invite_link) {
@@ -51,7 +52,7 @@ const TelegramPage = () => {
   const generateInviteLink = async () => {
     try {
       setLoading(true);
-      const response = await axios.post(`/telegram/${userId}/generate-link`);
+      await axios.post(`/telegram/${userId}/generate-link`);
       await fetchStatus();
       setCurrentStep("join");
     } catch (err) {
@@ -64,6 +65,7 @@ const TelegramPage = () => {
   const startJourney = () => {
     setCurrentStep("loading");
     let currentProgress = 0;
+
     const interval = setInterval(() => {
       currentProgress += 3;
       setProgress(Math.min(currentProgress, 100));
@@ -72,134 +74,170 @@ const TelegramPage = () => {
         clearInterval(interval);
         setCurrentStep("telegram_id");
       }
-    }, 90); // Will take 3 seconds to complete
+    }, 90); // ~3 seconds total
   };
 
   const handleInviteLinkClick = async () => {
     try {
       await axios.post(`/telegram/${userId}/link-clicked`);
-      window.open(status.telegram_invite_link, "_blank");
+      window.open(status.telegram_invite_link, "_blank"); // Open in new tab
     } catch (error) {
       console.error("Failed to update link click status", error);
     }
   };
 
   const renderStep = () => {
+    // A small shared fade-in wrapper to keep transitions consistent.
+    const FadeInWrapper = ({ children }) => (
+      <div className="transition-opacity duration-500 ease-in-out opacity-100">
+        {children}
+      </div>
+    );
+
     switch (currentStep) {
       case "start":
         return (
-          <div className="text-center space-y-6">
-            <h2 className="text-2xl font-bold">Join Our Telegram Community</h2>
-            <p className="text-gray-400">
-              Start the process to get your exclusive invite link
-            </p>
-            <button
-              onClick={startJourney}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Start Journey
-            </button>
-          </div>
+          <FadeInWrapper>
+            <div className="text-center space-y-6">
+              <h2 className="text-2xl font-bold">
+                Join Our Telegram Community
+              </h2>
+              <p className="text-gray-400">
+                Start the process to get your exclusive invite link
+              </p>
+              <button
+                onClick={startJourney}
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Start Journey
+              </button>
+            </div>
+          </FadeInWrapper>
         );
+
       case "loading":
         return (
-          <div className="space-y-4">
-            <div className="h-2 bg-[#222] rounded-full">
-              <div
-                className="h-full bg-blue-600 rounded-full transition-all duration-300"
-                style={{ width: `${progress}%` }}
-              />
+          <FadeInWrapper>
+            <div className="space-y-4">
+              <div className="h-2 bg-[#222] rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-linear"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <div className="flex items-center justify-center gap-2">
+                <Loader className="animate-spin h-5 w-5 text-gray-300" />
+                <p className="text-center text-gray-400">
+                  Loading your journey...
+                </p>
+              </div>
             </div>
-            <p className="text-center text-gray-400">
-              Preparing your journey...
-            </p>
-          </div>
+          </FadeInWrapper>
         );
+
       case "telegram_id":
         return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-center">
-              Enter Your Telegram Username
-            </h2>
-            <div className="max-w-md mx-auto space-y-4">
-              <input
-                type="text"
-                value={telegramId}
-                onChange={(e) => setTelegramId(e.target.value)}
-                className="w-full px-4 py-2 bg-[#222] border border-[#333] rounded-lg focus:outline-none focus:border-blue-500"
-                placeholder="@yourusername"
-              />
+          <FadeInWrapper>
+            <div className="space-y-6">
+              <h2 className="text-2xl font-bold text-center">
+                Enter Your Telegram Username
+              </h2>
+              <div className="max-w-md mx-auto space-y-4">
+                <input
+                  type="text"
+                  value={telegramId}
+                  onChange={(e) => setTelegramId(e.target.value)}
+                  className="w-full px-4 py-2 bg-[#222] border border-[#333] rounded-lg focus:outline-none focus:border-blue-500"
+                  placeholder="@yourusername"
+                />
+                <button
+                  onClick={handleTelegramIdSubmit}
+                  disabled={loading || telegramId === "@"}
+                  className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loading ? (
+                    <Loader className="animate-spin mx-auto h-5 w-5" />
+                  ) : (
+                    "Continue"
+                  )}
+                </button>
+              </div>
+            </div>
+          </FadeInWrapper>
+        );
+
+      case "generate":
+        return (
+          <FadeInWrapper>
+            <div className="text-center space-y-6">
+              <h2 className="text-2xl font-bold">Generate Your Invite Link</h2>
+              <p className="text-gray-400">
+                Click below to generate your exclusive one-time use invite link
+              </p>
               <button
-                onClick={handleTelegramIdSubmit}
-                disabled={loading || telegramId === "@"}
-                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                onClick={generateInviteLink}
+                disabled={loading}
+                className="relative px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
               >
                 {loading ? (
                   <Loader className="animate-spin mx-auto h-5 w-5" />
                 ) : (
-                  "Continue"
+                  "Generate Link"
                 )}
               </button>
             </div>
-          </div>
+          </FadeInWrapper>
         );
-      case "generate":
-        return (
-          <div className="text-center space-y-6">
-            <h2 className="text-2xl font-bold">Generate Your Invite Link</h2>
-            <p className="text-gray-400">
-              Click below to generate your exclusive one-time use invite link
-            </p>
-            <button
-              onClick={generateInviteLink}
-              disabled={loading}
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-            >
-              {loading ? (
-                <Loader className="animate-spin mx-auto h-5 w-5" />
-              ) : (
-                "Generate Link"
-              )}
-            </button>
-          </div>
-        );
+
       case "join":
         return (
-          <div className="text-center space-y-6">
-            <h2 className="text-2xl font-bold">Join Our Group</h2>
-            <p className="text-gray-400">
-              Your exclusive invite link is ready!
-            </p>
-            <div className="max-w-md mx-auto p-4 bg-[#222] rounded-lg border border-[#333]">
-              <a
-                href={status?.telegram_invite_link}
-                onClick={handleInviteLinkClick}
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300"
-              >
-                Click to join the group <ExternalLink className="h-4 w-4" />
-              </a>
+          <FadeInWrapper>
+            <div className="text-center space-y-6">
+              <h2 className="text-2xl font-bold">Join Our Group</h2>
+              <p className="text-gray-400">
+                Your exclusive invite link is ready!
+              </p>
+              <div className="max-w-md mx-auto p-4 bg-[#222] rounded-lg border border-[#333]">
+                {/* Removed `href` so we don't open it twice. */}
+                <button
+                  onClick={handleInviteLinkClick}
+                  className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 mx-auto"
+                >
+                  Click to join the group <ExternalLink className="h-4 w-4" />
+                </button>
+              </div>
+              <p className="text-sm text-gray-500">
+                This link can only be used once and is exclusive to you
+              </p>
             </div>
-            <p className="text-sm text-gray-500">
-              This link can only be used once and is exclusive to you
-            </p>
-          </div>
+          </FadeInWrapper>
         );
+
       case "complete":
         return (
-          <div className="text-center space-y-6">
-            <div className="flex justify-center">
-              <div className="rounded-full bg-green-500/20 p-3">
-                <Check className="h-8 w-8 text-green-500" />
+          <FadeInWrapper>
+            <div className="text-center space-y-6">
+              <div className="flex justify-center">
+                <div className="rounded-full bg-green-500/20 p-3 animate-pulse">
+                  <Check className="h-8 w-8 text-green-500" />
+                </div>
               </div>
+              <h2 className="text-2xl font-bold">You're All Set!</h2>
+              <p className="text-gray-400">
+                You've successfully joined our Telegram community
+              </p>
+              {/* A nice success GIF (feel free to change the URL) */}
+              <img
+                src="https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif"
+                alt="Success"
+                className="mx-auto rounded-lg w-48"
+              />
             </div>
-            <h2 className="text-2xl font-bold">You're All Set!</h2>
-            <p className="text-gray-400">
-              You've successfully joined our Telegram community
-            </p>
-          </div>
+          </FadeInWrapper>
         );
+
       default:
+        // A fallback loading spinner for unexpected states
         return (
           <Loader className="animate-spin mx-auto h-8 w-8 text-gray-300" />
         );
@@ -208,7 +246,7 @@ const TelegramPage = () => {
 
   return (
     <div className="p-6 bg-[#111] border border-[#222] min-h-screen text-white">
-      <div className="max-w-2xl mx-auto mt-12">
+      <div className="max-w-xl mx-auto mt-12">
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400">
             {error}
