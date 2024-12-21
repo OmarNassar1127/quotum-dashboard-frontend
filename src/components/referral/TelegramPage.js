@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Loader, Check, Send, ExternalLink } from "lucide-react";
+import { Loader, Check, ExternalLink } from "lucide-react";
 import axios from "../../lib/axios";
 
 const TelegramPage = () => {
@@ -10,22 +10,24 @@ const TelegramPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const userId = localStorage.getItem("user_id"); // Assuming user_id is stored on login
+  const userId = localStorage.getItem("user_id");
 
   useEffect(() => {
     fetchStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchStatus = async () => {
     try {
       const response = await axios.get(`/telegram/${userId}/status`);
-      setStatus(response.data);
+      const data = response.data;
+      setStatus(data);
 
-      if (!response.data.has_telegram_id) {
+      if (!data.has_telegram_id) {
         setCurrentStep("start");
-      } else if (!response.data.has_invite_link) {
+      } else if (!data.has_invite_link) {
         setCurrentStep("generate");
-      } else if (!response.data.link_used) {
+      } else if (!data.link_used) {
         setCurrentStep("join");
       } else {
         setCurrentStep("complete");
@@ -35,6 +37,27 @@ const TelegramPage = () => {
     }
   };
 
+  /**
+   * 1) "Start Journey" spinner (3 seconds).
+   */
+  const startJourney = () => {
+    setCurrentStep("loading");
+    let currentProgress = 0;
+
+    const interval = setInterval(() => {
+      currentProgress += 3;
+      setProgress(Math.min(currentProgress, 100));
+
+      if (currentProgress >= 100) {
+        clearInterval(interval);
+        setCurrentStep("telegram_id");
+      }
+    }, 90); // ~3s total
+  };
+
+  /**
+   * 2) Save Telegram ID
+   */
   const handleTelegramIdSubmit = async () => {
     try {
       setLoading(true);
@@ -49,11 +72,39 @@ const TelegramPage = () => {
     }
   };
 
+  /**
+   * 3) Generate link with a guaranteed 2s spinner
+   */
   const generateInviteLink = async () => {
     try {
       setLoading(true);
-      await axios.post(`/telegram/${userId}/generate-link`);
-      await fetchStatus();
+      setProgress(0);
+
+      // Immediately change step so we see the spinner
+      setCurrentStep("generate_loading");
+
+      // Create a spinner promise that increments progress from 0 → 100 in ~2s
+      const spinnerPromise = new Promise((resolve) => {
+        let p = 0;
+        const interval = setInterval(() => {
+          p += 5; // 5% every 100ms => ~2 seconds total
+          setProgress(Math.min(p, 100));
+          if (p >= 100) {
+            clearInterval(interval);
+            resolve();
+          }
+        }, 100);
+      });
+
+      // Create an API promise to generate the link
+      const apiPromise = axios
+        .post(`/telegram/${userId}/generate-link`)
+        .then(() => fetchStatus());
+
+      // Wait for both spinner + API to finish
+      await Promise.all([spinnerPromise, apiPromise]);
+
+      // Now show the "join" step
       setCurrentStep("join");
     } catch (err) {
       setError("Failed to generate invite link");
@@ -62,191 +113,324 @@ const TelegramPage = () => {
     }
   };
 
-  const startJourney = () => {
-    setCurrentStep("loading");
-    let currentProgress = 0;
-
-    const interval = setInterval(() => {
-      currentProgress += 3;
-      setProgress(Math.min(currentProgress, 100));
-
-      if (currentProgress >= 100) {
-        clearInterval(interval);
-        setCurrentStep("telegram_id");
-      }
-    }, 90); // ~3 seconds total
-  };
-
+  /**
+   * 4) Mark link as clicked, open in new tab
+   */
   const handleInviteLinkClick = async () => {
     try {
       await axios.post(`/telegram/${userId}/link-clicked`);
-      window.open(status.telegram_invite_link, "_blank"); // Open in new tab
-    } catch (error) {
-      console.error("Failed to update link click status", error);
+      window.open(status.telegram_invite_link, "_blank");
+    } catch (err) {
+      console.error("Failed to update link click status", err);
     }
   };
 
+  /**
+   * Renders the content for each step
+   */
   const renderStep = () => {
-    // A small shared fade-in wrapper to keep transitions consistent.
-    const FadeInWrapper = ({ children }) => (
-      <div className="transition-opacity duration-500 ease-in-out opacity-100">
-        {children}
-      </div>
-    );
-
     switch (currentStep) {
+      /**
+       * Step 1: "start"
+       */
       case "start":
         return (
-          <FadeInWrapper>
-            <div className="text-center space-y-6">
-              <h2 className="text-2xl font-bold">
-                Join Our Telegram Community
-              </h2>
-              <p className="text-gray-400">
-                Start the process to get your exclusive invite link
-              </p>
-              <button
-                onClick={startJourney}
-                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Start Journey
-              </button>
-            </div>
-          </FadeInWrapper>
+          <div className="text-center space-y-6">
+            <h2 className="text-3xl font-extrabold text-white drop-shadow-md">
+              Join Our Telegram Community
+            </h2>
+            <p className="text-gray-300">Ready to get your invite link?</p>
+            <button
+              onClick={startJourney}
+              className="px-8 py-3 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors shadow-lg transform hover:scale-105"
+            >
+              Start Journey
+            </button>
+          </div>
         );
 
-      case "loading":
+      /**
+       * Step 2: "loading" -> 3s spinner
+       */
+      case "loading": {
+        const radius = 45;
+        const circumference = 2 * Math.PI * radius;
+        const offset = (1 - progress / 100) * circumference;
+
         return (
-          <FadeInWrapper>
-            <div className="space-y-4">
-              <div className="h-2 bg-[#222] rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-blue-600 rounded-full transition-all duration-300 ease-linear"
-                  style={{ width: `${progress}%` }}
+          <div className="flex flex-col items-center justify-center gap-4 text-center min-h-[200px]">
+            <div className="relative w-32 h-32">
+              <svg className="w-32 h-32" viewBox="0 0 100 100">
+                <circle
+                  className="text-gray-700"
+                  strokeWidth="10"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r={radius}
+                  cx="50"
+                  cy="50"
                 />
-              </div>
-              <div className="flex items-center justify-center gap-2">
-                <Loader className="animate-spin h-5 w-5 text-gray-300" />
-                <p className="text-center text-gray-400">
-                  Loading your journey...
-                </p>
-              </div>
+                <circle
+                  className="text-blue-500 transition-all duration-300 ease-linear"
+                  strokeWidth="10"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={offset}
+                  strokeLinecap="round"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r={radius}
+                  cx="50"
+                  cy="50"
+                />
+                <text
+                  x="50%"
+                  y="50%"
+                  dy=".35em"
+                  textAnchor="middle"
+                  className="fill-current text-white text-2xl font-bold"
+                >
+                  {progress}%
+                </text>
+              </svg>
             </div>
-          </FadeInWrapper>
+            <p className="text-gray-200 text-lg">Loading your journey...</p>
+          </div>
         );
+      }
 
+      /**
+       * Step 3: "telegram_id"
+       */
       case "telegram_id":
         return (
-          <FadeInWrapper>
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-center">
-                Enter Your Telegram Username
-              </h2>
-              <div className="max-w-md mx-auto space-y-4">
-                <input
-                  type="text"
-                  value={telegramId}
-                  onChange={(e) => setTelegramId(e.target.value)}
-                  className="w-full px-4 py-2 bg-[#222] border border-[#333] rounded-lg focus:outline-none focus:border-blue-500"
-                  placeholder="@yourusername"
-                />
-                <button
-                  onClick={handleTelegramIdSubmit}
-                  disabled={loading || telegramId === "@"}
-                  className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? (
-                    <Loader className="animate-spin mx-auto h-5 w-5" />
-                  ) : (
-                    "Continue"
-                  )}
-                </button>
-              </div>
-            </div>
-          </FadeInWrapper>
-        );
-
-      case "generate":
-        return (
-          <FadeInWrapper>
-            <div className="text-center space-y-6">
-              <h2 className="text-2xl font-bold">Generate Your Invite Link</h2>
-              <p className="text-gray-400">
-                Click below to generate your exclusive one-time use invite link
-              </p>
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-center">
+              Enter Your Telegram Username
+            </h2>
+            <div className="max-w-md mx-auto space-y-4">
+              <input
+                type="text"
+                value={telegramId}
+                onChange={(e) => setTelegramId(e.target.value)}
+                className="w-full px-4 py-2 bg-[#222] border border-[#333] rounded-lg focus:outline-none focus:border-blue-500"
+                placeholder="@yourusername"
+              />
               <button
-                onClick={generateInviteLink}
-                disabled={loading}
-                className="relative px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                onClick={handleTelegramIdSubmit}
+                disabled={loading || telegramId === "@"}
+                className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <Loader className="animate-spin mx-auto h-5 w-5" />
                 ) : (
-                  "Generate Link"
+                  "Continue"
                 )}
               </button>
             </div>
-          </FadeInWrapper>
+          </div>
         );
 
+      /**
+       * Step 4: "generate"
+       */
+      case "generate":
+        return (
+          <div className="text-center space-y-6">
+            <h2 className="text-2xl font-bold text-purple-300">
+              Generate Your Invite Link
+            </h2>
+            <p className="text-gray-300">
+              Click below to get a one-time use invite link
+            </p>
+            <button
+              onClick={generateInviteLink}
+              disabled={loading}
+              className="relative px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50 transform hover:scale-105 shadow-xl"
+            >
+              {loading ? (
+                <Loader className="animate-spin mx-auto h-5 w-5" />
+              ) : (
+                "Generate Link"
+              )}
+            </button>
+          </div>
+        );
+
+      /**
+       * Step 5: "generate_loading" -> guaranteed 2s spinner
+       */
+      case "generate_loading": {
+        const radius = 45;
+        const circumference = 2 * Math.PI * radius;
+        const offset = (1 - progress / 100) * circumference;
+
+        return (
+          <div className="flex flex-col items-center justify-center gap-4 text-center min-h-[200px]">
+            <div className="relative w-32 h-32">
+              <svg className="w-32 h-32" viewBox="0 0 100 100">
+                <circle
+                  className="text-gray-700"
+                  strokeWidth="10"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r={radius}
+                  cx="50"
+                  cy="50"
+                />
+                <circle
+                  className="text-purple-500 transition-all duration-300 ease-linear"
+                  strokeWidth="10"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={offset}
+                  strokeLinecap="round"
+                  stroke="currentColor"
+                  fill="transparent"
+                  r={radius}
+                  cx="50"
+                  cy="50"
+                />
+                <text
+                  x="50%"
+                  y="50%"
+                  dy=".35em"
+                  textAnchor="middle"
+                  className="fill-current text-white text-2xl font-bold"
+                >
+                  {progress}%
+                </text>
+              </svg>
+            </div>
+            <p className="text-gray-200 text-lg">Generating your link...</p>
+          </div>
+        );
+      }
+
+      /**
+       * Step 6: "join"
+       */
       case "join":
         return (
-          <FadeInWrapper>
-            <div className="text-center space-y-6">
-              <h2 className="text-2xl font-bold">Join Our Group</h2>
-              <p className="text-gray-400">
-                Your exclusive invite link is ready!
-              </p>
-              <div className="max-w-md mx-auto p-4 bg-[#222] rounded-lg border border-[#333]">
-                {/* Removed `href` so we don't open it twice. */}
-                <button
-                  onClick={handleInviteLinkClick}
-                  className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 mx-auto"
-                >
-                  Click to join the group <ExternalLink className="h-4 w-4" />
-                </button>
-              </div>
-              <p className="text-sm text-gray-500">
-                This link can only be used once and is exclusive to you
-              </p>
+          <div className="text-center space-y-6">
+            <h2 className="text-2xl font-bold text-white">Join Our Group</h2>
+            <p className="text-gray-300">Your exclusive invite link is ready!</p>
+            <div className="max-w-md mx-auto p-4 bg-[#222] rounded-lg border border-[#333]">
+              <button
+                onClick={handleInviteLinkClick}
+                className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 mx-auto"
+              >
+                Click to join the group <ExternalLink className="h-5 w-5" />
+              </button>
             </div>
-          </FadeInWrapper>
+            <p className="text-sm text-gray-400">
+              This link can only be used once and is exclusive to you
+            </p>
+          </div>
         );
 
+      /**
+       * Step 7: "complete"
+       */
       case "complete":
         return (
-          <FadeInWrapper>
-            <div className="text-center space-y-6">
-              <div className="flex justify-center">
-                <div className="rounded-full bg-green-500/20 p-3 animate-pulse">
-                  <Check className="h-8 w-8 text-green-500" />
-                </div>
+          <div className="text-center space-y-6">
+            <div className="flex justify-center">
+              {/* Magic swirl effect around the check icon */}
+              <div className="bg-green-600/30 rounded-full p-4 relative animate-magic-swell">
+                <Check className="h-10 w-10 text-green-400 z-10 relative animate-swirl" />
               </div>
-              <h2 className="text-2xl font-bold">You're All Set!</h2>
-              <p className="text-gray-400">
-                You've successfully joined our Telegram community
-              </p>
-              {/* A nice success GIF (feel free to change the URL) */}
-              <img
-                src="https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif"
-                alt="Success"
-                className="mx-auto rounded-lg w-48"
-              />
             </div>
-          </FadeInWrapper>
+            <h2 className="text-3xl font-bold text-green-400 drop-shadow-md">
+              You're All Set!
+            </h2>
+            <p className="text-gray-300">Welcome to our Telegram community!</p>
+            <img
+              src="https://media.giphy.com/media/QBd2kLB5qDmysEXre9/giphy.gif"
+              alt="Success"
+              className="mx-auto rounded-lg w-48"
+            />
+          </div>
         );
 
+      /**
+       * Fallback
+       */
       default:
-        // A fallback loading spinner for unexpected states
         return (
-          <Loader className="animate-spin mx-auto h-8 w-8 text-gray-300" />
+          <div className="flex items-center justify-center">
+            <Loader className="animate-spin mx-auto h-8 w-8 text-gray-300" />
+          </div>
         );
     }
   };
 
   return (
-    <div className="p-6 bg-[#111] border border-[#222] min-h-screen text-white">
-      <div className="max-w-xl mx-auto mt-12">
+    <div
+      className="relative p-6 text-white overflow-hidden
+                 bg-gradient-to-br from-[#181818] via-[#111] to-[#181818]"
+    >
+      {/* STYLES for custom animations (you can place into your CSS or tailwind.config.js) */}
+      <style>{`
+        body {
+          background-color: #0f0f0f;
+        }
+        .stars {
+          position: absolute;
+          width: 2000px;
+          height: 2000px;
+          background: transparent url("https://raw.githubusercontent.com/ProGamerGov/pixel-editor-drawings/main/stars.png") repeat;
+          animation: twinkle 90s linear infinite;
+          pointer-events: none;
+          top: -500px;
+          left: -500px;
+        }
+        @keyframes twinkle {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+
+        /* Floating gradient bubbles */
+        @keyframes float {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(20px); }
+        }
+        .animate-float-slow {
+          animation: float 6s ease-in-out infinite;
+        }
+        .animate-float-slower {
+          animation: float 10s ease-in-out infinite;
+        }
+
+        /* The swirling check icon in the final step */
+        @keyframes swirl {
+          0% { transform: rotate(0deg) scale(1); }
+          25% { transform: rotate(10deg) scale(1.1); }
+          50% { transform: rotate(-10deg) scale(1.1); }
+          75% { transform: rotate(10deg) scale(1.1); }
+          100% { transform: rotate(0deg) scale(1); }
+        }
+        .animate-swirl {
+          animation: swirl 2s infinite ease-in-out;
+        }
+
+        /* The magic swell behind the check icon */
+        @keyframes magicSwell {
+          0% { transform: scale(1); opacity: 0.5; }
+          50% { transform: scale(1.3); opacity: 0.2; }
+          100% { transform: scale(1); opacity: 0.5; }
+        }
+        .animate-magic-swell {
+          animation: magicSwell 3s infinite;
+        }
+      `}</style>
+
+      {/* Optional star background */}
+      <div className="stars" />
+
+      {/* Floating gradient orbs */}
+      <div className="absolute w-72 h-72 bg-purple-600 rounded-full top-[-4rem] left-[-8rem] opacity-20 blur-2xl animate-float-slow" />
+      <div className="absolute w-80 h-80 bg-blue-600 rounded-full bottom-[-8rem] right-[-8rem] opacity-20 blur-2xl animate-float-slower" />
+
+      <div className="max-w-xl mx-auto mt-12 relative z-10">
         {error && (
           <div className="mb-6 p-4 bg-red-500/10 border border-red-500 rounded-lg text-red-400">
             {error}
