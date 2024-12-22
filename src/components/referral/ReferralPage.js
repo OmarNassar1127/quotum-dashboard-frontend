@@ -33,9 +33,8 @@ const ReferralPage = () => {
 
   const copyLink = () => {
     if (!stats?.code) return;
-    navigator.clipboard.writeText(
-      `${window.location.origin}/register?ref=${stats.code}`
-    );
+    const referralLink = `${window.location.origin}/#/register?ref=${stats.code}`;
+    navigator.clipboard.writeText(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
