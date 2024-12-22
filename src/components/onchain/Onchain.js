@@ -53,6 +53,12 @@ const Onchain = () => {
         "The ETF Inflows shows the inflows volume in Bitcoin ETFs, by ETF holders, that way we can pin point who is buying and who is selling!",
       route: "/onchain/etf-inflows",
     },
+    {
+      name: "Bitcoin Active Addresses",
+      description:
+        "Bitcoin Active Addresses shows the number of unique addresses that are active in the network, this is a good indicator of the network health.",
+      route: "/onchain/bitcoin-active-addresses",
+    },
   ];
 
   useEffect(() => {
