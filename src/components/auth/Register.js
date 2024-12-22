@@ -1,20 +1,37 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { User, Lock, Mail, ArrowLeft, UserPlus } from "lucide-react";
 import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 
 const Register = () => {
+  const location = useLocation(); // for reading ?ref=...
   const navigate = useNavigate();
   const [error, setError] = useState("");
+
+  // We'll initialize referral_code as an empty string;
+  // then in a useEffect we look for ?ref= in the URL
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    referral_code: new URLSearchParams(window.location.search).get("ref") || "",
+    referral_code: "",
   });
+
+  // When the component mounts (and whenever location changes),
+  // parse the "ref" query param and update referral_code
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const refParam = params.get("ref");
+    if (refParam) {
+      setFormData((prevData) => ({
+        ...prevData,
+        referral_code: refParam,
+      }));
+    }
+  }, [location]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -26,6 +43,7 @@ const Register = () => {
     }
 
     try {
+      // Adjust your fields as needed if your API expects different keys
       const response = await axios.post("/register", {
         first_name: formData.first_name,
         last_name: formData.last_name,
@@ -99,6 +117,7 @@ const Register = () => {
 
           <form className="space-y-6 mt-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
+              {/* First Name */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <User className="h-5 w-5" />
@@ -110,11 +129,13 @@ const Register = () => {
                   required
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
+                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   placeholder="First name"
                 />
               </div>
 
+              {/* Last Name */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <User className="h-5 w-5" />
@@ -126,11 +147,13 @@ const Register = () => {
                   required
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
+                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   placeholder="Last name"
                 />
               </div>
 
+              {/* Email */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <Mail className="h-5 w-5" />
@@ -142,11 +165,13 @@ const Register = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
+                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   placeholder="Email address"
                 />
               </div>
 
+              {/* Password */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <Lock className="h-5 w-5" />
@@ -158,11 +183,13 @@ const Register = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
+                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   placeholder="Password"
                 />
               </div>
 
+              {/* Confirm Password */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <Lock className="h-5 w-5" />
@@ -174,11 +201,13 @@ const Register = () => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
+                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   placeholder="Confirm password"
                 />
               </div>
 
+              {/* Referral Code (Auto-populated if ?ref=... in URL) */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <UserPlus className="h-5 w-5" />
@@ -189,7 +218,8 @@ const Register = () => {
                   type="text"
                   value={formData.referral_code}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
+                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
                   placeholder="Referral code (optional)"
                 />
               </div>
@@ -198,7 +228,8 @@ const Register = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
+              className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none 
+                         focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
             >
               Create account
             </button>
