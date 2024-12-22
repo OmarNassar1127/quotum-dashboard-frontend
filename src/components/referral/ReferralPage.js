@@ -32,6 +32,7 @@ const ReferralPage = () => {
   };
 
   const copyLink = () => {
+    if (!stats?.code) return;
     navigator.clipboard.writeText(
       `${window.location.origin}/register?ref=${stats.code}`
     );
@@ -55,7 +56,7 @@ const ReferralPage = () => {
               Referral Code
             </h2>
             {stats?.code ? (
-              <div className="flex gap-4">
+              <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   readOnly
                   value={`${window.location.origin}/register?ref=${stats.code}`}
