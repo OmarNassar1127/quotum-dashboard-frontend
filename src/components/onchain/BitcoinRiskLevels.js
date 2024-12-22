@@ -8,9 +8,59 @@ import FeatureRestricted from "../restricted/FeatureRestricted";
 const BitcoinRiskLevels = () => {
   const chartRef = useRef(null);
   const chartInstance = useRef(null);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [dailyPrices, setDailyPrices] = useState([]);
+
+  // New state: store the latest Risk Value
+  const [latestRisk, setLatestRisk] = useState(null);
+
+  // Fixed risk levels from 0.500 to 0.800
+  const riskLevels = [
+    { risk: 0.5, price: 72879 },
+    { risk: 0.525, price: 77819 },
+    { risk: 0.55, price: 82980 },
+    { risk: 0.575, price: 88361 },
+    { risk: 0.6, price: 93959 },
+    { risk: 0.625, price: 99776 },
+    { risk: 0.65, price: 105810 },
+    { risk: 0.675, price: 112061 },
+    { risk: 0.7, price: 118528 },
+    { risk: 0.725, price: 125209 },
+    { risk: 0.75, price: 132105 },
+    { risk: 0.775, price: 139215 },
+    { risk: 0.8, price: 146538 },
+  ];
+
+  // Interpolation helper:
+  const computeRisk = (price) => {
+    // If price is below our lowest risk level, clamp to the first risk
+    if (price <= riskLevels[0].price) {
+      return riskLevels[0].risk;
+    }
+    // If price is above our highest risk level, clamp to the last risk
+    if (price >= riskLevels[riskLevels.length - 1].price) {
+      return riskLevels[riskLevels.length - 1].risk;
+    }
+
+    // Otherwise, find where price falls between two known risk lines
+    for (let i = 0; i < riskLevels.length - 1; i++) {
+      const current = riskLevels[i];
+      const next = riskLevels[i + 1];
+
+      if (price >= current.price && price <= next.price) {
+        // Linear interpolation
+        const fraction = (price - current.price) / (next.price - current.price);
+        const interpolatedRisk =
+          current.risk + fraction * (next.risk - current.risk);
+        return interpolatedRisk;
+      }
+    }
+
+    // Fallback (should not happen if your data is within range)
+    return null;
+  };
 
   useEffect(() => {
     fetchDailyPrices();
@@ -23,8 +73,18 @@ const BitcoinRiskLevels = () => {
 
   useEffect(() => {
     if (!chartRef.current || loading || dailyPrices.length === 0) return;
+
+    // Once dailyPrices is loaded, figure out the latest risk
+    // (You might pick the *last* entry in dailyPrices as “latest”)
+    const latest = dailyPrices[dailyPrices.length - 1];
+    if (latest) {
+      const currentRisk = computeRisk(latest.value);
+      setLatestRisk(currentRisk);
+    }
+
     renderChart();
 
+    // Handle resize
     const handleResize = () => {
       if (chartInstance.current) {
         chartInstance.current.resize();
@@ -32,6 +92,7 @@ const BitcoinRiskLevels = () => {
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+    // eslint-disable-next-line
   }, [dailyPrices, loading]);
 
   const fetchDailyPrices = async () => {
@@ -57,24 +118,7 @@ const BitcoinRiskLevels = () => {
       chartInstance.current = echarts.init(chartRef.current);
     }
 
-    // Fixed risk levels from 0.500 to 0.800
-    const riskLevels = [
-      { risk: 0.5, price: 72879 },
-      { risk: 0.525, price: 77819 },
-      { risk: 0.55, price: 82980 },
-      { risk: 0.575, price: 88361 },
-      { risk: 0.6, price: 93959 },
-      { risk: 0.625, price: 99776 },
-      { risk: 0.65, price: 105810 },
-      { risk: 0.675, price: 112061 },
-      { risk: 0.7, price: 118528 },
-      { risk: 0.725, price: 125209 },
-      { risk: 0.75, price: 132105 },
-      { risk: 0.775, price: 139215 },
-      { risk: 0.8, price: 146538 },
-    ];
-
-    // Set fixed 6-month window
+    // Prepare chart data
     const now = new Date().getTime();
     const threeMonths = 90 * 24 * 60 * 60 * 1000;
     const startTime = now - threeMonths;
@@ -129,9 +173,7 @@ const BitcoinRiskLevels = () => {
 
     const options = {
       backgroundColor: "#111",
-      textStyle: {
-        color: "#ccc",
-      },
+      textStyle: { color: "#ccc" },
       tooltip: {
         trigger: "axis",
         backgroundColor: "rgba(0,0,0,0.8)",
@@ -200,7 +242,7 @@ const BitcoinRiskLevels = () => {
           fontSize: 12,
         },
       },
-      series: series,
+      series,
     };
 
     chartInstance.current.setOption(options, true);
@@ -212,8 +254,14 @@ const BitcoinRiskLevels = () => {
       <h1 className="text-2xl font-bold text-gray-100 mb-2">
         Bitcoin Risk Levels
       </h1>
+
+      {/* Display the dynamically computed risk */}
       <div className="text-sm text-gray-400 mb-6">
-        Latest Risk Value: 0.626, Confidence Level: 9
+        {latestRisk !== null ? (
+          <>Latest Risk Value: {latestRisk.toFixed(3)}, Confidence Level: 9</>
+        ) : (
+          "Loading latest risk..."
+        )}
       </div>
 
       <FeatureRestricted feature="btc_risk_levels">
