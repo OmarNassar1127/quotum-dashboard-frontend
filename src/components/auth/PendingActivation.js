@@ -33,7 +33,7 @@ const PricingTier = ({ title, prices, features, highlight }) => (
           <div key={index} className="flex flex-col items-center">
             <div className="flex items-baseline justify-center">
               <span className="text-2xl font-bold text-[#32CD32]">
-                ${price.amount}
+                €{price.amount}
               </span>
               <span className="text-xs text-gray-400 ml-1">
                 /{price.duration}
