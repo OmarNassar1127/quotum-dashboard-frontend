@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/static/css/main.dab8a4f2.css",
-    "main.js": "/static/js/main.2ff867b7.js",
+    "main.css": "/static/css/main.114b0d7c.css",
+    "main.js": "/static/js/main.c61ff8c6.js",
     "static/js/453.00426040.chunk.js": "/static/js/453.00426040.chunk.js",
     "static/media/quotum-no-bg.png": "/static/media/quotum-no-bg.da0e54f8e7d316572d00.png",
     "index.html": "/index.html",
-    "main.dab8a4f2.css.map": "/static/css/main.dab8a4f2.css.map",
-    "main.2ff867b7.js.map": "/static/js/main.2ff867b7.js.map",
+    "main.114b0d7c.css.map": "/static/css/main.114b0d7c.css.map",
+    "main.c61ff8c6.js.map": "/static/js/main.c61ff8c6.js.map",
     "453.00426040.chunk.js.map": "/static/js/453.00426040.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.dab8a4f2.css",
-    "static/js/main.2ff867b7.js"
+    "static/css/main.114b0d7c.css",
+    "static/js/main.c61ff8c6.js"
   ]
 }
