@@ -133,6 +133,16 @@ const MainLayout = () => {
             >
               Telegram
             </NavLink>
+            <NavLink
+              to="/one-on-one"
+              className={({ isActive }) =>
+                `${baseLinkClasses} ${
+                  isActive ? activeClasses : inactiveClasses
+                }`
+              }
+            >
+              1 on 1
+            </NavLink>
             {userRole === "admin" && (
               <NavLink
                 to="/admin"
@@ -265,6 +275,14 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Telegram
+          </NavLink>
+          <NavLink
+            to="/one-on-one"
+            className={({ isActive }) =>
+              `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
+            }
+          >
+            1 on 1
           </NavLink>
           {userRole === "admin" && (
             <NavLink
