@@ -118,6 +118,14 @@ const PendingActivation = () => {
   return (
     <div className="min-h-screen bg-black p-4 flex items-center justify-center">
       <div className="max-w-7xl w-full mx-auto">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[#32CD32] mb-2">
+            Use OG10 for a 10% Discount!
+          </h1>
+          <p className="text-gray-300">
+            Thanks for being with us since the beginning - this one's for you!
+          </p>
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Status Card */}
           <div className="bg-[#111] rounded-lg p-6 border border-white/20 flex flex-col shadow-md shadow-white/10 ring-1 ring-white/10">
