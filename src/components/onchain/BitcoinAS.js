@@ -80,12 +80,12 @@ const BitcoinAS = () => {
 
         let tooltipContent = `<div class="font-medium">${date}</div>`;
 
-        if (showAddresses && addressesValue) {
-          tooltipContent += `<div class="text-sm mt-1">Active Addresses: <span class="text-orange-400">${addressesValue.toLocaleString()}</span></div>`;
+        if (showPrice && priceValue) {
+          tooltipContent += `<div class="text-sm mt-1">Active Addresses: <span class="text-orange-400">${priceValue.toLocaleString()}</span></div>`;
         }
 
-        if (showPrice && priceValue) {
-          tooltipContent += `<div class="text-sm">Price: <span class="text-blue-400">$${priceValue.toLocaleString()}</span></div>`;
+        if (showAddresses && addressesValue) {
+          tooltipContent += `<div class="text-sm">Price: <span class="text-blue-400">$${addressesValue.toLocaleString()}</span></div>`;
         }
 
         return tooltipContent;
@@ -257,13 +257,13 @@ const BitcoinAS = () => {
               active={showAddresses}
               onClick={() => setShowAddresses(!showAddresses)}
             >
-              Active Addresses
+              Price
             </ToggleButton>
             <ToggleButton
               active={showPrice}
               onClick={() => setShowPrice(!showPrice)}
             >
-              Price
+              Active Addresses
             </ToggleButton>
           </div>
         </div>
