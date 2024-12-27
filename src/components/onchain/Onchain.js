@@ -59,6 +59,12 @@ const Onchain = () => {
         "Bitcoin Active Addresses shows the number of unique addresses that are active in the network, this is a good indicator of the network health.",
       route: "/onchain/bitcoin-active-addresses",
     },
+    {
+      name: "Others.d vs BTC.",
+      description:
+        "Shows the Others dominance vs BTC dominance, this is a good indicator of the market sentiment.",
+      route: "/onchain/others-vs-btc",
+    },
   ];
 
   useEffect(() => {
