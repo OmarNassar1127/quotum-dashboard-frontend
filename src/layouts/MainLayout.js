@@ -114,16 +114,6 @@ const MainLayout = () => {
               Help
             </NavLink> */}
             <NavLink
-              to="/profile"
-              className={({ isActive }) =>
-                `${baseLinkClasses} ${
-                  isActive ? activeClasses : inactiveClasses
-                }`
-              }
-            >
-              Profile
-            </NavLink>
-            <NavLink
               to="/telegram"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
@@ -142,6 +132,16 @@ const MainLayout = () => {
               }
             >
               1 on 1
+            </NavLink>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                `${baseLinkClasses} ${
+                  isActive ? activeClasses : inactiveClasses
+                }`
+              }
+            >
+              Profile
             </NavLink>
             {userRole === "admin" && (
               <NavLink
@@ -259,15 +259,6 @@ const MainLayout = () => {
             Help
           </NavLink> */}
           <NavLink
-            to="/profile"
-            className={({ isActive }) =>
-              `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
-            }
-            onClick={toggleSidebar}
-          >
-            Profile
-          </NavLink>
-          <NavLink
             to="/telegram"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
@@ -283,6 +274,15 @@ const MainLayout = () => {
             }
           >
             1 on 1
+          </NavLink>
+          <NavLink
+            to="/profile"
+            className={({ isActive }) =>
+              `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
+            }
+            onClick={toggleSidebar}
+          >
+            Profile
           </NavLink>
           {userRole === "admin" && (
             <NavLink
