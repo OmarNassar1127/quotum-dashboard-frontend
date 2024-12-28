@@ -58,7 +58,7 @@ const ReferralPage = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <input
                   readOnly
-                  value={`${window.location.origin}/register?ref=${stats.code}`}
+                  value={`${window.location.origin}/#/register?ref=${stats.code}`}
                   className="flex-1 px-4 py-2 border border-[#333] rounded bg-[#111] text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
                 <button
