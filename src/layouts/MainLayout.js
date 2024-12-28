@@ -114,14 +114,14 @@ const MainLayout = () => {
               Help
             </NavLink> */}
             <NavLink
-              to="/referrals"
+              to="/profile"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
                 }`
               }
             >
-              Referrals
+              Profile
             </NavLink>
             <NavLink
               to="/telegram"
@@ -259,13 +259,13 @@ const MainLayout = () => {
             Help
           </NavLink> */}
           <NavLink
-            to="/referrals"
+            to="/profile"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
             onClick={toggleSidebar}
           >
-            Referrals
+            Profile
           </NavLink>
           <NavLink
             to="/telegram"

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
 import axios from "../../lib/axios";
 
-const ReferralPage = () => {
+const ProfilePage = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
@@ -125,4 +125,4 @@ const ReferralPage = () => {
   );
 };
 
-export default ReferralPage;
+export default ProfilePage;

@@ -14,7 +14,7 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
 import WalletTrackingDetail from "./components/wallet/WalletTrackingDetail";
-import ReferralPage from "./components/referral/ReferralPage";
+import ProfilePage from "./components/referral/ProfilePage";
 import TelegramPage from "./components/referral/TelegramPage";
 import OneOnOne from "./components/oneonone/OneOnOne";
 import AdminReferralPage from "./components/admin/AdminReferralPage";
@@ -88,7 +88,7 @@ function App() {
             <Route path="post/:postId" element={<PostDetail />} />
             <Route path="videos" element={<Videos />} />
             <Route path="help" element={<div>Help Page</div>} />
-            <Route path="referrals" element={<ReferralPage />} />
+            <Route path="profile" element={<ProfilePage />} />
             <Route path="telegram" element={<TelegramPage />} />
             <Route path="one-on-one" element={<OneOnOne />} />
           </Route>
