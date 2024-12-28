@@ -1,8 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Plus, ImageIcon, Loader, AlertCircle, Type } from "lucide-react";
+import {
+  Plus,
+  ImageIcon,
+  Loader,
+  AlertCircle,
+  Type,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import axios from "../../lib/axios";
 import ContentBlock from "./ContentBlock";
-import PostCard from "./PostCard";
+import PostsList from "./PostsList";
 
 const PostManagement = () => {
   const [posts, setPosts] = useState([]);
@@ -202,6 +210,12 @@ const PostManagement = () => {
     });
   };
 
+  const handlePageChange = (newPage) => {
+    if (newPage >= 1 && newPage <= pagination.last_page) {
+      fetchData(newPage);
+    }
+  };
+
   if (loading && !showForm) {
     return (
       <div className="flex items-center justify-center h-64 bg-[#111] text-white">
@@ -348,18 +362,58 @@ const PostManagement = () => {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            coins={coins}
-            onDelete={handleDelete}
-            onStatusChange={handleStatusChange}
-            onEdit={startEditing}
-          />
-        ))}
-      </div>
+      <PostsList
+        posts={posts}
+        coins={coins}
+        onDelete={handleDelete}
+        onStatusChange={handleStatusChange}
+        onEdit={startEditing}
+      />
+
+      {pagination.total > pagination.per_page && (
+        <div className="flex items-center justify-center mt-8 space-x-2">
+          <button
+            onClick={() => handlePageChange(pagination.current_page - 1)}
+            disabled={pagination.current_page === 1}
+            className="p-2 rounded-lg border border-[#333] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#333] transition-colors"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <div className="flex items-center space-x-2">
+            {[...Array(pagination.last_page)].map((_, index) => {
+              const page = index + 1;
+              const isActive = page === pagination.current_page;
+
+              return (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={`px-3 py-1 rounded-lg border ${
+                    isActive
+                      ? "bg-blue-600 border-blue-600 text-white"
+                      : "border-[#333] hover:bg-[#333] transition-colors"
+                  }`}
+                >
+                  {page}
+                </button>
+              );
+            })}
+          </div>
+
+          <button
+            onClick={() => handlePageChange(pagination.current_page + 1)}
+            disabled={pagination.current_page === pagination.last_page}
+            className="p-2 rounded-lg border border-[#333] disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#333] transition-colors"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+
+          <span className="text-sm text-gray-400 ml-4">
+            Total: {pagination.total} posts
+          </span>
+        </div>
+      )}
     </div>
   );
 };
