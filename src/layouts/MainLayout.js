@@ -93,7 +93,7 @@ const MainLayout = () => {
             >
               On-Chain
             </NavLink>
-            {/* <NavLink
+            <NavLink
               to="/videos"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
@@ -102,7 +102,7 @@ const MainLayout = () => {
               }
             >
               Videos
-            </NavLink> */}
+            </NavLink>
             {/* <NavLink
               to="/help"
               className={({ isActive }) =>
@@ -240,7 +240,7 @@ const MainLayout = () => {
           >
             On-Chain
           </NavLink>
-          {/* <NavLink
+          <NavLink
             to="/videos"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
@@ -248,7 +248,7 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Videos
-          </NavLink> */}
+          </NavLink>
           {/* <NavLink
             to="/help"
             className={({ isActive }) =>
