@@ -149,8 +149,7 @@ const Videos = () => {
             lesson_id: lessonId,
             progress_percentage: newPercentage,
             is_completed: newPercentage >= 80,
-            lesson: {
-            },
+            lesson: {},
           });
         }
         return updated;
@@ -184,6 +183,19 @@ const Videos = () => {
     setIsModalOpen(false);
   };
 
+  const fetchAndUpdateProgress = async () => {
+    try {
+      const progressRes = await axios.get("/lessons/progress");
+      setProgressData(progressRes.data);
+      setFinalLessons(computeLessonsStatus(lessons, progressRes.data));
+    } catch (err) {
+      console.error("Error fetching updated progress:", err);
+      setError(
+        err.response?.data?.message || "Failed to fetch updated progress"
+      );
+    }
+  };
+
   const handleTimeUpdate = () => {
     if (!videoRef.current || !selectedLesson) return;
 
@@ -197,7 +209,12 @@ const Videos = () => {
 
     if (!hasReportedCompletion && percent >= 80) {
       setHasReportedCompletion(true);
-      handleUpdateProgress(selectedLesson.id, 100);
+
+      handleUpdateProgress(selectedLesson.id, 100)
+        .then(() => fetchAndUpdateProgress())
+        .catch((err) => {
+          console.error("Error updating or refreshing progress:", err);
+        });
     }
   };
 
