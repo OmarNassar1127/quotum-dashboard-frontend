@@ -197,7 +197,7 @@ const AdminLessonPage = () => {
   // Render component
   // ----------------------------------
   return (
-    <div className="p-6 space-y-6 bg-[#111] min-h-screen border border-[#222] text-white">
+    <div className="p-6 space-y-6 bg-[#111] min-h-screen text-white">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-100">
