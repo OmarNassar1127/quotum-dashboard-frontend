@@ -281,7 +281,7 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
   }, [bitcoinData, chartLoading]);
 
   return (
-    <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm p-6 min-h-[24rem] text-white">
+    <div className="bg-[#111] rounded-xl shadow-sm p-6 min-h-[24rem] text-white">
       <h2 className="text-lg font-semibold text-gray-100 mb-4">
         Bitcoin Fibonacci Curve Chart
       </h2>

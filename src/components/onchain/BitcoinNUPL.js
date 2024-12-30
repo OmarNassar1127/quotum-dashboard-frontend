@@ -16,7 +16,7 @@ import axios from "../../lib/axios";
 import { format, addMonths, startOfDay } from "date-fns";
 import FeatureRestricted from "../restricted/FeatureRestricted";
 
-const NUPLIndicator = () => {
+const NUPLIndicator = ({ isFullPage = true }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,7 +31,6 @@ const NUPLIndicator = () => {
           axios.get("/platform/bitcoin/nupl"),
         ]);
 
-        // Convert timestamps to start of day for comparison
         const pricesData = pricesResponse.data.map((p) => ({
           ...p,
           dayTimestamp: startOfDay(new Date(p.time * 1000)).getTime() / 1000,
@@ -42,16 +41,13 @@ const NUPLIndicator = () => {
           dayTimestamp: startOfDay(new Date(n.time * 1000)).getTime() / 1000,
         }));
 
-        // Extract day timestamps from both datasets
         const priceDayTimestamps = pricesData.map((p) => p.dayTimestamp);
         const nuplDayTimestamps = nuplData.map((n) => n.dayTimestamp);
 
-        // Create a unique set of all day timestamps
         const allDayTimestamps = Array.from(
           new Set([...priceDayTimestamps, ...nuplDayTimestamps])
         ).sort((a, b) => a - b);
 
-        // Map over all unique day timestamps to combine data
         const combinedData = allDayTimestamps.map((dayTimestamp) => {
           const pricePoint = pricesData.find(
             (p) => p.dayTimestamp === dayTimestamp
@@ -61,13 +57,12 @@ const NUPLIndicator = () => {
           );
 
           return {
-            date: dayTimestamp * 1000, // Convert to milliseconds
+            date: dayTimestamp * 1000,
             price: pricePoint ? Number(pricePoint.value) : null,
             nupl: nuplPoint ? Number(nuplPoint.value) : null,
           };
         });
 
-        // Sort the combined data by date
         combinedData.sort((a, b) => a.date - b.date);
 
         const lastDate = new Date(combinedData[combinedData.length - 1].date);
@@ -98,7 +93,6 @@ const NUPLIndicator = () => {
 
     updateDimensions();
     window.addEventListener("resize", updateDimensions);
-
     return () => window.removeEventListener("resize", updateDimensions);
   }, []);
 
@@ -144,7 +138,11 @@ const NUPLIndicator = () => {
 
   if (loading) {
     return (
-      <div className="p-4 md:p-6 bg-[#111] text-white min-h-screen border border-[#222]">
+      <div
+        className={`p-4 md:p-6 bg-[#111] text-white ${
+          isFullPage ? "min-h-screen" : ""
+        } border border-[#222]`}
+      >
         <div className="relative bg-[#222] border border-[#333] rounded-md p-4">
           <div className="flex items-center justify-center h-[400px] md:h-[600px]">
             <Loader2 className="w-8 h-8 animate-spin text-gray-300" />
@@ -156,7 +154,11 @@ const NUPLIndicator = () => {
 
   if (error) {
     return (
-      <div className="p-4 md:p-6 bg-[#111] text-white min-h-screen border border-[#222]">
+      <div
+        className={`p-4 md:p-6 bg-[#111] text-white ${
+          isFullPage ? "min-h-screen" : ""
+        } border border-[#222]`}
+      >
         <div className="relative bg-[#222] border border-[#333] rounded-md p-4">
           <div className="flex items-center justify-center h-[400px] md:h-[600px]">
             <p className="text-red-500">{error}</p>
@@ -167,12 +169,28 @@ const NUPLIndicator = () => {
   }
 
   return (
-    <div className="p-4 md:p-6 bg-[#111] text-white min-h-screen border border-[#222]">
-      <h1 className="text-xl md:text-2xl font-bold text-gray-100 mb-2">
-        Bitcoin Net Unrealized Profit/Loss (NUPL)
-      </h1>
+    <div
+      className={`p-4 md:p-6 bg-[#111] text-white rounded-md ${
+        isFullPage ? "min-h-screen" : ""
+      } border border-[#222]`}
+    >
+      {isFullPage ? (
+        <h1 className="text-xl md:text-2xl font-bold text-gray-100 mb-2">
+          Bitcoin Net Unrealized Profit/Loss (NUPL)
+        </h1>
+      ) : (
+        <h2 className="text-lg font-semibold text-gray-100">
+          Bitcoin Net Unrealized Profit/Loss (NUPL)
+        </h2>
+      )}
 
-      <div className="relative bg-[#222] border border-[#333] rounded-md p-4">
+      <div
+        className={
+          isFullPage
+            ? "relative bg-[#222] border border-[#333] rounded-md p-4"
+            : "relative"
+        }
+      >
         <FeatureRestricted feature="btc_nupl">
           <div
             ref={chartContainerRef}
@@ -188,7 +206,6 @@ const NUPLIndicator = () => {
                   bottom: 50,
                 }}
               >
-                {/* Color Backgrounds */}
                 <ReferenceArea
                   yAxisId="left"
                   y1={0.75}
@@ -230,7 +247,6 @@ const NUPLIndicator = () => {
                   fillOpacity={0.3}
                 />
 
-                {/* Reference Lines */}
                 <ReferenceLine
                   yAxisId="left"
                   y={1}
@@ -327,62 +343,65 @@ const NUPLIndicator = () => {
         </FeatureRestricted>
       </div>
 
-      <div className="mt-6 space-y-6 text-gray-300">
-        <div className="bg-[#222] rounded-lg p-4 md:p-6 border border-[#333]">
-          <h2 className="text-base md:text-lg font-semibold text-gray-100 mb-3 flex items-center gap-2">
-            <Info className="h-5 w-5" />
-            Market Phases
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-red-500 bg-opacity-30 rounded" />
-              <span>Euphoria/Greed (≥ 0.75)</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-orange-500 bg-opacity-30 rounded" />
-              <span>Belief/Denial (0.5 - 0.75)</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-yellow-500 bg-opacity-30 rounded" />
-              <span>Optimism/Anxiety (0.25 - 0.5)</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <div className="w-4 h-4 bg-green-500 bg-opacity-30 rounded" />
-              <span>Hope/Fear (≤ 0.25)</span>
+      {isFullPage && (
+        <div className="mt-6 space-y-6 text-gray-300">
+          <div className="bg-[#222] rounded-lg p-4 md:p-6 border border-[#333]">
+            <h2 className="text-base md:text-lg font-semibold text-gray-100 mb-3 flex items-center gap-2">
+              <Info className="h-5 w-5" />
+              Market Phases
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs md:text-sm">
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-red-500 bg-opacity-30 rounded" />
+                <span>Euphoria/Greed (≥ 0.75)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-orange-500 bg-opacity-30 rounded" />
+                <span>Belief/Denial (0.5 - 0.75)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-yellow-500 bg-opacity-30 rounded" />
+                <span>Optimism/Anxiety (0.25 - 0.5)</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="w-4 h-4 bg-green-500 bg-opacity-30 rounded" />
+                <span>Hope/Fear (≤ 0.25)</span>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="bg-[#222] rounded-lg p-4 md:p-6 border border-[#333]">
-          <h2 className="text-base md:text-lg font-semibold text-gray-100 mb-3 flex items-center gap-2">
-            <Info className="h-5 w-5" />
-            Indicator Overview
-          </h2>
-          <div className="space-y-4 text-xs md:text-sm">
-            <p>
-              This indicator is derived from Market Value and Realized Value,
-              which can be defined as: Market Value: The current price of
-              Bitcoin multiplied by the number of coins in circulation. This is
-              like market cap in traditional markets i.e. share price multiplied
-              by number of shares. Realized Value: Rather than taking the
-              current price of Bitcoin, Realized Value takes the price of each
-              Bitcoin when it was last moved i.e. the last time it was sent from
-              one wallet to another wallet. It then adds up all those individual
-              prices and takes an average of them. It then multiplies that
-              average price by the total number of coins in circulation. By
-              subtracting Realized Value from Market Value we calculate
-              Unrealized Profit/Loss. Unrealized Profit/Loss estimates the total
-              paper profits/losses in Bitcoin held by investors. This is
-              interesting to know but of greater value is identifying how this
-              changes relatively over time. To do this we can divide Unrealized
-              Profit/Loss by Market Cap. This creates Net Unrealized
-              Profit/Loss, sometimes referred to as NUPL, which is very useful
-              to track investor sentiment over time for Bitcoin. Relative
-              Unrealised Profit/Loss is another name used for this analysis.
-            </p>
+          <div className="bg-[#222] rounded-lg p-4 md:p-6 border border-[#333]">
+            <h2 className="text-base md:text-lg font-semibold text-gray-100 mb-3 flex items-center gap-2">
+              <Info className="h-5 w-5" />
+              Indicator Overview
+            </h2>
+            <div className="space-y-4 text-xs md:text-sm">
+              <p>
+                This indicator is derived from Market Value and Realized Value,
+                which can be defined as: Market Value: The current price of
+                Bitcoin multiplied by the number of coins in circulation. This
+                is like market cap in traditional markets i.e. share price
+                multiplied by number of shares. Realized Value: Rather than
+                taking the current price of Bitcoin, Realized Value takes the
+                price of each Bitcoin when it was last moved i.e. the last time
+                it was sent from one wallet to another wallet. It then adds up
+                all those individual prices and takes an average of them. It
+                then multiplies that average price by the total number of coins
+                in circulation. By subtracting Realized Value from Market Value
+                we calculate Unrealized Profit/Loss. Unrealized Profit/Loss
+                estimates the total paper profits/losses in Bitcoin held by
+                investors. This is interesting to know but of greater value is
+                identifying how this changes relatively over time. To do this we
+                can divide Unrealized Profit/Loss by Market Cap. This creates
+                Net Unrealized Profit/Loss, sometimes referred to as NUPL, which
+                is very useful to track investor sentiment over time for
+                Bitcoin. Relative Unrealised Profit/Loss is another name used
+                for this analysis.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
