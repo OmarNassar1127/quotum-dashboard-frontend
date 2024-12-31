@@ -184,6 +184,20 @@ const ShortTermBubble = () => {
                 stroke="red"
               />
 
+              <ReferenceLine
+                yAxisId="right"
+                y={175}
+                strokeDasharray="3 3"
+                stroke="red"
+                label={{
+                  value: "Extreme Risk",
+                  position: "insideRight", // Positions the label to the right
+                  dx: 0, // Adjust as needed if fine-tuning is required
+                  fill: "red", // Customize label color
+                  fontSize: 12, // Customize font size
+                }}
+              />
+
               <defs>
                 <linearGradient
                   id="bubbleRiskGradient"
