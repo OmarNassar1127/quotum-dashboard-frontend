@@ -18,6 +18,7 @@ const ShortTermBubble = () => {
   const [bitcoinWeeklyData, setBitcoinWeeklyData] = useState([]);
   const [chartLoading, setChartLoading] = useState(false);
   const [chartError, setChartError] = useState(null);
+  const [priceScale, setPriceScale] = useState("log"); // New state for price scale
   const chartContainerRef = useRef(null);
   const [chartWidth, setChartWidth] = useState(0);
 
@@ -139,6 +140,14 @@ const ShortTermBubble = () => {
         <h2 className="text-xl md:text-2xl font-semibold text-gray-100">
           Short Term Bubble Risk
         </h2>
+        <button
+          onClick={() =>
+            setPriceScale((prev) => (prev === "log" ? "linear" : "log"))
+          }
+          className="px-4 py-2 bg-[#222] text-gray-100 rounded-md border border-[#333]"
+        >
+          Price Scale: {priceScale === "log" ? "Logarithmic" : "Linear"}
+        </button>
       </div>
 
       <div className="relative bg-[#222] border border-[#333] rounded-md p-4">
@@ -189,7 +198,7 @@ const ShortTermBubble = () => {
 
               <YAxis
                 yAxisId="left"
-                scale="log"
+                scale={priceScale}
                 domain={["auto", "auto"]}
                 tickFormatter={(value) => `$${value.toLocaleString()}`}
                 stroke="#aaa"
