@@ -100,7 +100,6 @@ const ShortTermBubble = () => {
 
     return (
       <div className="bg-[#000] bg-opacity-80 border border-[#333] p-4 rounded shadow text-gray-100">
-        {/* We can still show the date inside the tooltip if we want */}
         <p className="text-sm font-medium">{format(date, "MMM d, yyyy")}</p>
         {price && <p className="text-sm">Price: ${price.toLocaleString()}</p>}
         {risk !== null && (
@@ -165,6 +164,26 @@ const ShortTermBubble = () => {
                 stroke="#666"
               />
 
+              {/* Hardcoded lines */}
+              <ReferenceLine
+                yAxisId="right"
+                y={50}
+                strokeDasharray="3 3"
+                stroke="green"
+              />
+              <ReferenceLine
+                yAxisId="right"
+                y={90}
+                strokeDasharray="3 3"
+                stroke="yellow"
+              />
+              <ReferenceLine
+                yAxisId="right"
+                y={115}
+                strokeDasharray="3 3"
+                stroke="red"
+              />
+
               <defs>
                 <linearGradient
                   id="bubbleRiskGradient"
@@ -181,19 +200,11 @@ const ShortTermBubble = () => {
                 </linearGradient>
               </defs>
 
-              {/* 
-                XAxis with no tick labels or lines:
-                - tick={false} => hide label text
-                - axisLine={false} => hide the axis line
-                - tickLine={false} => hide the small tick marks
-              */}
               <XAxis
                 dataKey="date"
                 tick={false}
                 axisLine={false}
                 tickLine={false}
-                // If you do not even want the tooltip to show dates,
-                // remove dataKey or remove the line above altogether.
               />
 
               <YAxis
@@ -206,7 +217,7 @@ const ShortTermBubble = () => {
               <YAxis
                 yAxisId="right"
                 orientation="right"
-                domain={[-50, 100]}
+                domain={[-50, 120]}
                 tickFormatter={(value) => `${Math.round(value)}%`}
                 stroke="#aaa"
               />
@@ -214,7 +225,6 @@ const ShortTermBubble = () => {
               <Tooltip content={<CustomTooltip />} />
               <Legend />
 
-              {/* BTC Price */}
               <Line
                 yAxisId="left"
                 type="monotone"
@@ -225,7 +235,6 @@ const ShortTermBubble = () => {
                 strokeWidth={1}
               />
 
-              {/* Bubble Risk with gradient */}
               <Line
                 yAxisId="right"
                 type="monotone"
@@ -236,8 +245,6 @@ const ShortTermBubble = () => {
                 strokeWidth={2}
               />
 
-              {/* Brush for zoom/pan. If you want to hide the bottom axis,
-                  you can also remove the brush or hide its ticks. */}
               <Brush
                 dataKey="date"
                 height={40}
