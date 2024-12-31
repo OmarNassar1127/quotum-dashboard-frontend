@@ -60,10 +60,16 @@ const Onchain = () => {
       route: "/onchain/bitcoin-active-addresses",
     },
     {
-      name: "Others.d vs BTC.",
+      name: "Others.d vs BTC",
       description:
         "Shows the Others dominance vs BTC dominance, this is a good indicator of the market sentiment.",
       route: "/onchain/others-vs-btc",
+    },
+    {
+      name: "Short term bubble",
+      description:
+        "TBD",
+      route: "/onchain/short-term-bubble",
     },
   ];
 
