@@ -68,7 +68,7 @@ const Onchain = () => {
     {
       name: "Short term bubble",
       description:
-        "TBD",
+        "The Short-Term Bubble Indicator (STBI) for Bitcoin provides a powerful visualization of price risk by comparing the closing price to the 20-week SMA.",
       route: "/onchain/short-term-bubble",
     },
   ];
