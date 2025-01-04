@@ -11,6 +11,7 @@ import {
   ChartArea,
   Binoculars,
   X,
+  Coins,
   Link as LinkIcon,
 } from "lucide-react";
 import axios from "../lib/axios";
@@ -32,6 +33,7 @@ const AdminLayout = () => {
     },
     { title: "Wallet Chart", icon: ChartArea, path: "/admin/wallet-chart" },
     { title: "Referral", icon: LinkIcon, path: "/admin/referral" },
+    { title: "Coin Suggestions", icon: Coins, path: "/admin/coin-suggestions" },
     { title: "User panel", icon: User, path: "/" },
   ];
 
