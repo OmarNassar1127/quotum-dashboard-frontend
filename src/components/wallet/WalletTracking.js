@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader, AlertCircle, PlusCircle } from "lucide-react";
 import axios from "../../lib/axios";
 import FeatureRestricted from "../restricted/FeatureRestricted";
-import CoinSuggestionModal from "./CoinSuggestionModal"; // Add this import
+import CoinSuggestionModal from "./CoinSuggestionModal";
 
 const CoinCard = ({ coin, onClick }) => (
   <div

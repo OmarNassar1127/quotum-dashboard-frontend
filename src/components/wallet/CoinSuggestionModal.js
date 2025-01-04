@@ -77,8 +77,7 @@ const CoinSuggestionModal = ({ isOpen, onClose }) => {
                 Suggestion Sent Successfully!
               </h3>
               <p className="text-gray-400">
-                Thank you for your suggestion. Our team will review it and get
-                back to you soon.
+                Thank you for your suggestion. Our team will add this coin in the next 3 days.
               </p>
               <button
                 onClick={onClose}
