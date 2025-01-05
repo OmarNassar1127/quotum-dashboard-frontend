@@ -30,8 +30,20 @@ const PaymentSelection = () => {
     setLoading(true);
 
     try {
+      const amountMapping = {
+        "1month": 7500, // Stripe requires the amount in cents
+        "3months": 18000,
+        "6months": 33000,
+      };
+
+      const amount = amountMapping[plan];
+      if (!amount) {
+        throw new Error("Invalid plan selected.");
+      }
+
       const response = await axios.post("/create-payment-intent", {
-        plan,
+        amount,
+        currency: "eur", // Adjust currency as required
         paymentMethod: selectedPaymentMethod,
       });
 
