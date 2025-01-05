@@ -60,10 +60,16 @@ const Onchain = () => {
       route: "/onchain/bitcoin-active-addresses",
     },
     {
-      name: "Others.d vs BTC.",
+      name: "Others.d vs BTC",
       description:
         "Shows the Others dominance vs BTC dominance, this is a good indicator of the market sentiment.",
       route: "/onchain/others-vs-btc",
+    },
+    {
+      name: "Short term bubble",
+      description:
+        "The Short-Term Bubble Indicator (STBI) for Bitcoin provides a powerful visualization of price risk by comparing the closing price to the 20-week SMA.",
+      route: "/onchain/short-term-bubble",
     },
   ];
 

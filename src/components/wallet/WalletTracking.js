@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader, AlertCircle } from "lucide-react";
+import { Loader, AlertCircle, PlusCircle } from "lucide-react";
 import axios from "../../lib/axios";
 import FeatureRestricted from "../restricted/FeatureRestricted";
+import CoinSuggestionModal from "./CoinSuggestionModal";
 
 const CoinCard = ({ coin, onClick }) => (
   <div
@@ -32,6 +33,7 @@ const WalletTracking = () => {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchTrackableCoins = async () => {
@@ -93,10 +95,21 @@ const WalletTracking = () => {
   return (
     <FeatureRestricted feature="wallet_tracking">
       <div className="p-6 bg-[#111] min-h-screen text-white">
-        <h1 className="text-2xl font-bold mb-6 text-gray-100">
-          Wallet Tracking
-        </h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-100">Wallet Tracking</h1>
+          <button
+            onClick={() => setIsModalOpen(true)}
+            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          >
+            <PlusCircle className="w-5 h-5" />
+            Request New Coin
+          </button>
+        </div>
         {renderContent()}
+        <CoinSuggestionModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+        />
       </div>
     </FeatureRestricted>
   );

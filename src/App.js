@@ -19,6 +19,7 @@ import TelegramPage from "./components/referral/TelegramPage";
 import OneOnOne from "./components/oneonone/OneOnOne";
 import AdminReferralPage from "./components/admin/AdminReferralPage";
 import AdminLessonPage from "./components/admin/AdminLessonPage";
+import CoinSuggestionManagement from "./components/admin/CoinSuggestionManagement";
 import Videos from "./components/videos/Videos";
 import CoinDetail from "./components/portfolio/CoinDetail";
 import PostDetail from "./components/portfolio/PostDetail";
@@ -26,6 +27,7 @@ import Onchain from "./components/onchain/Onchain";
 import BitcoinRiskLevels from "./components/onchain/BitcoinRiskLevels";
 import BitcoinAS from "./components/onchain/BitcoinAS";
 import DominanceChart from "./components/onchain/DominanceChart";
+import ShortTermBubble from "./components/onchain/ShortTermBubble";
 import BitcoinRainbowWave from "./components/onchain/BitcoinRainbowWave";
 import NUPLIndicator from "./components/onchain/BitcoinNUPL";
 import ETFVolumeChart from "./components/onchain/ETFVolumeChart";
@@ -84,6 +86,7 @@ function App() {
             <Route path="/onchain/long-term-holders" element={<BitcoinLTH />} />
             <Route path="/onchain/bitcoin-active-addresses" element={<BitcoinAS />} />
             <Route path="/onchain/others-vs-btc" element={<DominanceChart />} />
+            <Route path="/onchain/short-term-bubble" element={<ShortTermBubble />} />
             <Route path="/onchain/etf-inflows" element={<ETFInflow />} />
             <Route path="coin/:coinId" element={<CoinDetail />} />
             <Route path="post/:postId" element={<PostDetail />} />
@@ -106,6 +109,7 @@ function App() {
             <Route path="wallet-chart" element={<WalletBalanceChart />} />
             <Route path="referral" element={<AdminReferralPage />} />
             <Route path="lesson" element={<AdminLessonPage />} />
+            <Route path="coin-suggestions" element={<CoinSuggestionManagement />} />
           </Route>
         </Route>
 

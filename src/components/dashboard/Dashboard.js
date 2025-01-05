@@ -15,7 +15,7 @@ import BitcoinChartCard from "../btc-monthly/BitcoinMonthlyChart";
 import BitcoinMonthlyRsiChart from "../btc-monthly/BitcoinMonthlyRsiChart";
 import BitcoinRainbowChart from "../btc-monthly/BitcoinRainbowChart";
 import AltcoinSeasonChart from "../altcoins/AltcoinSeasonChart";
-import StableCoinChart from "../stablecoins/StableCoinChart";
+import NUPLIndicator from "../onchain/BitcoinNUPL";
 import AppRankingCards from "../app-rankings/AppRankingCards";
 import FeatureRestricted from "../restricted/FeatureRestricted";
 
@@ -46,10 +46,6 @@ const Dashboard = () => {
     fetchTelegramStatus();
   }, []);
 
-  /**
-   * Fetch whether user has used their Telegram link.
-   * If not used, display the toast.
-   */
   const fetchTelegramStatus = async () => {
     try {
       const userId = localStorage.getItem("user_id");
@@ -64,7 +60,6 @@ const Dashboard = () => {
       }
     } catch (err) {
       console.error("Error fetching Telegram status:", err);
-      // If it fails, do nothing or handle fallback
     }
   };
 
@@ -128,9 +123,6 @@ const Dashboard = () => {
     navigate(`/post/${postId}`);
   };
 
-  /**
-   * For color mapping logic
-   */
   const estimateMonthsUntilHalving = (currentDate) => {
     const halvingDates = [
       new Date("2012-11-28"),
@@ -173,22 +165,16 @@ const Dashboard = () => {
     return colors[colors.length - 1];
   };
 
-  // NEW: navigate user to Telegram page on button click
   const handleJoinTelegram = () => {
     navigate("/telegram");
   };
 
-  // NEW: user clicked the X to close the toast
   const dismissToast = () => {
     setShowTelegramToast(false);
   };
 
   return (
     <div className="p-6 space-y-6 bg-black min-h-screen">
-      {/* 
-        NEW: Telegram toast (slide-in from right).
-        Show if user hasn't used link & we haven't dismissed it.
-      */}
       {!telegramLinkUsed && showTelegramToast && (
         <div
           className="
@@ -363,10 +349,10 @@ const Dashboard = () => {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[#111] border border-[#222] rounded-xl shadow-sm text-white">
-          <StableCoinChart />
+        <div className=" border border-[#222] rounded-xl shadow-sm text-white">
+          <NUPLIndicator isFullPage={false} />
         </div>
-        <div className="bg-[#111] rounded-xl shadow-sm text-white">
+        <div className="bg-[#111] rounded-xl shadow-sm text-white border border-[#222]">
           <BitcoinRainbowChart
             bitcoinData={bitcoinWeeklyData}
             chartError={chartError}
