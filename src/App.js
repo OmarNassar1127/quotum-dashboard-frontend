@@ -10,6 +10,7 @@ import Login from "./components/auth/Login";
 import DeviceManagement from "./components/auth/DeviceManagement";
 import Register from "./components/auth/Register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
+import LandingPage from "./components/landing/LandingPage";
 import Dashboard from "./components/dashboard/Dashboard";
 import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
@@ -48,13 +49,14 @@ function App() {
     <Router>
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<LandingPage />} />
         <Route
           path="/login"
           element={
             !localStorage.getItem("token") ? (
               <Login />
             ) : (
-              <Navigate to="/" replace />
+              <Navigate to="/dashboard" replace />
             )
           }
         />
@@ -64,30 +66,45 @@ function App() {
             !localStorage.getItem("token") ? (
               <Register />
             ) : (
-              <Navigate to="/" replace />
+              <Navigate to="/dashboard" replace />
             )
           }
         />
 
         {/* Protected User Routes */}
         <Route element={<ProtectedRoute />}>
-          <Route path="/" element={<MainLayout />}>
+          <Route path="/dashboard" element={<MainLayout />}>
             <Route index element={<Dashboard />} />
             <Route path="portfolio" element={<Portfolio />} />
             <Route path="wallet-tracking" element={<WalletTracking />} />
-            <Route path="wallet-tracking/:coinId" element={<WalletTrackingDetail />} />
+            <Route
+              path="wallet-tracking/:coinId"
+              element={<WalletTrackingDetail />}
+            />
             <Route path="onchain" element={<Onchain />} />
             <Route path="account/devices" element={<DeviceManagement />} />
-            <Route path="/onchain/bitcoin-risk-levels" element={<BitcoinRiskLevels />} />
-            <Route path="/onchain/bitcoin-waves" element={<BitcoinRainbowWave />} />
-            <Route path="/onchain/nupl" element={<NUPLIndicator />} />
-            <Route path="/onchain/etf" element={<ETFVolumeChart />} />
-            <Route path="/onchain/short-term-holders" element={<BitcoinSTH />} />
-            <Route path="/onchain/long-term-holders" element={<BitcoinLTH />} />
-            <Route path="/onchain/bitcoin-active-addresses" element={<BitcoinAS />} />
-            <Route path="/onchain/others-vs-btc" element={<DominanceChart />} />
-            <Route path="/onchain/short-term-bubble" element={<ShortTermBubble />} />
-            <Route path="/onchain/etf-inflows" element={<ETFInflow />} />
+            <Route
+              path="onchain/bitcoin-risk-levels"
+              element={<BitcoinRiskLevels />}
+            />
+            <Route
+              path="onchain/bitcoin-waves"
+              element={<BitcoinRainbowWave />}
+            />
+            <Route path="onchain/nupl" element={<NUPLIndicator />} />
+            <Route path="onchain/etf" element={<ETFVolumeChart />} />
+            <Route path="onchain/short-term-holders" element={<BitcoinSTH />} />
+            <Route path="onchain/long-term-holders" element={<BitcoinLTH />} />
+            <Route
+              path="onchain/bitcoin-active-addresses"
+              element={<BitcoinAS />}
+            />
+            <Route path="onchain/others-vs-btc" element={<DominanceChart />} />
+            <Route
+              path="onchain/short-term-bubble"
+              element={<ShortTermBubble />}
+            />
+            <Route path="onchain/etf-inflows" element={<ETFInflow />} />
             <Route path="coin/:coinId" element={<CoinDetail />} />
             <Route path="post/:postId" element={<PostDetail />} />
             <Route path="videos" element={<Videos />} />
@@ -109,11 +126,14 @@ function App() {
             <Route path="wallet-chart" element={<WalletBalanceChart />} />
             <Route path="referral" element={<AdminReferralPage />} />
             <Route path="lesson" element={<AdminLessonPage />} />
-            <Route path="coin-suggestions" element={<CoinSuggestionManagement />} />
+            <Route
+              path="coin-suggestions"
+              element={<CoinSuggestionManagement />}
+            />
           </Route>
         </Route>
 
-        {/* Redirect unknown routes to dashboard */}
+        {/* Redirect unknown routes to landing page */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
