@@ -13,6 +13,8 @@ import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LandingPage from "./components/landing/LandingPage";
 import PaymentSelection from "./components/landing/PaymentSelection";
 import PaymentForm from "./components/landing/PaymentForm";
+import PaymentSuccess from "./components/landing/PaymentSuccess";
+import PaymentCancel from "./components/landing/PaymentCancel";
 import Dashboard from "./components/dashboard/Dashboard";
 import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
@@ -54,6 +56,8 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/payment/:plan" element={<PaymentSelection />} />
         <Route path="/payment-form" element={<PaymentForm />} />
+        <Route path="/payment-success" element={<PaymentSuccess />} />
+        <Route path="/payment-cancel" element={<PaymentCancel />} />
         <Route
           path="/login"
           element={
