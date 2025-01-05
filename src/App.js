@@ -18,6 +18,7 @@ import ProfilePage from "./components/referral/ProfilePage";
 import TelegramPage from "./components/referral/TelegramPage";
 import OneOnOne from "./components/oneonone/OneOnOne";
 import AdminReferralPage from "./components/admin/AdminReferralPage";
+import AdminLessonPage from "./components/admin/AdminLessonPage";
 import CoinSuggestionManagement from "./components/admin/CoinSuggestionManagement";
 import Videos from "./components/videos/Videos";
 import CoinDetail from "./components/portfolio/CoinDetail";
@@ -107,6 +108,7 @@ function App() {
             <Route path="wallet-trackers" element={<WalletManagement />} />
             <Route path="wallet-chart" element={<WalletBalanceChart />} />
             <Route path="referral" element={<AdminReferralPage />} />
+            <Route path="lesson" element={<AdminLessonPage />} />
             <Route path="coin-suggestions" element={<CoinSuggestionManagement />} />
           </Route>
         </Route>
