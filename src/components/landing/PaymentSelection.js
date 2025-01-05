@@ -31,13 +31,13 @@ const PaymentSelection = () => {
 
     try {
       const response = await axios.post("/create-checkout-session", {
-        plan,
+        plan, 
       });
 
       const { checkoutUrl } = response.data;
 
       if (response.status === 200 && checkoutUrl) {
-        window.location.href = checkoutUrl; // Redirect to Stripe-hosted checkout
+        window.location.href = checkoutUrl;
       } else {
         throw new Error("Failed to create checkout session.");
       }
