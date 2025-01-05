@@ -30,31 +30,16 @@ const PaymentSelection = () => {
     setLoading(true);
 
     try {
-      const amountMapping = {
-        "1month": 7500, // Stripe requires the amount in cents
-        "3months": 18000,
-        "6months": 33000,
-      };
-
-      const amount = amountMapping[plan];
-      if (!amount) {
-        throw new Error("Invalid plan selected.");
-      }
-
-      const response = await axios.post("/create-payment-intent", {
-        amount,
-        currency: "eur", // Adjust currency as required
-        paymentMethod: selectedPaymentMethod,
+      const response = await axios.post("/create-checkout-session", {
+        plan,
       });
 
-      const { clientSecret } = response.data;
+      const { checkoutUrl } = response.data;
 
-      if (response.status === 200 && clientSecret) {
-        if (selectedPaymentMethod === "ideal") {
-          navigate("/payment-form", { state: { clientSecret } });
-        }
+      if (response.status === 200 && checkoutUrl) {
+        window.location.href = checkoutUrl; // Redirect to Stripe-hosted checkout
       } else {
-        throw new Error("Failed to create payment intent.");
+        throw new Error("Failed to create checkout session.");
       }
     } catch (error) {
       console.error("Error:", error.message);
