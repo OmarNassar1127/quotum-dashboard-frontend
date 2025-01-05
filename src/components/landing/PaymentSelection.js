@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 
 const PAYMENT_CONFIGS = {
@@ -20,7 +20,9 @@ const PAYMENT_CONFIGS = {
   },
 };
 
-const PaymentSelection = ({ selectedPlan }) => {
+const PaymentSelection = () => {
+  const { plan } = useParams();
+  const selectedPlan = plan in PAYMENT_CONFIGS ? plan : null;
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const navigate = useNavigate();
 
@@ -30,6 +32,12 @@ const PaymentSelection = ({ selectedPlan }) => {
 
   const handleContinue = (e) => {
     e.preventDefault();
+
+    if (!selectedPlan) {
+      alert("Invalid subscription plan. Please try again.");
+      navigate("/");
+      return;
+    }
 
     if (!selectedPaymentMethod) {
       alert("Please select a payment method.");
