@@ -12,6 +12,7 @@ import Register from "./components/auth/Register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LandingPage from "./components/landing/LandingPage";
 import PaymentSelection from "./components/landing/PaymentSelection";
+import PaymentForm from "./components/landing/PaymentForm";
 import Dashboard from "./components/dashboard/Dashboard";
 import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
@@ -52,6 +53,7 @@ function App() {
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/payment/:plan" element={<PaymentSelection />} />
+        <Route path="/payment-form" element={<PaymentForm />} />
         <Route
           path="/login"
           element={

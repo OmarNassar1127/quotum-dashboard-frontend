@@ -1,40 +1,23 @@
 import React, { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
-
-const PAYMENT_CONFIGS = {
-  "1month": {
-    price: 75,
-    ideal: "https://ideal-payment-link-1month",
-    creditcard: "https://creditcard-payment-link-1month",
-  },
-  "3months": {
-    price: 180,
-    ideal: "https://ideal-payment-link-3months",
-    creditcard: "https://creditcard-payment-link-3months",
-  },
-  "6months": {
-    price: 330,
-    ideal: "https://ideal-payment-link-6months",
-    creditcard: "https://creditcard-payment-link-6months",
-  },
-};
 
 const PaymentSelection = () => {
   const { plan } = useParams();
-  const selectedPlan = plan in PAYMENT_CONFIGS ? plan : null;
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handlePaymentMethodSelect = (method) => {
     setSelectedPaymentMethod(method);
   };
 
-  const handleContinue = (e) => {
+  const handleContinue = async (e) => {
     e.preventDefault();
 
-    if (!selectedPlan) {
-      alert("Invalid subscription plan. Please try again.");
+    if (!plan) {
+      alert("Invalid subscription plan. Please select a valid plan.");
       navigate("/");
       return;
     }
@@ -44,13 +27,29 @@ const PaymentSelection = () => {
       return;
     }
 
-    const paymentConfig = PAYMENT_CONFIGS[selectedPlan];
-    const paymentLink =
-      selectedPaymentMethod === "ideal"
-        ? paymentConfig.ideal
-        : paymentConfig.creditcard;
+    setLoading(true);
 
-    window.location.href = paymentLink;
+    try {
+      const response = await axios.post("/create-payment-intent", {
+        plan,
+        paymentMethod: selectedPaymentMethod,
+      });
+
+      const { clientSecret } = response.data;
+
+      if (response.status === 200 && clientSecret) {
+        if (selectedPaymentMethod === "ideal") {
+          navigate("/payment-form", { state: { clientSecret } });
+        }
+      } else {
+        throw new Error("Failed to create payment intent.");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+      alert("Failed to initialize payment. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -184,8 +183,9 @@ const PaymentSelection = () => {
           <button
             type="submit"
             className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors font-medium"
+            disabled={loading}
           >
-            Continue
+            {loading ? "Processing..." : "Continue"}
           </button>
         </form>
       </div>
