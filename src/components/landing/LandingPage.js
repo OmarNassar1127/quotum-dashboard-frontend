@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
   ChartBar,
@@ -37,40 +37,54 @@ const FAQ = ({ question, answer }) => {
 };
 
 // Subscription Card Component
-const SubscriptionCard = ({ months, price, isPopular, isBestDeal }) => (
-  <div className="bg-black rounded-2xl p-6 flex flex-col relative transform transition-all hover:scale-105">
-    {isPopular && (
-      <span className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
-        Most Popular
-      </span>
-    )}
-    {isBestDeal && (
-      <span className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
-        Best Deal
-      </span>
-    )}
-    <div className="flex flex-col h-full">
-      <div className="flex-grow">
-        <img
-          src="/api/placeholder/400/200"
-          alt="Trading Chart"
-          className="w-full h-32 object-cover rounded-lg mb-4"
-        />
-        <h3 className="text-2xl font-bold text-white mb-4">{months} MONTHS</h3>
-        <p className="text-gray-400 mb-6">
-          Access to all QUOTUM VIP groups, follow my moves, see my analysis and
-          participate in exclusive insider calls and insights.
-        </p>
-      </div>
-      <div className="mt-auto">
-        <p className="text-3xl font-bold text-white mb-4">€{price}</p>
-        <button className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors">
-          JOIN NOW
-        </button>
+const SubscriptionCard = ({ months, price, isPopular, isBestDeal }) => {
+  const navigate = useNavigate();
+
+  const handleSubscriptionClick = () => {
+    const planKey = `${months}month${months > 1 ? "s" : ""}`;
+    navigate(`/payment/${planKey}`);
+  };
+
+  return (
+    <div
+      className="bg-black rounded-2xl p-6 flex flex-col relative transform transition-all hover:scale-105 cursor-pointer"
+      onClick={handleSubscriptionClick}
+    >
+      {isPopular && (
+        <span className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
+          Most Popular
+        </span>
+      )}
+      {isBestDeal && (
+        <span className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
+          Best Deal
+        </span>
+      )}
+      <div className="flex flex-col h-full">
+        <div className="flex-grow">
+          <img
+            src="/api/placeholder/400/200"
+            alt="Trading Chart"
+            className="w-full h-32 object-cover rounded-lg mb-4"
+          />
+          <h3 className="text-2xl font-bold text-white mb-4">
+            {months} MONTHS
+          </h3>
+          <p className="text-gray-400 mb-6">
+            Access to all QUOTUM VIP groups, follow my moves, see my analysis
+            and participate in exclusive insider calls and insights.
+          </p>
+        </div>
+        <div className="mt-auto">
+          <p className="text-3xl font-bold text-white mb-4">€{price}</p>
+          <button className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors">
+            JOIN NOW
+          </button>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const Testimonial = ({ text, author, date, rating = 5 }) => (
   <div className="bg-gray-50 rounded-2xl p-8 shadow-sm">
@@ -404,7 +418,9 @@ const LandingPage = () => {
                 Quotum.cloud
               </span>
             </div>
-            <div className="text-sm">© {new Date().getFullYear()} Quotum. All rights reserved.</div>
+            <div className="text-sm">
+              © {new Date().getFullYear()} Quotum. All rights reserved.
+            </div>
           </div>
         </div>
       </footer>

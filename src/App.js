@@ -11,6 +11,7 @@ import DeviceManagement from "./components/auth/DeviceManagement";
 import Register from "./components/auth/Register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import LandingPage from "./components/landing/LandingPage";
+import PaymentSelection from "./components/landing/PaymentSelection";
 import Dashboard from "./components/dashboard/Dashboard";
 import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
@@ -50,6 +51,7 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<LandingPage />} />
+        <Route path="/payment/:plan" element={<PaymentSelection />} />
         <Route
           path="/login"
           element={
