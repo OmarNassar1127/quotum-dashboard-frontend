@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   ArrowRight,
@@ -150,6 +150,15 @@ const Testimonial = ({ text, author, date, rating = 5 }) => (
 );
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // If user is logged in and tries to access "/", redirect them to /dashboard
+    if (localStorage.getItem("token")) {
+      navigate("/dashboard");
+    }
+  }, [navigate]); // to be removed imo
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -462,22 +471,6 @@ const LandingPage = () => {
           </div>
         </div>
       </footer>
-
-      {/* Add to your CSS file or Tailwind config */}
-      <style jsx>{`
-        @keyframes slide {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-
-        .animate-slider {
-          animation: slide 20s linear infinite;
-        }
-      `}</style>
     </div>
   );
 };
