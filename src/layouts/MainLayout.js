@@ -53,7 +53,7 @@ const MainLayout = () => {
           {/* Right Container - Desktop Links */}
           <div className="hidden md:flex items-center space-x-1">
             <NavLink
-              to="/"
+              to="/dashboard"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -64,7 +64,7 @@ const MainLayout = () => {
               Home
             </NavLink>
             <NavLink
-              to="/portfolio"
+              to="/dashboard/portfolio"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -74,7 +74,7 @@ const MainLayout = () => {
               Portfolio
             </NavLink>
             <NavLink
-              to="/wallet-tracking"
+              to="/dashboard/wallet-tracking"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -84,7 +84,7 @@ const MainLayout = () => {
               Wallet Tracker
             </NavLink>
             <NavLink
-              to="/onchain"
+              to="/dashboard/onchain"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -94,7 +94,7 @@ const MainLayout = () => {
               On-Chain
             </NavLink>
             <NavLink
-              to="/videos"
+              to="/dashboard/videos"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -114,7 +114,7 @@ const MainLayout = () => {
               Help
             </NavLink> */}
             <NavLink
-              to="/telegram"
+              to="/dashboard/telegram"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -124,7 +124,7 @@ const MainLayout = () => {
               Telegram
             </NavLink>
             <NavLink
-              to="/one-on-one"
+              to="/dashboard/one-on-one"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -134,7 +134,7 @@ const MainLayout = () => {
               1 on 1
             </NavLink>
             <NavLink
-              to="/profile"
+              to="/dashboard/profile"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
                   isActive ? activeClasses : inactiveClasses
@@ -204,7 +204,7 @@ const MainLayout = () => {
         </div>
         <div className="flex flex-col space-y-1 px-2 py-4">
           <NavLink
-            to="/"
+            to="/dashboard"
             end
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
@@ -214,7 +214,7 @@ const MainLayout = () => {
             Home
           </NavLink>
           <NavLink
-            to="/portfolio"
+            to="/dashboard/portfolio"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
@@ -223,7 +223,7 @@ const MainLayout = () => {
             Portfolio
           </NavLink>
           <NavLink
-            to="/wallet-tracking"
+            to="/dashboard/wallet-tracking"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
@@ -232,7 +232,7 @@ const MainLayout = () => {
             Wallet Tracker
           </NavLink>
           <NavLink
-            to="/onchain"
+            to="/dashboard/onchain"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
@@ -241,7 +241,7 @@ const MainLayout = () => {
             On-Chain
           </NavLink>
           <NavLink
-            to="/videos"
+            to="/dashboard/videos"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
@@ -259,7 +259,7 @@ const MainLayout = () => {
             Help
           </NavLink> */}
           <NavLink
-            to="/telegram"
+            to="/dashboard/telegram"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
@@ -268,7 +268,7 @@ const MainLayout = () => {
             Telegram
           </NavLink>
           <NavLink
-            to="/one-on-one"
+            to="/dashboard/one-on-one"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
@@ -276,7 +276,7 @@ const MainLayout = () => {
             1 on 1
           </NavLink>
           <NavLink
-            to="/profile"
+            to="/dashboard/profile"
             className={({ isActive }) =>
               `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
             }
