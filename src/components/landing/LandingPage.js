@@ -13,6 +13,7 @@ import quotumLogo from "../../assets/quotum-no-bg.png";
 import OneMonth from "../../assets/OneMonth.webp";
 import ThreeMonth from "../../assets/ThreeMonth.webp";
 import SixMonth from "../../assets/SixMonth.webp";
+import QuotumPortfolio from "./QuotumPortfolio";
 
 // Basic Features (used for 1-month subscriptions)
 const basicFeatures = [
@@ -319,25 +320,7 @@ const LandingPage = () => {
       </section>
 
       {/* Portfolio Section */}
-      <section className="py-12 bg-gray-50 border-t border-b border-gray-200">
-        <div className="max-w-7xl mx-auto">
-          <h2 className="text-2xl font-bold text-center mb-8">
-            Quotum Portfolio
-          </h2>
-          <div className="overflow-hidden whitespace-nowrap">
-            <div className="animate-slider inline-flex space-x-16 px-8">
-              <span className="text-gray-600">Bitcoin</span>
-              <span className="text-gray-600">Ethereum</span>
-              <span className="text-gray-600">Solana</span>
-              <span className="text-gray-600">Realio Network</span>
-              <span className="text-gray-600">GamerCoin</span>
-              <span className="text-gray-600">Bitcoin</span>
-              <span className="text-gray-600">Ethereum</span>
-              <span className="text-gray-600">Solana</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <QuotumPortfolio />
 
       {/* Subscription Cards */}
       <section className="py-20 bg-white">
@@ -483,26 +466,16 @@ const LandingPage = () => {
       {/* Add to your CSS file or Tailwind config */}
       <style jsx>{`
         @keyframes slide {
-          from {
+          0% {
             transform: translateX(0);
           }
-          to {
+          100% {
             transform: translateX(-50%);
           }
         }
 
         .animate-slider {
           animation: slide 20s linear infinite;
-        }
-
-        /* 3D card effect */
-        .subscription-card {
-          transform-style: preserve-3d;
-          transition: transform 0.3s ease;
-        }
-
-        .subscription-card:hover {
-          transform: translateY(-10px) rotateX(5deg);
         }
       `}</style>
     </div>
