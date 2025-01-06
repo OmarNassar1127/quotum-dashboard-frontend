@@ -10,6 +10,27 @@ import {
   ChevronDown,
 } from "lucide-react";
 import quotumLogo from "../../assets/quotum-no-bg.png";
+import OneMonth from "../../assets/OneMonth.webp";
+import ThreeMonth from "../../assets/ThreeMonth.webp";
+import SixMonth from "../../assets/SixMonth.webp";
+
+// Basic Features (used for 1-month subscriptions)
+const basicFeatures = [
+  "Step-by-Step Video Tutorials",
+  "Weekly Market Updates",
+  "VIP Telegram Channel",
+  "Quotum Dashboard",
+  "Market Risk Levels",
+];
+
+// Advanced Features (used for 3 and 6-month subscriptions)
+const advancedFeatures = [
+  "Full Basic Package",
+  "Market Exit Signals",
+  "Whale Sell Signals",
+  "1-on-1 direct support",
+  "Month 2 Upgrade",
+];
 
 // FAQ Component
 const FAQ = ({ question, answer }) => {
@@ -37,7 +58,14 @@ const FAQ = ({ question, answer }) => {
 };
 
 // Subscription Card Component
-const SubscriptionCard = ({ months, price, isPopular, isBestDeal }) => {
+const SubscriptionCard = ({
+  months,
+  price,
+  isPopular = false,
+  isBestDeal = false,
+  features = [],
+  image,
+}) => {
   const navigate = useNavigate();
 
   const handleSubscriptionClick = () => {
@@ -63,20 +91,27 @@ const SubscriptionCard = ({ months, price, isPopular, isBestDeal }) => {
       <div className="flex flex-col h-full">
         <div className="flex-grow">
           <img
-            src="/api/placeholder/400/200"
-            alt="Trading Chart"
+            src={image}
+            alt={`${months}-month subscription`}
             className="w-full h-32 object-cover rounded-lg mb-4"
           />
           <h3 className="text-2xl font-bold text-white mb-4">
             {months} MONTHS
           </h3>
           <p className="text-gray-400 mb-6">
-            Access to all QUOTUM VIP groups, follow my moves, see my analysis
-            and participate in exclusive insider calls and insights.
+            {months === 1
+              ? "Get access to the basic features and see if QUOTUM VIP is the right fit for you!"
+              : `Go beyond the basics with advanced features, deeper insights, and extended support for your ${months}-month journey!`}
           </p>
+          {/* Render Feature List */}
+          <ul className="text-gray-400 space-y-2 list-disc list-inside">
+            {features.map((feature, idx) => (
+              <li key={idx}>{feature}</li>
+            ))}
+          </ul>
         </div>
         <div className="mt-auto">
-          <p className="text-3xl font-bold text-white mb-4">€{price}</p>
+          <p className="text-3xl font-bold text-white mb-4 mt-4">€{price}</p>
           <button className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors">
             JOIN NOW
           </button>
@@ -309,9 +344,29 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center mb-12">Our Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <SubscriptionCard months={1} price={75} />
-            <SubscriptionCard months={3} price={180} isPopular={true} />
-            <SubscriptionCard months={6} price={330} isBestDeal={true} />
+            {/* 1-Month Plan */}
+            <SubscriptionCard
+              months={1}
+              price={75}
+              image={OneMonth}
+              features={basicFeatures}
+            />
+            {/* 3-Month Plan */}
+            <SubscriptionCard
+              months={3}
+              price={180}
+              isPopular={true}
+              image={ThreeMonth}
+              features={advancedFeatures}
+            />
+            {/* 6-Month Plan */}
+            <SubscriptionCard
+              months={6}
+              price={330}
+              isBestDeal={true}
+              image={SixMonth}
+              features={advancedFeatures}
+            />
           </div>
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
