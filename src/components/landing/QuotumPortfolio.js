@@ -34,12 +34,12 @@ const QuotumPortfolio = () => {
               {coinData.map((coin) => (
                 <div
                   key={coin.name}
-                  className="flex flex-col items-center w-24 mx-2"
+                  className="flex flex-col items-center w-24 mx-2 text-center"
                 >
                   <img
                     src={coin.logo}
                     alt={coin.name}
-                    className="w-10 h-10 mb-2"
+                    className="w-10 h-10 mb-2 rounded-full"
                   />
                   <span className="text-gray-800 text-sm font-medium">
                     {coin.name}
@@ -52,12 +52,12 @@ const QuotumPortfolio = () => {
               {coinData.map((coin) => (
                 <div
                   key={coin.name + "_2"}
-                  className="flex flex-col items-center w-24 mx-2"
+                  className="flex flex-col items-center w-24 mx-2 text-center"
                 >
                   <img
                     src={coin.logo}
                     alt={coin.name}
-                    className="w-10 h-10 mb-2"
+                    className="w-10 h-10 mb-2 rounded-full"
                   />
                   <span className="text-gray-800 text-sm font-medium">
                     {coin.name}
