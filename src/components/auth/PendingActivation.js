@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   ClockIcon,
@@ -9,32 +9,41 @@ import {
 } from "lucide-react";
 import axios from "../../lib/axios";
 
+// PricingTier: same design, but with loading feedback on "Order Now" button
 const PricingTier = ({ title, prices, features, highlight }) => {
-  const createCheckoutSession = async (plan) => {
+  // We'll keep a local loading state for each "plan" to show the user if it's processing
+  const [loadingPlan, setLoadingPlan] = useState(null);
+
+  const createCheckoutSession = async (planIdentifier) => {
+    // Mark this plan as "loading"
+    setLoadingPlan(planIdentifier);
+
     try {
       const response = await axios.post("/create-checkout-session", {
-        plan,
+        plan: planIdentifier,
       });
       const { checkoutUrl } = response.data;
 
       if (response.status === 200 && checkoutUrl) {
-        window.location.href = checkoutUrl;
+        window.location.href = checkoutUrl; // redirect to Stripe
       } else {
         throw new Error("Failed to create checkout session.");
       }
     } catch (error) {
       console.error("Error:", error.message);
       alert("Failed to initialize payment. Please try again.");
+      // If an error occurs, reset loading state
+      setLoadingPlan(null);
     }
   };
 
   return (
     <div
       className={`bg-[#111] rounded-lg p-6 
-    border border-white/20 
-    flex flex-col h-full justify-between 
-    relative shadow-md shadow-white/10 
-    ring-1 ring-white/10`}
+        border border-white/20 
+        flex flex-col h-full justify-between 
+        relative shadow-md shadow-white/10 
+        ring-1 ring-white/10`}
     >
       {highlight && (
         <div className="absolute top-2 right-2 bg-[#32CD32] text-black text-xs font-bold py-1 px-2 rounded">
@@ -55,28 +64,35 @@ const PricingTier = ({ title, prices, features, highlight }) => {
 
       <div className="mt-6">
         <div className="flex justify-center gap-2">
-          {prices.map((price, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="flex items-baseline justify-center">
-                <span className="text-2xl font-bold text-[#32CD32]">
-                  €{price.amount}
-                </span>
-                <span className="text-xs text-gray-400 ml-1">
-                  /{price.duration}
-                </span>
+          {prices.map((price, index) => {
+            const isLoading = loadingPlan === price.link;
+            return (
+              <div key={index} className="flex flex-col items-center">
+                <div className="flex items-baseline justify-center">
+                  <span className="text-2xl font-bold text-[#32CD32]">
+                    €{price.amount}
+                  </span>
+                  <span className="text-xs text-gray-400 ml-1">
+                    /{price.duration}
+                  </span>
+                </div>
+                {/* Anchor has the same styling as before, now uses onClick to start checkout */}
+                <a
+                  onClick={(e) => {
+                    e.preventDefault();
+                    if (!isLoading) {
+                      createCheckoutSession(price.link);
+                    }
+                  }}
+                  className={`inline-flex items-center justify-center mt-1 px-3 py-1.5 text-xs font-medium rounded-md text-black bg-[#32CD32] hover:bg-[#57e357] focus:outline-none focus:ring-2 focus:ring-[#32CD32] focus:ring-offset-2 transition-all shadow-sm shadow-[#32CD32]/20 ring-1 ring-[#32CD32]/50 cursor-pointer ${
+                    isLoading ? "opacity-75 pointer-events-none" : ""
+                  }`}
+                >
+                  {isLoading ? "Processing..." : "Order Now"}
+                </a>
               </div>
-              {/* Anchor has the same styling as before, but no href. We do onClick. */}
-              <a
-                onClick={(e) => {
-                  e.preventDefault();
-                  createCheckoutSession(price.link);
-                }}
-                className="inline-flex items-center justify-center mt-1 px-3 py-1.5 text-xs font-medium rounded-md text-black bg-[#32CD32] hover:bg-[#57e357] focus:outline-none focus:ring-2 focus:ring-[#32CD32] focus:ring-offset-2 transition-all shadow-sm shadow-[#32CD32]/20 ring-1 ring-[#32CD32]/50 cursor-pointer"
-              >
-                Order Now
-              </a>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </div>
@@ -179,6 +195,7 @@ const PendingActivation = () => {
             </div>
           </div>
 
+          {/* Pricing Cards (integrated loading states) */}
           <PricingTier
             title="Basic"
             prices={[
