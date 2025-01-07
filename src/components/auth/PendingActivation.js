@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   ClockIcon,
   LogOut,
@@ -86,6 +87,8 @@ const WhatsAppSupport = () => (
 );
 
 const PendingActivation = () => {
+  const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       await axios.post("/logout");
@@ -95,7 +98,7 @@ const PendingActivation = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("active");
-      setTimeout(() => window.location.reload(), 400);
+      navigate("/login", { replace: true });
     }
   };
 

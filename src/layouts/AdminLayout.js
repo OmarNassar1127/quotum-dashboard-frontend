@@ -36,7 +36,7 @@ const AdminLayout = () => {
     { title: "Referral", icon: LinkIcon, path: "/admin/referral" },
     { title: "Lessons", icon: Video, path: "/admin/lesson" },
     { title: "Coin Suggestions", icon: Coins, path: "/admin/coin-suggestions" },
-    { title: "User panel", icon: User, path: "/" },
+    { title: "User panel", icon: User, path: "/dashboard" },
   ];
 
   const handleLogout = async () => {
