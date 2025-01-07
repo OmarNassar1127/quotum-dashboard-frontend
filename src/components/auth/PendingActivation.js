@@ -9,57 +9,79 @@ import {
 } from "lucide-react";
 import axios from "../../lib/axios";
 
-const PricingTier = ({ title, prices, features, highlight }) => (
-  <div
-    className={`bg-[#111] rounded-lg p-6 
+const PricingTier = ({ title, prices, features, highlight }) => {
+  const createCheckoutSession = async (plan) => {
+    try {
+      const response = await axios.post("/create-checkout-session", {
+        plan,
+      });
+      const { checkoutUrl } = response.data;
+
+      if (response.status === 200 && checkoutUrl) {
+        window.location.href = checkoutUrl;
+      } else {
+        throw new Error("Failed to create checkout session.");
+      }
+    } catch (error) {
+      console.error("Error:", error.message);
+      alert("Failed to initialize payment. Please try again.");
+    }
+  };
+
+  return (
+    <div
+      className={`bg-[#111] rounded-lg p-6 
     border border-white/20 
     flex flex-col h-full justify-between 
     relative shadow-md shadow-white/10 
     ring-1 ring-white/10`}
-  >
-    {highlight && (
-      <div className="absolute top-2 right-2 bg-[#32CD32] text-black text-xs font-bold py-1 px-2 rounded">
-        Best Value
+    >
+      {highlight && (
+        <div className="absolute top-2 right-2 bg-[#32CD32] text-black text-xs font-bold py-1 px-2 rounded">
+          Best Value
+        </div>
+      )}
+      <div>
+        <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
+        <ul className="space-y-2 text-base">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-start space-x-2">
+              <CheckCircle className="h-5 w-5 text-[#32CD32] flex-shrink-0" />
+              <span className="text-gray-300">{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-    )}
-    <div>
-      <h3 className="text-2xl font-bold text-white mb-4">{title}</h3>
-      <ul className="space-y-2 text-base">
-        {features.map((feature, index) => (
-          <li key={index} className="flex items-start space-x-2">
-            <CheckCircle className="h-5 w-5 text-[#32CD32] flex-shrink-0" />
-            <span className="text-gray-300">{feature}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
 
-    <div className="mt-6">
-      <div className="flex justify-center gap-2">
-        {prices.map((price, index) => (
-          <div key={index} className="flex flex-col items-center">
-            <div className="flex items-baseline justify-center">
-              <span className="text-2xl font-bold text-[#32CD32]">
-                €{price.amount}
-              </span>
-              <span className="text-xs text-gray-400 ml-1">
-                /{price.duration}
-              </span>
+      <div className="mt-6">
+        <div className="flex justify-center gap-2">
+          {prices.map((price, index) => (
+            <div key={index} className="flex flex-col items-center">
+              <div className="flex items-baseline justify-center">
+                <span className="text-2xl font-bold text-[#32CD32]">
+                  €{price.amount}
+                </span>
+                <span className="text-xs text-gray-400 ml-1">
+                  /{price.duration}
+                </span>
+              </div>
+              {/* Anchor has the same styling as before, but no href. We do onClick. */}
+              <a
+                onClick={(e) => {
+                  e.preventDefault();
+                  createCheckoutSession(price.link);
+                }}
+                className="inline-flex items-center justify-center mt-1 px-3 py-1.5 text-xs font-medium rounded-md text-black bg-[#32CD32] hover:bg-[#57e357] focus:outline-none focus:ring-2 focus:ring-[#32CD32] focus:ring-offset-2 transition-all shadow-sm shadow-[#32CD32]/20 ring-1 ring-[#32CD32]/50 cursor-pointer"
+              >
+                Order Now
+              </a>
             </div>
-            <a
-              href={price.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center mt-1 px-3 py-1.5 text-xs font-medium rounded-md text-black bg-[#32CD32] hover:bg-[#57e357] focus:outline-none focus:ring-2 focus:ring-[#32CD32] focus:ring-offset-2 transition-all shadow-sm shadow-[#32CD32]/20 ring-1 ring-[#32CD32]/50"
-            >
-              Order Now
-            </a>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 const WhatsAppSupport = () => (
   <div className="bg-[#111] rounded-lg p-6 border border-white/20 flex flex-col h-full shadow-md shadow-white/10 ring-1 ring-white/10">
@@ -157,14 +179,13 @@ const PendingActivation = () => {
             </div>
           </div>
 
-          {/* Pricing Cards */}
           <PricingTier
             title="Basic"
             prices={[
               {
                 amount: "75",
                 duration: "1 month",
-                link: "https://shop.quotum.cloud/products/crypto-insider",
+                link: "1month",
               },
             ]}
             features={basicFeatures}
@@ -175,12 +196,12 @@ const PendingActivation = () => {
               {
                 amount: "180",
                 duration: "3 months",
-                link: "https://shop.quotum.cloud/products/insider-crypto-3",
+                link: "3months",
               },
               {
                 amount: "330",
                 duration: "6 months",
-                link: "https://shop.quotum.cloud/products/6-months-vip",
+                link: "6months",
               },
             ]}
             features={advancedFeatures}
