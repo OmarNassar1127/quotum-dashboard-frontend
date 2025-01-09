@@ -8,6 +8,10 @@ import {
   Users,
   Play,
   ChevronDown,
+  RefreshCcw,
+  Target,
+  Building2,
+  Shield,
 } from "lucide-react";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 import OneMonth from "../../assets/OneMonth.webp";
@@ -360,6 +364,13 @@ const LandingPage = () => {
       {/* Market Analysis Sections */}
       {/* First Analysis Section - Light */}
       <section className="py-20 bg-white overflow-hidden">
+        {/* Centered Title */}
+        <div className="text-center mb-16">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+            Clear insights, big results
+          </h1>
+        </div>
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             {/* Content */}
@@ -578,6 +589,95 @@ const LandingPage = () => {
         </div>
       </section>
 
+      {/* Adjusted Feature Section with better color contrast */}
+      <section className="py-24 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header - Aligned with your other section titles */}
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Quotum leads the way in market analytics
+            </h2>
+            <p className="text-xl text-gray-600">
+              Here's how we help you stay ahead of the market
+            </p>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
+            {/* Innovation */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                <RefreshCcw className="h-8 w-8 text-[#FF6B00]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Innovation
+              </h3>
+              <p className="text-gray-600">
+                Advanced algorithms and metrics reveal unique market patterns,
+                delivering actionable signals you can rely on for better trades.
+              </p>
+            </div>
+
+            {/* Specialist Focus */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                <Target className="h-8 w-8 text-[#FF6B00]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Specialist Focus
+              </h3>
+              <p className="text-gray-600">
+                Laser-focused on key crypto assets, providing precise analysis
+                of market trends and institutional capital movements.
+              </p>
+            </div>
+
+            {/* Professional Standards */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                <Building2 className="h-8 w-8 text-[#FF6B00]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Professional Standards
+              </h3>
+              <p className="text-gray-600">
+                Built on expertise from both traditional finance and crypto
+                markets, delivering institutional-grade analysis.
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+            {/* Trusted Expertise */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                <Shield className="h-8 w-8 text-[#FF6B00]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Trusted Expertise
+              </h3>
+              <p className="text-gray-600">
+                Relied upon by professional traders worldwide, consistently
+                delivering high-quality, actionable market insights.
+              </p>
+            </div>
+
+            {/* Market Leadership */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                <LineChart className="h-8 w-8 text-[#FF6B00]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Market Leadership
+              </h3>
+              <p className="text-gray-600">
+                Leading-edge research developed with top crypto analysts and
+                market makers, keeping you ahead of market moves.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
       {/* FAQ Section */}
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
