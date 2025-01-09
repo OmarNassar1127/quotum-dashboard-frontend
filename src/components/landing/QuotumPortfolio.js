@@ -20,46 +20,46 @@ const coinData = [
 
 const QuotumPortfolio = () => {
   return (
-    <section className="py-12 bg-gray-50 border-t border-b border-gray-200">
+    <section className="py-8 sm:py-12 bg-gray-50 border-t border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-2xl font-bold text-center mb-8">
+        <h2 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8">
           Quotum Portfolio
         </h2>
-        {/* Outer container: hidden overflow to clip the scrolling content */}
+        {/* Outer container */}
         <div className="relative w-full overflow-hidden">
-          {/* Inner container: 200% width so that two copies can scroll seamlessly */}
+          {/* Inner container for marquee */}
           <div className="flex w-[200%] animate-marquee">
-            {/* First copy of your coin list */}
+            {/* First copy of coin list */}
             <div className="flex w-[50%] justify-around">
               {coinData.map((coin) => (
                 <div
                   key={coin.name}
-                  className="flex flex-col items-center w-24 mx-2 text-center"
+                  className="flex flex-col items-center w-16 sm:w-24 mx-1 sm:mx-2 text-center"
                 >
                   <img
                     src={coin.logo}
                     alt={coin.name}
-                    className="w-10 h-10 mb-2 rounded-full"
+                    className="w-8 h-8 sm:w-10 sm:h-10 mb-1 sm:mb-2 rounded-full"
                   />
-                  <span className="text-gray-800 text-sm font-medium">
+                  <span className="text-gray-800 text-xs sm:text-sm font-medium truncate w-full">
                     {coin.name}
                   </span>
                 </div>
               ))}
             </div>
-            {/* Second copy (duplicate) for seamless looping */}
+            {/* Second copy for seamless loop */}
             <div className="flex w-[50%] justify-around">
               {coinData.map((coin) => (
                 <div
                   key={coin.name + "_2"}
-                  className="flex flex-col items-center w-24 mx-2 text-center"
+                  className="flex flex-col items-center w-16 sm:w-24 mx-1 sm:mx-2 text-center"
                 >
                   <img
                     src={coin.logo}
                     alt={coin.name}
-                    className="w-10 h-10 mb-2 rounded-full"
+                    className="w-8 h-8 sm:w-10 sm:h-10 mb-1 sm:mb-2 rounded-full"
                   />
-                  <span className="text-gray-800 text-sm font-medium">
+                  <span className="text-gray-800 text-xs sm:text-sm font-medium truncate w-full">
                     {coin.name}
                   </span>
                 </div>
