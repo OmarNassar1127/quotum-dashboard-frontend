@@ -13,6 +13,7 @@ import quotumLogo from "../../assets/quotum-no-bg.png";
 import OneMonth from "../../assets/OneMonth.webp";
 import ThreeMonth from "../../assets/ThreeMonth.webp";
 import SixMonth from "../../assets/SixMonth.webp";
+import quotumVideo from "../../assets/quotum-recording.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
 
 // Basic Features (used for 1-month subscriptions)
@@ -189,18 +190,33 @@ const LandingPage = () => {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-24 bg-gradient-to-b from-[#111] to-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-          <div className="text-center">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white">
+      {/* Hero Section with Video Background */}
+      <section className="relative h-screen overflow-hidden">
+        {/* Video Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <div className="absolute inset-0 bg-black/70 z-10" /> {/* Overlay */}
+          <video
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={quotumVideo} type="video/mp4" />
+          </video>
+        </div>
+
+        {/* Content */}
+        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+          <div className="flex flex-col justify-center items-center h-full text-center">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-8 animate-fade-in">
               Ready to change your life?
             </h1>
-            <p className="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="mt-6 text-xl text-gray-300 max-w-3xl animate-fade-in-delay">
               Take control of your crypto investments with advanced analytics,
               whale tracking, and precise market indicators.
             </p>
-            <div className="mt-10 flex justify-center gap-6">
+            <div className="mt-10 flex justify-center gap-6 animate-fade-in-delay-2">
               <Link
                 to="/register"
                 className="px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors inline-flex items-center text-lg"
@@ -215,6 +231,13 @@ const LandingPage = () => {
                 DISCOVER VIP
               </Link>
             </div>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
+          <div className="w-8 h-12 rounded-full border-2 border-white flex items-center justify-center">
+            <div className="w-1 h-3 bg-white rounded-full animate-scroll" />
           </div>
         </div>
       </section>
