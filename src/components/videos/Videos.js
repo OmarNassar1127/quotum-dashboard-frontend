@@ -306,14 +306,10 @@ const Videos = () => {
                   <div
                     onClick={() => handleLessonClick(lesson)}
                     className={`
-                      w-32 h-32
+                      w-[150px] h-[150px] /* Slightly larger than 32 */
                       rounded-full
                       flex flex-col items-center justify-center
-                      ${
-                        lesson.status === "locked"
-                          ? "bg-[#1a1a1a]"
-                          : "bg-[#222]"
-                      }
+                      ${lesson.status === "locked" ? "bg-[#1a1a1a]" : "bg-[#222]"}
                       border border-[#333]
                       text-center
                       p-4
@@ -330,9 +326,6 @@ const Videos = () => {
                     <h3 className="text-sm font-medium text-gray-200 mb-1">
                       {lesson.title}
                     </h3>
-                    <p className="text-xs text-gray-400 line-clamp-2">
-                      {lesson.description}
-                    </p>
                     <div className="absolute top-full mt-2 w-48 bg-[#222] border border-[#333] rounded-lg p-3 hidden group-hover:block shadow-xl z-10">
                       {lesson.status === "locked" ? (
                         <p className="text-xs text-gray-400">
