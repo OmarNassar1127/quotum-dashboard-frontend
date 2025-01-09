@@ -193,8 +193,9 @@ const LandingPage = () => {
       {/* Hero Section with Video Background */}
       <section className="relative h-screen overflow-hidden">
         {/* Video Background */}
-        <div className="absolute inset-0 w-full h-full">
-          <div className="absolute inset-0 bg-black/70 z-10" /> {/* Overlay */}
+        <div className="absolute inset-0 w-full h-full bg-black">
+          <div className="absolute inset-0 bg-black/70 z-10" />{" "}
+          {/* Dark overlay */}
           <video
             className="w-full h-full object-cover"
             autoPlay
@@ -206,8 +207,11 @@ const LandingPage = () => {
           </video>
         </div>
 
+        {/* Gradient Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/50 to-transparent z-20"></div>
+
         {/* Content */}
-        <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+        <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex flex-col justify-center items-center h-full text-center">
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-8 animate-fade-in">
               Ready to change your life?
@@ -236,8 +240,8 @@ const LandingPage = () => {
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
-          <div className="w-8 h-12 rounded-full border-2 border-white flex items-center justify-center">
-            <div className="w-1 h-3 bg-white rounded-full animate-scroll" />
+          <div className="w-8 h-12 rounded-full border-2 border-black flex items-center justify-center">
+            <div className="w-1 h-3 bg-black rounded-full animate-scroll" />
           </div>
         </div>
       </section>

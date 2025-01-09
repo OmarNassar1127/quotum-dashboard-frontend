@@ -107,3 +107,11 @@
 .animate-scroll {
   animation: scroll 1.5s ease-out infinite;
 }
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+.animate-pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
