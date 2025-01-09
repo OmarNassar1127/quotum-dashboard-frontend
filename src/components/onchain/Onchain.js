@@ -15,61 +15,61 @@ const Onchain = () => {
       name: "Bitcoin Risk Levels",
       description:
         "Shows various risk levels projected onto the price. Useful for setting dynamic limit orders at different risk levels.",
-      route: "/onchain/bitcoin-risk-levels",
+      route: "/dashboard/onchain/bitcoin-risk-levels",
     },
     {
       name: "Bitcoin Waves",
       description:
         "Shows wave bands following Bitcoin's halving cycles, mapping price oscillations onto logarithmic trends. Each band represents different market phases, helping identify potential tops and bottoms for strategic entry and exit points.",
-      route: "/onchain/bitcoin-waves",
+      route: "/dashboard/onchain/bitcoin-waves",
     },
     {
       name: "NUPL",
       description:
         "The Net Unrealized Profit Loss (NUPL) indicator is a powerful tool for analyzing Bitcoin market sentiment and cycles",
-      route: "/onchain/nupl",
+      route: "/dashboard/onchain/nupl",
     },
     {
       name: "ETF Volumes",
       description:
         "The ETF Volumes shows the cumulative volume in Bitcoin ETFs, with this we now what major players of the markets are doing!",
-      route: "/onchain/etf",
+      route: "/dashboard/onchain/etf",
     },
     {
       name: "Bitcoin Short Term Holders",
       description:
         "Short Term Holders hold Bitcoin for under 155 days, reflecting immediate market sentiment and often moving coins in response to short-term price shifts.",
-      route: "/onchain/short-term-holders",
+      route: "/dashboard/onchain/short-term-holders",
     },
     {
       name: "Bitcoin Long Term Holders",
       description:
         "Long Term Holders retain Bitcoin for over 155 days, signaling greater market confidence and more stable accumulation patterns.",
-      route: "/onchain/long-term-holders",
+      route: "/dashboard/onchain/long-term-holders",
     },
     {
       name: "Bitcoin ETF Daily Flows",
       description:
         "The ETF Inflows shows the inflows volume in Bitcoin ETFs, by ETF holders, that way we can pin point who is buying and who is selling!",
-      route: "/onchain/etf-inflows",
+      route: "/dashboard/onchain/etf-inflows",
     },
     {
       name: "Bitcoin Active Addresses",
       description:
         "Bitcoin Active Addresses shows the number of unique addresses that are active in the network, this is a good indicator of the network health.",
-      route: "/onchain/bitcoin-active-addresses",
+      route: "/dashboard/onchain/bitcoin-active-addresses",
     },
     {
       name: "Others.d vs BTC",
       description:
         "Shows the Others dominance vs BTC dominance, this is a good indicator of the market sentiment.",
-      route: "/onchain/others-vs-btc",
+      route: "/dashboard/onchain/others-vs-btc",
     },
     {
       name: "Short term bubble",
       description:
         "The Short-Term Bubble Indicator (STBI) for Bitcoin provides a powerful visualization of price risk by comparing the closing price to the 20-week SMA.",
-      route: "/onchain/short-term-bubble",
+      route: "/dashboard/onchain/short-term-bubble",
     },
   ];
 
