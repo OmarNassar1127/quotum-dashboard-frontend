@@ -108,10 +108,48 @@
   animation: scroll 1.5s ease-out infinite;
 }
 @keyframes pulse {
-  0%, 100% { opacity: 0.4; }
-  50% { opacity: 0.8; }
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.8;
+  }
 }
 
 .animate-pulse {
   animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes marketMove {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate3d(100px, 0, 0);
+    opacity: 1;
+  }
+}
+
+@keyframes dataFlow {
+  0% {
+    stroke-dashoffset: 1000;
+  }
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+.market-data-animation path {
+  animation: dataFlow 3s ease-out forwards;
+  stroke-dasharray: 1000;
+  stroke-dashoffset: 1000;
+}
+
+.market-gradient-animation {
+  animation: marketMove 2s ease-out infinite;
 }

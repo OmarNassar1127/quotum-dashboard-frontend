@@ -13,6 +13,8 @@ import quotumLogo from "../../assets/quotum-no-bg.png";
 import OneMonth from "../../assets/OneMonth.webp";
 import ThreeMonth from "../../assets/ThreeMonth.webp";
 import SixMonth from "../../assets/SixMonth.webp";
+import test from "../../assets/test.svg";
+import test2 from "../../assets/test2.svg";
 import quotumVideo from "../../assets/quotum-recording.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
 
@@ -349,6 +351,125 @@ const LandingPage = () => {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Market Analysis Sections */}
+      {/* First Analysis Section - Light */}
+      <section className="py-20 bg-white overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Content */}
+            <div className="space-y-8">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <ChartBar className="h-8 w-8 text-[#FF6B00]" />
+                  <h2 className="text-3xl font-bold">
+                    Deeper analysis, clearer market perspectives
+                  </h2>
+                </div>
+                <p className="text-gray-600 text-lg">
+                  Quotum's expertise in on-chain data gives you a multi-layered
+                  view of core digital assets.
+                </p>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                      <ChartBar className="h-4 w-4 text-[#FF6B00]" />
+                    </div>
+                    <span className="text-gray-600">
+                      Understand novel asset fundamentals
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                      <LineChart className="h-4 w-4 text-[#FF6B00]" />
+                    </div>
+                    <span className="text-gray-600">
+                      Follow capital flows with precision
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                      <ArrowUpDown className="h-4 w-4 text-[#FF6B00]" />
+                    </div>
+                    <span className="text-gray-600">
+                      Gauge true market sentiment
+                    </span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {/* Image */}
+            <div className="lg:pl-12">
+              <div className="relative rounded-xl overflow-hidden shadow-xl">
+                <img
+                  src={test2}
+                  alt="Market Analysis Dashboard"
+                  className="w-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Second Analysis Section - Dark */}
+      <section className="py-20 bg-[#111] overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            {/* Image First on Desktop */}
+            <div className="lg:pr-12 order-2 lg:order-1">
+              <div className="relative rounded-xl overflow-hidden shadow-xl">
+                <img
+                  src={test}
+                  alt="Market Movement Analysis"
+                  className="w-full"
+                />
+              </div>
+            </div>
+            {/* Content */}
+            <div className="space-y-8 order-1 lg:order-2">
+              <div className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <LineChart className="h-8 w-8 text-[#FF6B00]" />
+                  <h2 className="text-3xl font-bold text-white">
+                    Expert guidance, tailored to your needs
+                  </h2>
+                </div>
+                <p className="text-gray-400 text-lg">
+                  Quotum's team of experts delivers bespoke insights for your
+                  research or trading purposes.
+                </p>
+                <ul className="space-y-4">
+                  <li className="flex items-start gap-3">
+                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                      <ChartBar className="h-4 w-4 text-[#FF6B00]" />
+                    </div>
+                    <span className="text-gray-400">
+                      Curated analytics for streamlined market analysis
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                      <LineChart className="h-4 w-4 text-[#FF6B00]" />
+                    </div>
+                    <span className="text-gray-400">
+                      Regular research diving deep into key market dynamics
+                    </span>
+                  </li>
+                  <li className="flex items-start gap-3">
+                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                      <ArrowUpDown className="h-4 w-4 text-[#FF6B00]" />
+                    </div>
+                    <span className="text-gray-400">
+                      Strategic, on-demand advice and solutions
+                    </span>
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
