@@ -241,13 +241,64 @@ const TermsAndCondition = () => {
             {/* Quick Links */}
             <div className="grid grid-cols-2 gap-8 md:gap-16 w-full md:w-auto md:max-w-md justify-center mx-auto md:mx-0">
               <div className="flex flex-col space-y-3">
-                <h3 className="text-white font-semibold mb-2">Products</h3>
-                <a href="/#pricing" className="text-sm hover:text-white transition-colors">
-                  VIP Access
-                </a>
-                <a href="/#features" className="text-sm hover:text-white transition-colors">
-                  Features
-                </a>
+              <h3 className="text-white font-semibold mb-2">Platform</h3>
+              <a
+                href="#introduction"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('introduction');
+                  if (element) {
+                    const offset = 80; // height of your fixed navbar
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="text-sm hover:text-white transition-colors cursor-pointer"
+              >
+                Intro
+              </a>
+              <a
+                href="#pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('pricing');
+                  if (element) {
+                    const offset = 80; // height of your fixed navbar
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="text-sm hover:text-white transition-colors cursor-pointer"
+              >
+                VIP Access
+              </a>
+              <a
+                href="#features"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('features');
+                  if (element) {
+                    const offset = 80; // height of your fixed navbar
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="text-sm hover:text-white transition-colors cursor-pointer"
+              >
+                Features
+              </a>
               </div>
 
               <div className="flex flex-col space-y-3">
@@ -257,6 +308,12 @@ const TermsAndCondition = () => {
                 </Link>
                 <Link to="/terms" className="text-sm hover:text-white transition-colors">
                   Terms
+                </Link>
+                <Link
+                    to="/legal"
+                    className="text-sm hover:text-white transition-colors"
+                >
+                    Legal
                 </Link>
               </div>
             </div>
