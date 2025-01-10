@@ -131,7 +131,19 @@ const PaymentSelection = () => {
               },
               {
                 key: "terms",
-                label: "I agree to the terms and conditions.",
+                label: (
+                  <>
+                    I agree to the{" "}
+                    <a
+                      href="#/terms"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[#FF6B00] underline hover:text-[#ff8533]"
+                    >
+                      terms and conditions
+                    </a>.
+                  </>
+                ),
               },
             ].map(({ key, label }) => (
               <label key={key} className="flex items-start space-x-3">
