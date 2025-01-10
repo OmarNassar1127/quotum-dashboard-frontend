@@ -15,6 +15,8 @@ import PaymentSelection from "./components/landing/PaymentSelection";
 import PaymentForm from "./components/landing/PaymentForm";
 import PaymentSuccess from "./components/landing/PaymentSuccess";
 import PaymentCancel from "./components/landing/PaymentCancel";
+import TermsAndCondition from "./components/landing/TermsAndCondition";
+import LegalInfo from "./components/landing/LegalInfo";
 import Dashboard from "./components/dashboard/Dashboard";
 import Portfolio from "./components/portfolio/Portfolio";
 import WalletTracking from "./components/wallet/WalletTracking";
@@ -58,6 +60,8 @@ function App() {
         <Route path="/payment-form" element={<PaymentForm />} />
         <Route path="/payment-success" element={<PaymentSuccess />} />
         <Route path="/payment-cancel" element={<PaymentCancel />} />
+        <Route path="/terms" element={<TermsAndCondition />} />
+        <Route path="/legal" element={<LegalInfo />} />
         <Route
           path="/login"
           element={

@@ -219,10 +219,10 @@ const LandingPage = () => {
         {/* Content */}
         <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
           <div className="flex flex-col justify-center items-center h-full text-center">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-8 animate-fade-in">
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-4 animate-fade-in">
               Ready to change your life?
             </h1>
-            <p className="mt-6 text-xl text-gray-300 max-w-3xl animate-fade-in-delay">
+            <p className=" text-xl text-gray-300 max-w-3xl animate-fade-in-delay">
               Take control of your crypto investments with advanced analytics,
               whale tracking, and precise market indicators.
             </p>
@@ -253,7 +253,7 @@ const LandingPage = () => {
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" id="introduction">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             {/* Left Column - Video & Buttons */}
@@ -277,12 +277,6 @@ const LandingPage = () => {
                 >
                   JOIN QUOTUM VIP
                   <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-                <Link
-                  to="/reviews"
-                  className="px-8 py-3 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors"
-                >
-                  Reviews
                 </Link>
               </div>
             </div>
@@ -363,7 +357,7 @@ const LandingPage = () => {
 
       {/* Market Analysis Sections */}
       {/* First Analysis Section - Light */}
-      <section className="py-20 bg-white overflow-hidden">
+      <section className="py-20 bg-white overflow-hidden" id="features">
         {/* Centered Title */}
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
@@ -491,7 +485,7 @@ const LandingPage = () => {
       <QuotumPortfolio />
 
       {/* Subscription Cards */}
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" id="pricing">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center mb-12">Our Products</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -729,27 +723,67 @@ const LandingPage = () => {
             {/* Quick Links - Centered Grid */}
             <div className="grid grid-cols-2 gap-8 md:gap-16 w-full md:w-auto md:max-w-md justify-center mx-auto md:mx-0">
               {/* Products */}
-              <div className="flex flex-col space-y-3">
-                <h3 className="text-white font-semibold mb-2">Products</h3>
-                <Link
-                  to="/vip"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  VIP Access
-                </Link>
-                <Link
-                  to="/features"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Features
-                </Link>
-                <Link
-                  to="/pricing"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Pricing
-                </Link>
-              </div>
+              {/* Products */}
+            <div className="flex flex-col space-y-3">
+              <h3 className="text-white font-semibold mb-2">Platform</h3>
+              <a
+                href="#introduction"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('introduction');
+                  if (element) {
+                    const offset = 80; // height of your fixed navbar
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="text-sm hover:text-white transition-colors cursor-pointer"
+              >
+                Intro
+              </a>
+              <a
+                href="#pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('pricing');
+                  if (element) {
+                    const offset = 80; // height of your fixed navbar
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="text-sm hover:text-white transition-colors cursor-pointer"
+              >
+                VIP Access
+              </a>
+              <a
+                href="#features"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const element = document.getElementById('features');
+                  if (element) {
+                    const offset = 80; // height of your fixed navbar
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - offset;
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    });
+                  }
+                }}
+                className="text-sm hover:text-white transition-colors cursor-pointer"
+              >
+                Features
+              </a>
+            </div>
 
               {/* Company */}
               <div className="flex flex-col space-y-3">
@@ -761,16 +795,16 @@ const LandingPage = () => {
                   About
                 </Link>
                 <Link
-                  to="/contact"
-                  className="text-sm hover:text-white transition-colors"
-                >
-                  Contact
-                </Link>
-                <Link
                   to="/terms"
                   className="text-sm hover:text-white transition-colors"
                 >
                   Terms
+                </Link>
+                <Link
+                  to="/legal"
+                  className="text-sm hover:text-white transition-colors"
+                >
+                  Legal
                 </Link>
               </div>
             </div>
