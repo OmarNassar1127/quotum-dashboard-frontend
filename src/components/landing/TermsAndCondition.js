@@ -200,7 +200,7 @@ const TermsAndCondition = () => {
 
                 <section>
                 <h2 className="text-2xl font-bold text-gray-900">SECTION 18 - GOVERNING LAW</h2>
-                <p>These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of the United States.</p>
+                <p>These Terms of Service and any separate agreements whereby we provide you Services shall be governed by and construed in accordance with the laws of the Netherlands.</p>
                 </section>
 
                 <section>
