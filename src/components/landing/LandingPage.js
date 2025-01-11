@@ -12,6 +12,7 @@ import {
   Target,
   Building2,
   Shield,
+  PieChart,
 } from "lucide-react";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 import OneMonth from "../../assets/OneMonth.webp";
@@ -641,7 +642,7 @@ const LandingPage = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {/* Trusted Expertise */}
             <div className="text-center">
               <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
@@ -669,9 +670,26 @@ const LandingPage = () => {
                 market makers, keeping you ahead of market moves.
               </p>
             </div>
+
+            {/* Data Transparency */}
+            <div className="text-center">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                <PieChart className="h-8 w-8 text-[#FF6B00]" />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">
+                Data Transparency
+              </h3>
+              <p className="text-gray-600">
+                Empowering users with clear, reliable, and verifiable data
+                insights to make confident trading decisions.
+              </p>
+            </div>
           </div>
         </div>
       </section>
+
+      <div className="w-80 h-0.5 bg-black mx-auto my-2"></div>
+
       {/* FAQ Section */}
       <section className="py-20 bg-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -724,66 +742,72 @@ const LandingPage = () => {
             <div className="grid grid-cols-2 gap-8 md:gap-16 w-full md:w-auto md:max-w-md justify-center mx-auto md:mx-0">
               {/* Products */}
               {/* Products */}
-            <div className="flex flex-col space-y-3">
-              <h3 className="text-white font-semibold mb-2">Platform</h3>
-              <a
-                href="#introduction"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.getElementById('introduction');
-                  if (element) {
-                    const offset = 80; // height of your fixed navbar
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - offset;
-                    window.scrollTo({
-                      top: offsetPosition,
-                      behavior: 'smooth'
-                    });
-                  }
-                }}
-                className="text-sm hover:text-white transition-colors cursor-pointer"
-              >
-                Intro
-              </a>
-              <a
-                href="#pricing"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.getElementById('pricing');
-                  if (element) {
-                    const offset = 80; // height of your fixed navbar
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - offset;
-                    window.scrollTo({
-                      top: offsetPosition,
-                      behavior: 'smooth'
-                    });
-                  }
-                }}
-                className="text-sm hover:text-white transition-colors cursor-pointer"
-              >
-                VIP Access
-              </a>
-              <a
-                href="#features"
-                onClick={(e) => {
-                  e.preventDefault();
-                  const element = document.getElementById('features');
-                  if (element) {
-                    const offset = 80; // height of your fixed navbar
-                    const elementPosition = element.getBoundingClientRect().top;
-                    const offsetPosition = elementPosition + window.pageYOffset - offset;
-                    window.scrollTo({
-                      top: offsetPosition,
-                      behavior: 'smooth'
-                    });
-                  }
-                }}
-                className="text-sm hover:text-white transition-colors cursor-pointer"
-              >
-                Features
-              </a>
-            </div>
+              <div className="flex flex-col space-y-3">
+                <h3 className="text-white font-semibold mb-2">Platform</h3>
+                <a
+                  href="#introduction"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById("introduction");
+                    if (element) {
+                      const offset = 80; // height of your fixed navbar
+                      const elementPosition =
+                        element.getBoundingClientRect().top;
+                      const offsetPosition =
+                        elementPosition + window.pageYOffset - offset;
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                  className="text-sm hover:text-white transition-colors cursor-pointer"
+                >
+                  Intro
+                </a>
+                <a
+                  href="#pricing"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById("pricing");
+                    if (element) {
+                      const offset = 80; // height of your fixed navbar
+                      const elementPosition =
+                        element.getBoundingClientRect().top;
+                      const offsetPosition =
+                        elementPosition + window.pageYOffset - offset;
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                  className="text-sm hover:text-white transition-colors cursor-pointer"
+                >
+                  VIP Access
+                </a>
+                <a
+                  href="#features"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById("features");
+                    if (element) {
+                      const offset = 80; // height of your fixed navbar
+                      const elementPosition =
+                        element.getBoundingClientRect().top;
+                      const offsetPosition =
+                        elementPosition + window.pageYOffset - offset;
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                  className="text-sm hover:text-white transition-colors cursor-pointer"
+                >
+                  Features
+                </a>
+              </div>
 
               {/* Company */}
               <div className="flex flex-col space-y-3">
