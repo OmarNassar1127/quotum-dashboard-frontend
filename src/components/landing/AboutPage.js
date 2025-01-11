@@ -53,7 +53,7 @@ const About = () => {
             {/* Omar's Profile */}
             <div className="flex flex-col items-center text-center md:items-start md:text-left">
               <img
-                src="/path-to-omar-profile-pic.jpg"
+                src="https://media.licdn.com/dms/image/v2/C5603AQFbuiqzEyL7VA/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1640099576864?e=1741824000&v=beta&t=h4bAp4XXlISJrvNwZZOZtAVrClt9BY9Sj_LE6sKbxn8"
                 alt="Omar Nassar"
                 className="w-32 h-32 rounded-full mb-4"
               />
@@ -65,14 +65,14 @@ const About = () => {
                 single year, he combines data-driven insights, AI innovation,
                 and blockchain expertise to empower investors and businesses
                 alike. His technical acumen and market strategies are the
-                backbone of Quotum.Cloud's success.
+                backbone of Quotum.Cloud.
               </p>
             </div>
 
             {/* Robin's Profile */}
             <div className="flex flex-col items-center text-center md:items-start md:text-left">
               <img
-                src="/path-to-robin-profile-pic.jpg"
+                src="https://media.licdn.com/dms/image/v2/C4E03AQEr5woGaAxODg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1654520011909?e=1741824000&v=beta&t=vgp-ya12VnurE1Ilr7XxKdaO-QDXGgYR-Qeto63i6RI"
                 alt="Robin Bril"
                 className="w-32 h-32 rounded-full mb-4"
               />
