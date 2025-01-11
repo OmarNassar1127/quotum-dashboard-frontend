@@ -22,6 +22,7 @@ import test from "../../assets/test.svg";
 import test2 from "../../assets/test2.svg";
 import quotumVideo from "../../assets/quotum-recording.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
+import { Menu, X } from "lucide-react";
 
 // Basic Features (used for 1-month subscriptions)
 const basicFeatures = [
@@ -157,46 +158,95 @@ const Testimonial = ({ text, author, date, rating = 5 }) => (
   </div>
 );
 
-const LandingPage = () => {
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    // If user is logged in and tries to access "/", redirect them to /dashboard
-    if (localStorage.getItem("token")) {
-      navigate("/dashboard");
-    }
-  }, [navigate]); // to be removed imo
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-[#111] z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
-            <div className="flex items-center">
-              <img src={quotumLogo} alt="Quotum Logo" className="h-12 w-auto" />
-              <span className="text-white text-xl ml-3 font-semibold">
-                Quotum.cloud
-              </span>
-            </div>
-            <div className="flex space-x-4">
+    <nav className="fixed top-0 w-full bg-[#111] z-50">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex justify-between items-center h-16 md:h-20">
+          {/* Logo and brand name */}
+          <div className="flex items-center">
+            <img
+              src={quotumLogo}
+              alt="Quotum Logo"
+              className="h-8 w-auto md:h-12"
+            />
+            <span className="text-white text-lg md:text-xl ml-2 md:ml-3 font-semibold">
+              Quotum.cloud
+            </span>
+          </div>
+
+          {/* Desktop navigation */}
+          <div className="hidden md:flex md:space-x-4">
+            <Link
+              to="/login"
+              className="px-4 py-2 text-gray-300 hover:text-white transition-colors border-2 border-white rounded-md"
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="px-4 py-2 rounded-md bg-orange-600 text-white hover:bg-orange-500 transition-colors"
+            >
+              JOIN VIP
+            </Link>
+          </div>
+
+          {/* Mobile menu button */}
+          <div className="md:hidden">
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="p-2 rounded-md text-gray-400 hover:text-white focus:outline-none"
+            >
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile menu */}
+        {isOpen && (
+          <div className="md:hidden">
+            <div className="flex flex-col items-center justify-center gap-3 px-4 py-4">
               <Link
                 to="/login"
-                className="px-4 py-2 text-gray-300 hover:text-white transition-colors"
+                className="w-full max-w-[200px] px-3 py-2 text-base font-medium text-center text-gray-300 hover:text-white transition-colors border-2 border-white rounded-md"
+                onClick={() => setIsOpen(false)}
               >
                 Login
               </Link>
               <Link
                 to="/register"
-                className="px-4 py-2 rounded-md bg-[#FF6B00] text-white hover:bg-[#ff8533] transition-colors"
+                className="w-full max-w-[200px] px-3 py-2 text-base font-medium text-center text-white bg-orange-600 hover:bg-orange-500 rounded-md transition-colors"
+                onClick={() => setIsOpen(false)}
               >
                 JOIN VIP
               </Link>
             </div>
           </div>
-        </div>
-      </nav>
+        )}
+      </div>
+    </nav>
+  );
+};
 
+const LandingPage = () => {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
+
+  return (
+    <div className="min-h-screen bg-white">
+      {/* Navigation */}
+      <Navbar />
       {/* Hero Section with Video Background */}
       <section className="relative h-screen overflow-hidden">
         {/* Video Background */}
