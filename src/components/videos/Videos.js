@@ -1,25 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader, ArrowLeft, Play, Lock, X } from "lucide-react";
+import ReactPlayer from "react-player"; // <-- Added ReactPlayer
 import axios from "../../lib/axios";
 
 /**
- * Suppose you want to rely on `lesson.full_video_url`
- * instead of building `/storage/...` in the frontend.
- * We'll prefer that if available.
+ * Suppose you want to rely on `lesson.video_url`.
+ * We'll embed that in an iframe or via ReactPlayer (for YouTube).
  */
 
 function generateConnections(numLessons, rowSize = 4) {
   if (numLessons < 2) return [];
   const connections = [];
   for (let i = 0; i < numLessons - 1; i++) {
-    const currentRow = Math.floor(i / rowSize);
-    const nextRow = Math.floor((i + 1) / rowSize);
-    if (currentRow === nextRow) {
-      connections.push([i, i + 1]);
-    } else {
-      connections.push([i, i + 1]);
-    }
+    connections.push([i, i + 1]);
   }
   return connections;
 }
@@ -52,7 +46,9 @@ const Videos = () => {
   const [selectedLesson, setSelectedLesson] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // If you still want to keep a reference, though not strictly required with ReactPlayer
   const videoRef = useRef(null);
+
   const [progressPercentage, setProgressPercentage] = useState(0);
   const [hasReportedCompletion, setHasReportedCompletion] = useState(false);
 
@@ -76,7 +72,6 @@ const Videos = () => {
       ]);
 
       const sortedLessons = lessonsRes.data.sort((a, b) => a.order - b.order);
-
       setLessons(sortedLessons);
       setProgressData(progressRes.data);
 
@@ -135,37 +130,34 @@ const Videos = () => {
         progress_percentage: newPercentage,
       });
 
-      setProgressData((prev) => {
-        const updated = [...prev];
-        const idx = updated.findIndex((p) => p.lesson_id === lessonId);
-        if (idx !== -1) {
-          updated[idx] = {
-            ...updated[idx],
-            progress_percentage: newPercentage,
-            is_completed: newPercentage >= 80,
-          };
-        } else {
-          updated.push({
-            lesson_id: lessonId,
-            progress_percentage: newPercentage,
-            is_completed: newPercentage >= 80,
-            lesson: {},
-          });
-        }
-        return updated;
-      });
+      // Create a copy of your current progressData outside the setState callback
+      const updatedProgressData = [...progressData];
+      const idx = updatedProgressData.findIndex(
+        (p) => p.lesson_id === lessonId
+      );
 
-      setFinalLessons((prevLessons) => {
-        return computeLessonsStatus(prevLessons, [
-          // We transform each item in progressData, plus the newly updated one
-          // But we already have them in setProgressData callback
-          // So we can do something simpler, or re-run the entire logic with updated progressData
-          // simpler approach: after setProgressData, we can do a setTimeout, or we can do the same approach
-          // but let's do it in a single place:
-          // We'll use the new progressData from the updated array:
-          // 1) get the updated array from updated
-        ]);
-      });
+      if (idx !== -1) {
+        updatedProgressData[idx] = {
+          ...updatedProgressData[idx],
+          progress_percentage: newPercentage,
+          is_completed: newPercentage >= 80,
+        };
+      } else {
+        updatedProgressData.push({
+          lesson_id: lessonId,
+          progress_percentage: newPercentage,
+          is_completed: newPercentage >= 80,
+          lesson: {},
+        });
+      }
+
+      // Update the progressData state
+      setProgressData(updatedProgressData);
+
+      // Now recompute finalLessons using the updatedProgressData
+      setFinalLessons((prevLessons) =>
+        computeLessonsStatus(prevLessons, updatedProgressData)
+      );
     } catch (err) {
       console.error("Error updating progress:", err);
       setError(err.response?.data?.message || "Failed to update progress");
@@ -196,20 +188,21 @@ const Videos = () => {
     }
   };
 
-  const handleTimeUpdate = () => {
-    if (!videoRef.current || !selectedLesson) return;
+  /**
+   * Handler to track progress from ReactPlayer
+   * 'state' param includes { played, playedSeconds, loaded, loadedSeconds }
+   * We focus on 'played' which is a fraction from 0 to 1
+   */
+  const handleVideoProgress = (state) => {
+    if (!selectedLesson) return;
 
-    const video = videoRef.current;
-    const currentTime = video.currentTime;
-    const duration = video.duration || 0;
-    if (duration === 0) return;
-
-    const percent = (currentTime / duration) * 100;
+    const percent = state.played * 100;
     setProgressPercentage(percent);
 
+    // If the user hasn’t triggered “completion” yet and we have reached 80%
     if (!hasReportedCompletion && percent >= 80) {
       setHasReportedCompletion(true);
-
+      // Mark user’s progress as 100 in the backend
       handleUpdateProgress(selectedLesson.id, 100)
         .then(() => fetchAndUpdateProgress())
         .catch((err) => {
@@ -239,6 +232,7 @@ const Videos = () => {
       const y1 = parseFloat(startPos.yPos);
       const x2 = parseFloat(endPos.xPos);
       const y2 = parseFloat(endPos.yPos);
+
       lines.push(
         <line
           key={`${startIndex}-${endIndex}`}
@@ -312,14 +306,10 @@ const Videos = () => {
                   <div
                     onClick={() => handleLessonClick(lesson)}
                     className={`
-                      w-32 h-32
+                      w-[150px] h-[150px] /* Slightly larger than 32 */
                       rounded-full
                       flex flex-col items-center justify-center
-                      ${
-                        lesson.status === "locked"
-                          ? "bg-[#1a1a1a]"
-                          : "bg-[#222]"
-                      }
+                      ${lesson.status === "locked" ? "bg-[#1a1a1a]" : "bg-[#222]"}
                       border border-[#333]
                       text-center
                       p-4
@@ -336,9 +326,6 @@ const Videos = () => {
                     <h3 className="text-sm font-medium text-gray-200 mb-1">
                       {lesson.title}
                     </h3>
-                    <p className="text-xs text-gray-400 line-clamp-2">
-                      {lesson.description}
-                    </p>
                     <div className="absolute top-full mt-2 w-48 bg-[#222] border border-[#333] rounded-lg p-3 hidden group-hover:block shadow-xl z-10">
                       {lesson.status === "locked" ? (
                         <p className="text-xs text-gray-400">
@@ -402,16 +389,17 @@ const Videos = () => {
                 {selectedLesson.description}
               </p>
               <div className="aspect-video bg-black mb-4">
-                <video
+                {/* 
+                  Use ReactPlayer to embed YouTube (or any other supported URL).
+                  We use the 'onProgress' callback to track how much has been played.
+                */}
+                <ReactPlayer
                   ref={videoRef}
-                  src={
-                    selectedLesson.full_video_url
-                      ? selectedLesson.full_video_url
-                      : `/storage/${selectedLesson.video_path}`
-                  }
-                  className="w-full h-full"
+                  url={selectedLesson.video_url}
                   controls
-                  onTimeUpdate={handleTimeUpdate}
+                  width="100%"
+                  height="100%"
+                  onProgress={handleVideoProgress}
                 />
               </div>
               <div className="w-full bg-[#333] rounded h-3">

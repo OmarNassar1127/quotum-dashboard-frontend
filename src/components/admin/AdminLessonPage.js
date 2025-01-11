@@ -13,12 +13,11 @@ const AdminLessonPage = () => {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    video: null,
+    video_url: "",
     order: 0,
     is_published: false,
   });
 
-  const [videoPreview, setVideoPreview] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
   // ----------------------------------
@@ -52,22 +51,20 @@ const AdminLessonPage = () => {
       setFormData({
         title: lesson.title || "",
         description: lesson.description || "",
-        video: null, // not handled when editing
+        video_url: lesson.video_url || "",
         order: lesson.order || 0,
         is_published: lesson.is_published || false,
       });
-      setVideoPreview(null);
     } else {
       // We are creating a new lesson
       setSelectedLesson(null);
       setFormData({
         title: "",
         description: "",
-        video: null,
-        order: lessons.length, // for example, next position
+        video_url: "",
+        order: lessons.length, // default to next order
         is_published: false,
       });
-      setVideoPreview(null);
     }
     setIsModalOpen(true);
   };
@@ -81,65 +78,29 @@ const AdminLessonPage = () => {
     setFormData({
       title: "",
       description: "",
-      video: null,
+      video_url: "",
       order: 0,
       is_published: false,
     });
-    setVideoPreview(null);
-  };
-
-  // ----------------------------------
-  // Handle "video" file input changes (create-only)
-  // ----------------------------------
-  const handleVideoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setFormData((prev) => ({ ...prev, video: file }));
-      setVideoPreview(URL.createObjectURL(file));
-    }
   };
 
   // ----------------------------------
   // CREATE lesson (POST /lessons)
   // ----------------------------------
   const createLesson = async () => {
-    // We'll use FormData here because we have a file
-    const formPayload = new FormData();
-    formPayload.append("title", formData.title);
-    formPayload.append("description", formData.description);
-    formPayload.append("order", formData.order);
-    formPayload.append("is_published", formData.is_published ? "1" : "0");
-
-    if (formData.video) {
-      formPayload.append("video", formData.video);
-    }
-
-    await axios.post("/lessons", formPayload, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
+    await axios.post("/lessons", formData, {
+      headers: { "Content-Type": "application/json" },
     });
   };
 
   // ----------------------------------
   // UPDATE lesson (PUT /lessons/:id)
-  // No video update allowed
   // ----------------------------------
   const updateLesson = async () => {
     if (!selectedLesson) return;
 
-    // We'll send a JSON body (no FormData needed since no file)
-    const updatePayload = {
-      title: formData.title,
-      description: formData.description,
-      order: formData.order,
-      is_published: formData.is_published,
-    };
-
-    await axios.put(`/lessons/${selectedLesson.id}`, updatePayload, {
-      headers: {
-        "Content-Type": "application/json",
-      },
+    await axios.put(`/lessons/${selectedLesson.id}`, formData, {
+      headers: { "Content-Type": "application/json" },
     });
   };
 
@@ -151,10 +112,8 @@ const AdminLessonPage = () => {
     setSubmitting(true);
     try {
       if (selectedLesson) {
-        // Edit existing lesson
         await updateLesson();
       } else {
-        // Create new lesson
         await createLesson();
       }
       await fetchLessons(); // refresh the table
@@ -203,15 +162,13 @@ const AdminLessonPage = () => {
         <h1 className="text-2xl font-bold text-gray-100">
           Video Lessons Management
         </h1>
-        <div className="flex gap-4">
-          <button
-            onClick={() => handleOpenModal(null)}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white focus:outline-none transition-colors"
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Add New Lesson
-          </button>
-        </div>
+        <button
+          onClick={() => handleOpenModal(null)}
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white transition-colors"
+        >
+          <Plus className="w-4 h-4 mr-2" />
+          Add New Lesson
+        </button>
       </div>
 
       {/* Error */}
@@ -233,13 +190,10 @@ const AdminLessonPage = () => {
                 Title
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                Description
+                Video URL
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
-                Duration
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider">
                 Actions
@@ -252,16 +206,10 @@ const AdminLessonPage = () => {
                 key={lesson.id}
                 className="bg-[#222] hover:bg-[#333] transition-colors"
               >
-                <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                  {lesson.order}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                  {lesson.title}
-                </td>
-                <td className="px-6 py-4 max-w-xs truncate text-gray-300">
-                  {lesson.description}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4 text-gray-300">{lesson.order}</td>
+                <td className="px-6 py-4 text-gray-300">{lesson.title}</td>
+                <td className="px-6 py-4 text-gray-300">{lesson.video_url}</td>
+                <td className="px-6 py-4">
                   {lesson.is_published ? (
                     <span className="bg-green-900/20 text-green-300 text-xs font-medium px-2.5 py-0.5 rounded border border-green-500/50">
                       Published
@@ -272,16 +220,7 @@ const AdminLessonPage = () => {
                     </span>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-gray-300">
-                  {lesson.duration
-                    ? `${Math.floor(lesson.duration / 60)}:${(
-                        lesson.duration % 60
-                      )
-                        .toString()
-                        .padStart(2, "0")}`
-                    : "N/A"}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+                <td className="px-6 py-4">
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleOpenModal(lesson)}
@@ -361,6 +300,25 @@ const AdminLessonPage = () => {
                   />
                 </div>
 
+                {/* Video URL */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-300 mb-1">
+                    Video URL
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.video_url}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        video_url: e.target.value,
+                      }))
+                    }
+                    required
+                    className="w-full px-3 py-2 bg-[#333] border border-[#444] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
+                  />
+                </div>
+
                 {/* Order */}
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1">
@@ -380,43 +338,6 @@ const AdminLessonPage = () => {
                     className="w-full px-3 py-2 bg-[#333] border border-[#444] rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-100"
                   />
                 </div>
-
-                {/* Only show "Video" field if creating */}
-                {!selectedLesson && (
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Video
-                    </label>
-                    <div className="flex items-center gap-4">
-                      <input
-                        type="file"
-                        accept="video/mp4,video/quicktime"
-                        onChange={handleVideoChange}
-                        className="flex-1 text-gray-300 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#444] file:text-gray-300 hover:file:bg-[#555]"
-                        required // Only required when creating
-                      />
-                      {videoPreview && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setVideoPreview(null);
-                            setFormData((prev) => ({ ...prev, video: null }));
-                          }}
-                          className="p-1 hover:bg-[#444] rounded transition-colors"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                    {videoPreview && (
-                      <video
-                        src={videoPreview}
-                        className="mt-2 max-w-full h-48 rounded bg-[#333]"
-                        controls
-                      />
-                    )}
-                  </div>
-                )}
 
                 {/* Publish Checkbox */}
                 <div className="flex items-center gap-2">
