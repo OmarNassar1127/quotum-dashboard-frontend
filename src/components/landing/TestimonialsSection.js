@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const testimonials = [
+const originalTestimonials = [
   {
     text: "Quotum.cloud has completely transformed how I approach crypto investments. The research is top-notch, and the indicators are game-changers.",
     author: "Alice W.",
@@ -103,25 +103,27 @@ const testimonials = [
   },
 ];
 
+const shuffleArray = (array) => {
+  const newArray = [...array];
+  for (let i = newArray.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+  }
+  return newArray;
+};
+
 const TestimonialsSection = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      handleNext();
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, [currentIndex]);
+  const [testimonials, setTestimonials] = useState(shuffleArray(originalTestimonials));
 
   const handleNext = () => {
     if (isAnimating) return;
     setIsAnimating(true);
 
     setTimeout(() => {
-      setCurrentIndex(
-        (prevIndex) => (prevIndex + 1) % Math.ceil(testimonials.length / 4)
+      setCurrentIndex((prevIndex) => 
+        (prevIndex + 1) % Math.ceil(testimonials.length / 4)
       );
       setIsAnimating(false);
     }, 500);
@@ -132,14 +134,21 @@ const TestimonialsSection = () => {
     setIsAnimating(true);
 
     setTimeout(() => {
-      setCurrentIndex(
-        (prevIndex) =>
-          (prevIndex - 1 + Math.ceil(testimonials.length / 4)) %
-          Math.ceil(testimonials.length / 4)
+      setCurrentIndex((prevIndex) =>
+        (prevIndex - 1 + Math.ceil(testimonials.length / 4)) %
+        Math.ceil(testimonials.length / 4)
       );
       setIsAnimating(false);
     }, 500);
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      handleNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
@@ -156,7 +165,7 @@ const TestimonialsSection = () => {
               <div key={i} className="min-w-full grid grid-cols-2 gap-6">
                 {testimonials.slice(i * 2, i * 2 + 2).map((item, index) => (
                   <div
-                    key={index}
+                    key={`${i}-${index}`}
                     className="p-6 border rounded-lg shadow-lg flex flex-col justify-between bg-white h-full"
                   >
                     <p className="text-lg italic mb-4">{item.text}</p>
