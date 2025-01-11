@@ -84,7 +84,7 @@ const PendingActivation = () => {
       localStorage.removeItem("token");
       localStorage.removeItem("role");
       localStorage.removeItem("active");
-      navigate("/login", { replace: true });
+      navigate("/", { replace: true });
     }
   };
 
