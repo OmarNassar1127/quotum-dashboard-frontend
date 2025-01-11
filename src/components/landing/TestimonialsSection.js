@@ -162,7 +162,10 @@ const TestimonialsSection = () => {
                     <p className="text-lg italic mb-4">{item.text}</p>
                     <div className="mt-4">
                       <p className="text-right font-semibold">
-                        - {item.author}, {item.date}
+                        - {item.author}
+                      </p>
+                      <p className="text-right font-semibold">
+                        {item.date}
                       </p>
                     </div>
                   </div>
