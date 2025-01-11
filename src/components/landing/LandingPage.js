@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 import {
   ArrowRight,
   ChartBar,
@@ -13,6 +14,8 @@ import {
   Building2,
   Shield,
   PieChart,
+  Menu,
+  X,
 } from "lucide-react";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 import OneMonth from "../../assets/OneMonth.webp";
@@ -22,8 +25,62 @@ import test from "../../assets/test.svg";
 import test2 from "../../assets/test2.svg";
 import quotumVideo from "../../assets/quotum-recording.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
-import { Menu, X } from "lucide-react";
 import TestimonialsSection from "./TestimonialsSection";
+
+const fadeInUpVariants = {
+  hidden: { opacity: 0, y: 60 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const fadeInVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { duration: 0.8 },
+  },
+};
+
+const staggerChildrenVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: 0.3,
+    },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.5, ease: "easeOut" },
+  },
+};
+
+const slideInLeftVariants = {
+  hidden: { opacity: 0, x: -100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
+
+const slideInRightVariants = {
+  hidden: { opacity: 0, x: 100 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
+};
 
 // Basic Features (used for 1-month subscriptions)
 const basicFeatures = [
@@ -42,122 +99,6 @@ const advancedFeatures = [
   "1-on-1 direct support",
   "Month 2 Upgrade",
 ];
-
-// FAQ Component
-const FAQ = ({ question, answer }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-200">
-      <button
-        className="w-full py-6 flex justify-between items-center text-left"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <h3 className="text-lg font-medium text-gray-900">{question}</h3>
-        <ChevronDown
-          className={`h-5 w-5 text-gray-500 transition-transform ${
-            isOpen ? "transform rotate-180" : ""
-          }`}
-        />
-      </button>
-      {isOpen && (
-        <div className="pb-6">
-          <p className="text-gray-600">{answer}</p>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Subscription Card Component
-const SubscriptionCard = ({
-  months,
-  price,
-  isPopular = false,
-  isBestDeal = false,
-  features = [],
-  image,
-}) => {
-  const navigate = useNavigate();
-
-  const handleSubscriptionClick = () => {
-    const planKey = `${months}month${months > 1 ? "s" : ""}`;
-    navigate(`/payment/${planKey}`);
-  };
-
-  return (
-    <div
-      className="bg-black rounded-2xl p-6 flex flex-col relative transform transition-all hover:scale-105 cursor-pointer"
-      onClick={handleSubscriptionClick}
-    >
-      {isPopular && (
-        <span className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
-          Most Popular
-        </span>
-      )}
-      {isBestDeal && (
-        <span className="absolute -top-3 left-4 bg-[#FF6B00] px-3 py-1 rounded-full text-white text-sm font-medium">
-          Best Deal
-        </span>
-      )}
-      <div className="flex flex-col h-full">
-        <div className="flex-grow">
-          <img
-            src={image}
-            alt={`${months}-month subscription`}
-            className="w-full h-32 object-cover rounded-lg mb-4"
-          />
-          <h3 className="text-2xl font-bold text-white mb-4">
-            {months} MONTHS
-          </h3>
-          <p className="text-gray-400 mb-6">
-            {months === 1
-              ? "Get access to the basic features and see if QUOTUM VIP is the right fit for you!"
-              : `Go beyond the basics with advanced features, deeper insights, and extended support for your ${months}-month journey!`}
-          </p>
-          {/* Render Feature List */}
-          <ul className="text-gray-400 space-y-2 list-disc list-inside">
-            {features.map((feature, idx) => (
-              <li key={idx}>{feature}</li>
-            ))}
-          </ul>
-        </div>
-        <div className="mt-auto">
-          <p className="text-3xl font-bold text-white mb-4 mt-4">€{price}</p>
-          <button className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors">
-            JOIN NOW
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-const Testimonial = ({ text, author, date, rating = 5 }) => (
-  <div className="bg-gray-50 rounded-2xl p-8 shadow-sm">
-    <div className="flex mb-4">
-      {[...Array(rating)].map((_, i) => (
-        <svg
-          key={i}
-          className="w-5 h-5 text-[#FF6B00]"
-          fill="currentColor"
-          viewBox="0 0 20 20"
-        >
-          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-        </svg>
-      ))}
-    </div>
-    <p className="text-gray-800 mb-6">{text}</p>
-    <div className="flex items-center">
-      <div className="h-10 w-10 rounded-full bg-black flex items-center justify-center text-white font-bold">
-        {author[0]}
-      </div>
-      <div className="ml-4">
-        <h4 className="font-semibold text-gray-900">{author}</h4>
-        <p className="text-sm text-gray-600">{date}</p>
-      </div>
-    </div>
-  </div>
-);
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -237,6 +178,131 @@ const Navbar = () => {
   );
 };
 
+// Enhanced FAQ Component with animations
+const FAQ = ({ question, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <motion.div
+      className="border-b border-gray-200"
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-100px" }}
+      variants={fadeInUpVariants}
+    >
+      <button
+        className="w-full py-6 flex justify-between items-center text-left"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <h3 className="text-lg font-medium text-gray-900">{question}</h3>
+        <motion.div
+          animate={{ rotate: isOpen ? 180 : 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <ChevronDown className="h-5 w-5 text-gray-500" />
+        </motion.div>
+      </button>
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{
+          height: isOpen ? "auto" : 0,
+          opacity: isOpen ? 1 : 0,
+        }}
+        transition={{ duration: 0.3 }}
+        className="overflow-hidden"
+      >
+        <p className="pb-6 text-gray-600">{answer}</p>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+// Enhanced SubscriptionCard Component with animations
+const SubscriptionCard = ({
+  months,
+  price,
+  isPopular = false,
+  isBestDeal = false,
+  features = [],
+  image,
+}) => {
+  const navigate = useNavigate();
+
+  return (
+    <motion.div
+      variants={cardVariants}
+      whileHover={{ scale: 1.03 }}
+      className="bg-black rounded-2xl p-6 flex flex-col relative cursor-pointer"
+      onClick={() =>
+        navigate(`/payment/${months}month${months > 1 ? "s" : ""}`)
+      }
+    >
+      {isPopular && (
+        <motion.span
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium"
+        >
+          Most Popular
+        </motion.span>
+      )}
+      {isBestDeal && (
+        <motion.span
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="absolute -top-3 left-4 bg-[#FF6B00] px-3 py-1 rounded-full text-white text-sm font-medium"
+        >
+          Best Deal
+        </motion.span>
+      )}
+      <div className="flex flex-col h-full">
+        <motion.img
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+          src={image}
+          alt={`${months}-month subscription`}
+          className="w-full h-32 object-cover rounded-lg mb-4"
+        />
+        <motion.div variants={fadeInUpVariants}>
+          <h3 className="text-2xl font-bold text-white mb-4">
+            {months} MONTHS
+          </h3>
+          <p className="text-gray-400 mb-6">
+            {months === 1
+              ? "Get access to the basic features and see if QUOTUM VIP is the right fit for you!"
+              : `Go beyond the basics with advanced features, deeper insights, and extended support for your ${months}-month journey!`}
+          </p>
+          <ul className="text-gray-400 space-y-2 list-disc list-inside">
+            {features.map((feature, idx) => (
+              <motion.li
+                key={idx}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 * idx }}
+              >
+                {feature}
+              </motion.li>
+            ))}
+          </ul>
+        </motion.div>
+        <motion.div className="mt-auto" variants={fadeInUpVariants}>
+          <p className="text-3xl font-bold text-white mb-4 mt-4">€{price}</p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors"
+          >
+            JOIN NOW
+          </motion.button>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
 const LandingPage = () => {
   const navigate = useNavigate();
 
@@ -248,14 +314,17 @@ const LandingPage = () => {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
       <Navbar />
-      {/* Hero Section with Video Background */}
-      <section className="relative h-screen overflow-hidden">
-        {/* Video Background */}
+
+      {/* Hero Section */}
+      <motion.section
+        initial="hidden"
+        animate="visible"
+        variants={fadeInVariants}
+        className="relative h-screen overflow-hidden"
+      >
         <div className="absolute inset-0 w-full h-full bg-black">
-          <div className="absolute inset-0 bg-black/70 z-10" />{" "}
-          {/* Dark overlay */}
+          <div className="absolute inset-0 bg-black/70 z-10" />
           <video
             className="w-full h-full object-cover"
             autoPlay
@@ -267,51 +336,77 @@ const LandingPage = () => {
           </video>
         </div>
 
-        {/* Gradient Overlay */}
         <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-white via-white/50 to-transparent z-20"></div>
 
-        {/* Content */}
-        <div className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-          <div className="flex flex-col justify-center items-center h-full text-center">
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-white mb-4 animate-fade-in">
+        <motion.div
+          variants={staggerChildrenVariants}
+          className="relative z-30 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full"
+        >
+          <div className="flex flex-col justify-center items-center h-full text-center px-4">
+            <motion.h1
+              variants={fadeInUpVariants}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
+            >
               Ready to change your life?
-            </h1>
-            <p className=" text-xl text-gray-300 max-w-3xl animate-fade-in-delay">
+            </motion.h1>
+            <motion.p
+              variants={fadeInUpVariants}
+              className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mb-8 md:mb-12"
+            >
               Take control of your crypto investments with advanced analytics,
               whale tracking, and precise market indicators.
-            </p>
-            <div className="mt-10 flex justify-center gap-6 animate-fade-in-delay-2">
-              <Link
-                to="/register"
-                className="px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors inline-flex items-center text-lg"
+            </motion.p>
+            <motion.div
+              variants={fadeInUpVariants}
+              className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-xl"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto"
               >
-                JOIN QUOTUM VIP
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-              <Link
-                to="/discover"
-                className="px-8 py-4 rounded-md border-2 border-white text-white font-medium hover:bg-white hover:text-black transition-colors"
+                <Link
+                  to="/register"
+                  className="w-full sm:w-auto px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors inline-flex items-center justify-center text-base sm:text-lg"
+                >
+                  JOIN QUOTUM VIP
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </motion.div>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-full sm:w-auto"
               >
-                DISCOVER VIP
-              </Link>
-            </div>
+                <Link
+                  to="/discover"
+                  className="w-full sm:w-auto px-8 py-4 rounded-md border-2 border-white text-white font-medium hover:bg-white hover:text-black transition-colors inline-flex items-center justify-center text-base sm:text-lg"
+                >
+                  DISCOVER VIP
+                </Link>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
-
-        {/* Scroll Indicator */}
+        </motion.div>
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-20 animate-bounce">
           <div className="w-8 h-12 rounded-full border-2 border-black flex items-center justify-center">
             <div className="w-1 h-3 bg-black rounded-full animate-scroll" />
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white" id="introduction">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildrenVariants}
+        className="py-20 bg-white"
+        id="introduction"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Left Column - Video & Buttons */}
-            <div className="space-y-6">
+            <motion.div variants={slideInLeftVariants} className="space-y-6">
               <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
                 <button className="absolute inset-0 flex items-center justify-center">
                   <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
@@ -333,87 +428,71 @@ const LandingPage = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </div>
-            </div>
+            </motion.div>
 
-            {/* Right Column - Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#FF6B00] rounded-lg flex-shrink-0">
-                    <ChartBar className="h-6 w-6 text-white" />
+            <motion.div
+              variants={staggerChildrenVariants}
+              className="grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+              {[
+                {
+                  icon: <ChartBar className="h-6 w-6 text-white" />,
+                  title: "IN DEPTH ANALYSIS",
+                  description:
+                    "I am working day and night to give you the most accurate and insightful market analyses.",
+                },
+                {
+                  icon: <ArrowUpDown className="h-6 w-6 text-white" />,
+                  title: "FOLLOW MY TRADES",
+                  description:
+                    "Follow all my trades in real time and stay updated with every market move I make.",
+                },
+                {
+                  icon: <LineChart className="h-6 w-6 text-white" />,
+                  title: "STRATEGY & INSIGHTS",
+                  description:
+                    "The complete gameplan, from learning the basics to advanced trades.",
+                },
+                {
+                  icon: <Users className="h-6 w-6 text-white" />,
+                  title: "QUOTUM COMMUNITY",
+                  description:
+                    "Join the Quotum community, a network of ambitious investors driven to grow and succeed together.",
+                },
+              ].map((feature, index) => (
+                <motion.div
+                  key={index}
+                  variants={cardVariants}
+                  className="bg-gray-50 rounded-xl p-6"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="p-2 bg-[#FF6B00] rounded-lg flex-shrink-0">
+                      {feature.icon}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold mb-2">
+                        {feature.title}
+                      </h3>
+                      <p className="text-gray-600">{feature.description}</p>
+                    </div>
                   </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">
-                      IN DEPTH ANALYSIS
-                    </h3>
-                    <p className="text-gray-600">
-                      I am working day and night to give you the most accurate
-                      and insightful market analyses. Gain deep knowledge to
-                      make your next move.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#FF6B00] rounded-lg flex-shrink-0">
-                    <ArrowUpDown className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">FOLLOW MY TRADES</h3>
-                    <p className="text-gray-600">
-                      Follow all my trades in real time and stay updated with
-                      every market move I make. See my own portfolio in real
-                      time.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#FF6B00] rounded-lg flex-shrink-0">
-                    <LineChart className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">
-                      STRATEGY & INSIGHTS
-                    </h3>
-                    <p className="text-gray-600">
-                      The complete gameplan, from learning the basics to
-                      advanced trades I take you deep into the Quotum philosophy
-                      of playing the markets.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-6">
-                <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#FF6B00] rounded-lg flex-shrink-0">
-                    <Users className="h-6 w-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold mb-2">QUOTUM COMMUNITY</h3>
-                    <p className="text-gray-600">
-                      Join the Quotum community, a network of ambitious
-                      investors driven to grow and succeed together, with
-                      exclusive live meetups.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Market Analysis Sections */}
-      {/* First Analysis Section - Light */}
-      <section className="py-20 bg-white overflow-hidden" id="features">
-        {/* Centered Title */}
-        <div className="text-center mb-16">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildrenVariants}
+        className="py-20 bg-white overflow-hidden"
+        id="features"
+      >
+        <motion.div variants={fadeInUpVariants} className="text-center mb-16">
           <h1 className="font-bold text-gray-900 mb-4">
             <span className="text-4xl md:text-5xl lg:inline-block lg:text-6xl">
               Clear insights,{" "}
@@ -422,53 +501,53 @@ const LandingPage = () => {
               Big results
             </span>
           </h1>
-        </div>
+        </motion.div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Content */}
-            <div className="space-y-8">
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <ChartBar className="h-8 w-8 text-[#FF6B00]" />
-                  <h2 className="text-3xl font-bold">
-                    Deeper analysis, clearer market perspectives
-                  </h2>
+            <motion.div variants={slideInLeftVariants} className="space-y-8">
+              <div className="space-y-8">
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <ChartBar className="h-8 w-8 text-[#FF6B00]" />
+                    <h2 className="text-3xl font-bold">
+                      Deeper analysis, clearer market perspectives
+                    </h2>
+                  </div>
+                  <p className="text-gray-600 text-lg">
+                    Quotum's expertise in on-chain data gives you a
+                    multi-layered view of core digital assets.
+                  </p>
+                  <ul className="space-y-4">
+                    <li className="flex items-start gap-3">
+                      <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                        <ChartBar className="h-4 w-4 text-[#FF6B00]" />
+                      </div>
+                      <span className="text-gray-600">
+                        Understand novel asset fundamentals
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                        <LineChart className="h-4 w-4 text-[#FF6B00]" />
+                      </div>
+                      <span className="text-gray-600">
+                        Follow capital flows with precision
+                      </span>
+                    </li>
+                    <li className="flex items-start gap-3">
+                      <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                        <ArrowUpDown className="h-4 w-4 text-[#FF6B00]" />
+                      </div>
+                      <span className="text-gray-600">
+                        Gauge true market sentiment
+                      </span>
+                    </li>
+                  </ul>
                 </div>
-                <p className="text-gray-600 text-lg">
-                  Quotum's expertise in on-chain data gives you a multi-layered
-                  view of core digital assets.
-                </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                      <ChartBar className="h-4 w-4 text-[#FF6B00]" />
-                    </div>
-                    <span className="text-gray-600">
-                      Understand novel asset fundamentals
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                      <LineChart className="h-4 w-4 text-[#FF6B00]" />
-                    </div>
-                    <span className="text-gray-600">
-                      Follow capital flows with precision
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                      <ArrowUpDown className="h-4 w-4 text-[#FF6B00]" />
-                    </div>
-                    <span className="text-gray-600">
-                      Gauge true market sentiment
-                    </span>
-                  </li>
-                </ul>
               </div>
-            </div>
-            {/* Image */}
-            <div className="lg:pl-12">
+            </motion.div>
+            <motion.div variants={slideInRightVariants} className="lg:pl-12">
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img
                   src={test2}
@@ -476,17 +555,25 @@ const LandingPage = () => {
                   className="w-full"
                 />
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Second Analysis Section - Dark */}
-      <section className="py-20 bg-[#111] overflow-hidden">
+      {/* Dark Analysis Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildrenVariants}
+        className="py-20 bg-[#111] overflow-hidden"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Image First on Desktop */}
-            <div className="lg:pr-12 order-2 lg:order-1">
+            <motion.div
+              variants={slideInLeftVariants}
+              className="lg:pr-12 order-2 lg:order-1"
+            >
               <div className="relative rounded-xl overflow-hidden shadow-xl">
                 <img
                   src={test}
@@ -494,9 +581,11 @@ const LandingPage = () => {
                   className="w-full"
                 />
               </div>
-            </div>
-            {/* Content */}
-            <div className="space-y-8 order-1 lg:order-2">
+            </motion.div>
+            <motion.div
+              variants={slideInRightVariants}
+              className="space-y-8 order-1 lg:order-2"
+            >
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <LineChart className="h-8 w-8 text-[#FF6B00]" />
@@ -508,54 +597,73 @@ const LandingPage = () => {
                   Quotum's team of experts delivers bespoke insights for your
                   research or trading purposes.
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start gap-3">
-                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                      <ChartBar className="h-4 w-4 text-[#FF6B00]" />
-                    </div>
-                    <span className="text-gray-400">
-                      Curated analytics for streamlined market analysis
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                      <LineChart className="h-4 w-4 text-[#FF6B00]" />
-                    </div>
-                    <span className="text-gray-400">
-                      Regular research diving deep into key market dynamics
-                    </span>
-                  </li>
-                  <li className="flex items-start gap-3">
-                    <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                      <ArrowUpDown className="h-4 w-4 text-[#FF6B00]" />
-                    </div>
-                    <span className="text-gray-400">
-                      Strategic, on-demand advice and solutions
-                    </span>
-                  </li>
-                </ul>
+                <motion.ul
+                  variants={staggerChildrenVariants}
+                  className="space-y-4"
+                >
+                  {[
+                    {
+                      icon: <ChartBar />,
+                      text: "Curated analytics for streamlined market analysis",
+                    },
+                    {
+                      icon: <LineChart />,
+                      text: "Regular research diving deep into key market dynamics",
+                    },
+                    {
+                      icon: <ArrowUpDown />,
+                      text: "Strategic, on-demand advice and solutions",
+                    },
+                  ].map((item, index) => (
+                    <motion.li
+                      key={index}
+                      variants={fadeInUpVariants}
+                      className="flex items-start gap-3"
+                    >
+                      <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
+                        {React.cloneElement(item.icon, {
+                          className: "h-4 w-4 text-[#FF6B00]",
+                        })}
+                      </div>
+                      <span className="text-gray-400">{item.text}</span>
+                    </motion.li>
+                  ))}
+                </motion.ul>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Portfolio Section */}
       <QuotumPortfolio />
 
-      {/* Subscription Cards */}
-      <section className="py-20 bg-white" id="pricing">
+      {/* Subscription Cards Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildrenVariants}
+        className="py-20 bg-white"
+        id="pricing"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-4xl font-bold text-center mb-12">Our Products</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* 1-Month Plan */}
+          <motion.h2
+            variants={fadeInUpVariants}
+            className="text-4xl font-bold text-center mb-12"
+          >
+            Our Products
+          </motion.h2>
+          <motion.div
+            variants={staggerChildrenVariants}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+          >
             <SubscriptionCard
               months={1}
               price={75}
               image={OneMonth}
               features={basicFeatures}
             />
-            {/* 3-Month Plan */}
             <SubscriptionCard
               months={3}
               price={180}
@@ -563,7 +671,6 @@ const LandingPage = () => {
               image={ThreeMonth}
               features={advancedFeatures}
             />
-            {/* 6-Month Plan */}
             <SubscriptionCard
               months={6}
               price={330}
@@ -571,140 +678,169 @@ const LandingPage = () => {
               image={SixMonth}
               features={advancedFeatures}
             />
-          </div>
+          </motion.div>
         </div>
         <TestimonialsSection />
-      </section>
+      </motion.section>
 
       {/* Lock In Section */}
-      <section className="py-20 bg-[#111] text-white">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeInUpVariants}
+        className="py-20 bg-[#111] text-white"
+      >
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold mb-6">Lock in.</h2>
-          <p className="text-xl text-gray-300 mb-10">
+          <motion.h2
+            variants={fadeInUpVariants}
+            className="text-4xl font-bold mb-6"
+          >
+            Lock in.
+          </motion.h2>
+          <motion.p
+            variants={fadeInUpVariants}
+            className="text-xl text-gray-300 mb-10"
+          >
             Time and time again the bull-run has come and my VIP has MAXIMIZED
             every opportunity. So ACTIVATE before it's too late.
-          </p>
-          <Link
-            to="/register"
-            className="inline-block px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors text-lg"
+          </motion.p>
+          <motion.div
+            variants={fadeInUpVariants}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            JOIN QUOTUM VIP
-            <ArrowRight className="ml-2 h-5 w-5 inline" />
-          </Link>
+            <Link
+              to="/register"
+              className="inline-block px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors text-lg"
+            >
+              JOIN QUOTUM VIP
+              <ArrowRight className="ml-2 h-5 w-5 inline" />
+            </Link>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
-      {/* Adjusted Feature Section with better color contrast */}
-      <section className="py-24 bg-white">
+      {/* Features Grid Section */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildrenVariants}
+        className="py-24 bg-white"
+      >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Header - Aligned with your other section titles */}
-          <div className="text-center mb-16">
+          <motion.div variants={fadeInUpVariants} className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
               Quotum leads the way in market analytics
             </h2>
             <p className="text-xl text-gray-600">
               Here's how we help you stay ahead of the market
             </p>
-          </div>
+          </motion.div>
 
-          {/* Features Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16">
-            {/* Innovation */}
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
-                <RefreshCcw className="h-8 w-8 text-[#FF6B00]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Innovation
-              </h3>
-              <p className="text-gray-600">
-                Advanced algorithms and metrics reveal unique market patterns,
-                delivering actionable signals you can rely on for better trades.
-              </p>
-            </div>
+          <motion.div
+            variants={staggerChildrenVariants}
+            className="grid grid-cols-1 md:grid-cols-3 gap-12 mb-16"
+          >
+            {[
+              {
+                icon: <RefreshCcw />,
+                title: "Innovation",
+                description:
+                  "Advanced algorithms and metrics reveal unique market patterns.",
+              },
+              {
+                icon: <Target />,
+                title: "Specialist Focus",
+                description:
+                  "Laser-focused on key crypto assets and market trends.",
+              },
+              {
+                icon: <Building2 />,
+                title: "Professional Standards",
+                description:
+                  "Built on expertise from traditional finance and crypto markets.",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                className="text-center"
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                  {React.cloneElement(feature.icon, {
+                    className: "h-8 w-8 text-[#FF6B00]",
+                  })}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </motion.div>
 
-            {/* Specialist Focus */}
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
-                <Target className="h-8 w-8 text-[#FF6B00]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Specialist Focus
-              </h3>
-              <p className="text-gray-600">
-                Laser-focused on key crypto assets, providing precise analysis
-                of market trends and institutional capital movements.
-              </p>
-            </div>
-
-            {/* Professional Standards */}
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
-                <Building2 className="h-8 w-8 text-[#FF6B00]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Professional Standards
-              </h3>
-              <p className="text-gray-600">
-                Built on expertise from both traditional finance and crypto
-                markets, delivering institutional-grade analysis.
-              </p>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            {/* Trusted Expertise */}
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
-                <Shield className="h-8 w-8 text-[#FF6B00]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Trusted Expertise
-              </h3>
-              <p className="text-gray-600">
-                Relied upon by professional traders worldwide, consistently
-                delivering high-quality, actionable market insights.
-              </p>
-            </div>
-
-            {/* Market Leadership */}
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
-                <LineChart className="h-8 w-8 text-[#FF6B00]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Market Leadership
-              </h3>
-              <p className="text-gray-600">
-                Leading-edge research developed with top crypto analysts and
-                market makers, keeping you ahead of market moves.
-              </p>
-            </div>
-
-            {/* Data Transparency */}
-            <div className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
-                <PieChart className="h-8 w-8 text-[#FF6B00]" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">
-                Data Transparency
-              </h3>
-              <p className="text-gray-600">
-                Empowering users with clear, reliable, and verifiable data
-                insights to make confident trading decisions.
-              </p>
-            </div>
-          </div>
+          <motion.div
+            variants={staggerChildrenVariants}
+            className="grid grid-cols-1 md:grid-cols-3 gap-12"
+          >
+            {[
+              {
+                icon: <Shield />,
+                title: "Trusted Expertise",
+                description: "Relied upon by professional traders worldwide.",
+              },
+              {
+                icon: <LineChart />,
+                title: "Market Leadership",
+                description:
+                  "Leading-edge research developed with top analysts.",
+              },
+              {
+                icon: <PieChart />,
+                title: "Data Transparency",
+                description: "Clear, reliable, and verifiable data insights.",
+              },
+            ].map((feature, index) => (
+              <motion.div
+                key={index}
+                variants={cardVariants}
+                className="text-center"
+              >
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF6B00]/10 mb-6">
+                  {React.cloneElement(feature.icon, {
+                    className: "h-8 w-8 text-[#FF6B00]",
+                  })}
+                </div>
+                <h3 className="text-xl font-bold text-gray-900 mb-3">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-600">{feature.description}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       <div className="w-80 h-0.5 bg-black mx-auto my-2"></div>
 
       {/* FAQ Section */}
-      <section className="py-20 bg-white">
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerChildrenVariants}
+        className="py-20 bg-white"
+      >
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-center mb-12">FAQs</h2>
-          <div className="space-y-4">
+          <motion.h2
+            variants={fadeInUpVariants}
+            className="text-3xl font-bold text-center mb-12"
+          >
+            FAQs
+          </motion.h2>
+          <motion.div variants={staggerChildrenVariants} className="space-y-4">
             <FAQ
               question="What exclusive benefits do I receive as a member of the QUOTUM VIP Group?"
               answer="As a VIP member, you get access to real-time trade alerts, in-depth market analysis, exclusive educational content, and direct access to our community of successful traders."
@@ -721,9 +857,9 @@ const LandingPage = () => {
               question="Is the QUOTUM VIP Group suitable for beginners in crypto trading?"
               answer="Yes, we provide comprehensive educational resources and step-by-step guidance suitable for both beginners and experienced traders."
             />
-          </div>
+          </motion.div>
         </div>
-      </section>
+      </motion.section>
 
       {/* Footer */}
       <footer className="bg-[#111] text-gray-400 py-12">
