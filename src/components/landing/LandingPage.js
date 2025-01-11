@@ -378,12 +378,27 @@ const LandingPage = () => {
                 whileTap={{ scale: 0.95 }}
                 className="w-full sm:w-auto"
               >
-                <Link
-                  to="/discover"
+                <a
+                  href="#pricing"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    const element = document.getElementById("pricing");
+                    if (element) {
+                      const offset = 80; // Adjust this value based on your header height
+                      const elementPosition =
+                        element.getBoundingClientRect().top;
+                      const offsetPosition =
+                        elementPosition + window.pageYOffset - offset;
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
                   className="w-full sm:w-auto px-8 py-4 rounded-md border-2 border-white text-white font-medium hover:bg-white hover:text-black transition-colors inline-flex items-center justify-center text-base sm:text-lg"
                 >
                   DISCOVER VIP
-                </Link>
+                </a>
               </motion.div>
             </motion.div>
           </div>
