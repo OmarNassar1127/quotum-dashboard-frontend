@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { User, Lock, Mail, ArrowLeft, UserPlus } from "lucide-react";
+import { User, Lock, Mail, ArrowLeft, UserPlus, Sun, Moon } from "lucide-react";
 import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 
 const Register = () => {
-  const location = useLocation(); // for reading ?ref=...
+  const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
-  // We'll initialize referral_code as an empty string;
-  // then in a useEffect we look for ?ref= in the URL
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -20,8 +19,11 @@ const Register = () => {
     referral_code: "",
   });
 
-  // When the component mounts (and whenever location changes),
-  // parse the "ref" query param and update referral_code
+  useEffect(() => {
+    document.documentElement.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const refParam = params.get("ref");
@@ -33,6 +35,10 @@ const Register = () => {
     }
   }, [location]);
 
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -43,7 +49,6 @@ const Register = () => {
     }
 
     try {
-      // Adjust your fields as needed if your API expects different keys
       const response = await axios.post("/register", {
         first_name: formData.first_name,
         last_name: formData.last_name,
@@ -67,19 +72,45 @@ const Register = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-12">
-      <div className="flex flex-col md:flex-row bg-[#111] rounded-lg shadow-lg max-w-4xl w-full">
+    <div
+      className={`min-h-screen flex items-center justify-center px-4 py-12 ${
+        theme === "dark" ? "bg-black" : "bg-gray-100"
+      }`}
+    >
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 p-2 rounded-full border border-gray-400 hover:bg-gray-200 transition-all"
+      >
+        {theme === "dark" ? (
+          <Sun className="h-5 w-5 text-yellow-400" />
+        ) : (
+          <Moon className="h-5 w-5 text-gray-800" />
+        )}
+      </button>
+      <div
+        className={`flex flex-col md:flex-row ${
+          theme === "dark" ? "bg-[#111]" : "bg-white"
+        } rounded-lg shadow-lg max-w-4xl w-full`}
+      >
         {/* Logo and Slogan Section */}
-        <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 space-y-4 text-center from-gray-800 to-gray-900">
+        <div className="w-full md:w-1/2 flex flex-col items-center justify-center p-8 space-y-4 text-center">
           <img
             src={quotumLogo}
             alt="Quotum Logo"
             className="w-[250px] h-auto"
           />
-          <h2 className="text-3xl font-bold text-white">
+          <h2
+            className={`text-3xl font-bold ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
             Empowering Your Goals
           </h2>
-          <p className="text-gray-400 text-sm">
+          <p
+            className={`${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            } text-sm`}
+          >
             Join Quotum and unlock your potential with smart solutions tailored
             just for you.
           </p>
@@ -92,10 +123,18 @@ const Register = () => {
 
         {/* Form Section */}
         <div className="w-full md:w-1/2 p-8">
-          <h2 className="text-2xl font-bold text-white text-center">
+          <h2
+            className={`text-2xl font-bold text-center ${
+              theme === "dark" ? "text-white" : "text-gray-900"
+            }`}
+          >
             Create your Quotum account
           </h2>
-          <p className="text-sm text-gray-400 text-center mt-2">
+          <p
+            className={`${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            } text-sm text-center mt-2`}
+          >
             Already have an account?{" "}
             <Link
               to="/login"
@@ -129,8 +168,11 @@ const Register = () => {
                   required
                   value={formData.first_name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
-                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="First name"
                 />
               </div>
@@ -147,8 +189,11 @@ const Register = () => {
                   required
                   value={formData.last_name}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
-                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="Last name"
                 />
               </div>
@@ -165,8 +210,11 @@ const Register = () => {
                   required
                   value={formData.email}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
-                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="Email address"
                 />
               </div>
@@ -183,8 +231,11 @@ const Register = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
-                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="Password"
                 />
               </div>
@@ -201,13 +252,16 @@ const Register = () => {
                   required
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
-                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="Confirm password"
                 />
               </div>
 
-              {/* Referral Code (Auto-populated if ?ref=... in URL) */}
+              {/* Referral Code */}
               <div className="relative">
                 <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
                   <UserPlus className="h-5 w-5" />
@@ -218,8 +272,11 @@ const Register = () => {
                   type="text"
                   value={formData.referral_code}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md 
-                             focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="Referral code (optional)"
                 />
               </div>
@@ -228,8 +285,7 @@ const Register = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none 
-                         focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
+              className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
             >
               Create account
             </button>

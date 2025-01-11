@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Lock, ArrowRight } from "lucide-react";
+import { User, Lock, ArrowRight, Sun, Moon } from "lucide-react";
 import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 
@@ -14,6 +14,16 @@ const Login = () => {
   });
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
   const [forgotPasswordSuccess, setForgotPasswordSuccess] = useState("");
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
+
+  useEffect(() => {
+    document.documentElement.className = theme;
+    localStorage.setItem("theme", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,23 +77,51 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black px-4 py-12 sm:py-8">
-      <div className="w-full max-w-sm sm:max-w-md bg-[#111] rounded-lg shadow-lg p-6 sm:p-8 space-y-6">
-        <div className="flex flex-col items-center space-y-4">
+    <div
+      className={`min-h-screen flex items-center justify-center px-4 py-12 sm:py-8 ${
+        theme === "dark" ? "bg-black" : "bg-gray-100"
+      }`}
+    >
+      <button
+        onClick={toggleTheme}
+        className="absolute top-4 right-4 p-2 rounded-full border border-gray-400 hover:bg-gray-200 transition-all"
+      >
+        {theme === "dark" ? (
+          <Sun className="h-5 w-5 text-yellow-400" />
+        ) : (
+          <Moon className="h-5 w-5 text-gray-800" />
+        )}
+      </button>
+      <div
+        className={`w-full max-w-sm sm:max-w-md ${
+          theme === "dark" ? "bg-[#111]" : "bg-white"
+        } rounded-lg shadow-lg p-6 sm:p-8 space-y-6`}
+      >
+        <div className="flex justify-center items-center">
           <img
             src={quotumLogo}
             alt="Quotum Logo"
             className="w-[180px] sm:w-[250px] h-auto"
           />
-          <h2 className="text-lg sm:text-2xl font-bold text-white text-center">
-            {isForgotPassword ? "Forgot Password" : "Login with your email"}
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-400 text-center">
-            {isForgotPassword
-              ? "Enter your email to reset your password."
-              : "Enter your email address and your password to access your account."}
-          </p>
         </div>
+
+        <h2
+          className={`text-lg sm:text-2xl font-bold text-center ${
+            theme === "dark" ? "text-white" : "text-gray-900"
+          }`}
+        >
+          {isForgotPassword ? "Forgot Password" : "Login with your email"}
+        </h2>
+
+        <p
+          className={`text-xs sm:text-sm text-center ${
+            theme === "dark" ? "text-gray-400" : "text-gray-600"
+          }`}
+        >
+          {isForgotPassword
+            ? "Enter your email to reset your password."
+            : "Enter your email address and your password to access your account."}
+        </p>
 
         {error && (
           <div
@@ -116,7 +154,11 @@ const Login = () => {
                 required
                 value={isForgotPassword ? forgotPasswordEmail : formData.email}
                 onChange={handleChange}
-                className="w-full pl-10 pr-3 py-2 text-xs sm:text-sm text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                className={`w-full pl-10 pr-3 py-2 text-xs sm:text-sm ${
+                  theme === "dark"
+                    ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-[#333]"
+                    : "text-gray-900 placeholder-gray-500 bg-white border-gray-300"
+                } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                 placeholder="Email Address"
               />
             </div>
@@ -133,7 +175,11 @@ const Login = () => {
                   required
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3 py-2 text-xs sm:text-sm text-white placeholder-gray-400 bg-[#1a1a1a] border border-[#333] rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors"
+                  className={`w-full pl-10 pr-3 py-2 text-xs sm:text-sm ${
+                    theme === "dark"
+                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-[#333]"
+                      : "text-gray-900 placeholder-gray-500 bg-white border-gray-300"
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
                   placeholder="Password"
                 />
               </div>
@@ -166,7 +212,11 @@ const Login = () => {
           </p>
         )}
 
-        <p className="text-xs sm:text-sm text-gray-400 text-center pt-4">
+        <p
+          className={`text-xs sm:text-sm text-center pt-4 ${
+            theme === "dark" ? "text-gray-400" : "text-gray-600"
+          }`}
+        >
           Don't have an account?{" "}
           <Link
             to="/register"
