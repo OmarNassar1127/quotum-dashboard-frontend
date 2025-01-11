@@ -186,7 +186,7 @@ const ProfilePage = () => {
         </div>
 
         {/* Referral Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-5">
           {/* Referral Code Card */}
           <div className="lg:col-span-2 bg-[#222] border border-[#333] rounded-xl p-6">
             <h2 className="text-xl font-semibold flex items-center gap-2 mb-6">
