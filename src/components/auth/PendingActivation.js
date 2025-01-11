@@ -25,7 +25,7 @@ const SubscriptionCard = ({
   isLoading,
 }) => {
   return (
-    <div className="bg-white rounded-xl p-6 flex flex-col relative transform transition-all hover:scale-105 shadow-lg">
+    <div className="bg-white rounded-xl p-6 flex flex-col relative transform transition-all hover:scale-105 shadow-lg subscription-animation">
       {isPopular && (
         <span className="absolute -top-3 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
           Most Popular
@@ -138,7 +138,7 @@ const PendingActivation = () => {
                   <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
                 <p className="text-gray-700">
-                  Your account is under review. Complete your subscription below
+                  Your account is almost ready. Complete your subscription below
                   to gain instant access.
                 </p>
               </div>
