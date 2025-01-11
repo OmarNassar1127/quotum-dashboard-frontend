@@ -7,11 +7,13 @@ import {
   ChevronRight,
 } from "lucide-react";
 import axios from "../../lib/axios";
+import ChangePassword from "../user/ChangePassword";
 
 const ProfilePage = () => {
   const [stats, setStats] = useState(null);
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [timeLeft, setTimeLeft] = useState(null);
 
@@ -101,12 +103,27 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen  text-white p-4 md:p-6">
-      <div className="max-w-6xl mx-auto space-y-6">
-        <h1 className="text-2xl font-semibold mb-6">Profile</h1>
+    <div className="min-h-screen text-white p-4 md:p-6">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-2xl font-semibold">Profile</h1>
+          <button
+            onClick={() => setIsChangePasswordOpen(true)}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white"
+          >
+            Change Password
+          </button>
+        </div>
+
+        {/* Change Password Modal */}
+        <ChangePassword
+          isOpen={isChangePasswordOpen}
+          onClose={() => setIsChangePasswordOpen(false)}
+        />
+
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Subscription Card - Spans 2 columns on large screens */}
+          {/* Subscription Card */}
           <div className="lg:col-span-2 bg-[#222] border border-[#333] rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl font-semibold flex items-center gap-2">
