@@ -5,7 +5,6 @@ import {
   CheckCircle,
   MessageCircle,
   ExternalLink,
-  Play,
   ArrowRight,
 } from "lucide-react";
 import axios from "../../lib/axios";
@@ -121,7 +120,7 @@ const PendingActivation = () => {
   return (
     <div className="min-h-screen bg-black">
       {/* Video Section */}
-      <section className="relative bg-black pt-16 pb-12">
+      <section className="relative bg-black pt-8 pb-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
