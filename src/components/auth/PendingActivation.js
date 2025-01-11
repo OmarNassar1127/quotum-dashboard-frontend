@@ -13,7 +13,7 @@ import ThreeMonth from "../../assets/ThreeMonth.webp";
 import SixMonth from "../../assets/SixMonth.webp";
 import quotumVideo from "../../assets/quotum-recording.mp4";
 
-// Compact Subscription Card Component stays the same
+// Subscription Card Component
 const SubscriptionCard = ({
   months,
   price,
@@ -25,15 +25,15 @@ const SubscriptionCard = ({
   isLoading,
 }) => {
   return (
-    <div className="bg-black rounded-xl p-6 flex flex-col relative transform transition-all hover:scale-105">
+    <div className="bg-white rounded-xl p-6 flex flex-col relative transform transition-all hover:scale-105 shadow-lg">
       {isPopular && (
-        <span className="absolute -top-3 left-4 bg-[#FF6B00] text-white px-3 py-1 rounded-full text-xs font-medium">
+        <span className="absolute -top-3 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
           Most Popular
         </span>
       )}
       {isBestDeal && (
-        <span className="absolute -top-3 left-4 bg-[#FF6B00] text-white px-3 py-1 rounded-full text-xs font-medium">
-          Best Deal
+        <span className="absolute -top-3 left-4 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+          Best Value
         </span>
       )}
       <div className="flex flex-col h-full">
@@ -42,23 +42,25 @@ const SubscriptionCard = ({
           alt={`${months}-month subscription`}
           className="w-full h-24 object-cover rounded-lg mb-4"
         />
-        <h3 className="text-xl font-bold text-white mb-2">{months} MONTHS</h3>
-        <ul className="text-gray-400 space-y-1 text-sm mb-4 flex-grow">
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
+          {months} MONTHS
+        </h3>
+        <ul className="text-gray-700 space-y-1 text-sm mb-4 flex-grow">
           {features.map((feature, idx) => (
             <li key={idx} className="flex items-start gap-2">
-              <CheckCircle className="h-4 w-4 text-[#FF6B00] flex-shrink-0 mt-0.5" />
+              <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0 mt-0.5" />
               <span>{feature}</span>
             </li>
           ))}
         </ul>
         <div className="mt-auto">
-          <p className="text-2xl font-bold text-white mb-3">€{price}</p>
+          <p className="text-2xl font-bold text-gray-900 mb-3">€{price}</p>
           <button
             onClick={() =>
               onSubscribe(`${months}month${months > 1 ? "s" : ""}`)
             }
             disabled={isLoading}
-            className="w-full py-2 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors flex items-center justify-center gap-2"
+            className="w-full py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-500 transition-colors flex items-center justify-center gap-2"
           >
             {isLoading ? "Processing..." : "SELECT PLAN"}
             {!isLoading && <ArrowRight className="h-4 w-4" />}
@@ -118,26 +120,26 @@ const PendingActivation = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gray-100">
       {/* Video Section */}
-      <section className="relative bg-black pt-8 pb-10">
+      <section className="relative bg-gray-100 pt-8 pb-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid md:grid-cols-2 gap-8 items-center">
             <div className="space-y-6">
-              <h1 className="text-4xl font-bold text-white">
-                Welcome to <span className="text-[#FF6B00]">Quotum VIP</span>
+              <h1 className="text-4xl font-bold text-gray-900">
+                Welcome to <span className="text-orange-600">Quotum VIP</span>
               </h1>
-              <p className="text-xl text-gray-300">
-                You're just one step away from joining the elite community of
+              <p className="text-xl text-gray-700">
+                You're just one step away from joining our elite community of
                 successful traders.
               </p>
               <div className="flex items-start gap-3">
-                <div className="p-1 mt-1 bg-[#FF6B00]/10 rounded">
-                  <CheckCircle className="h-5 w-5 text-[#FF6B00]" />
+                <div className="p-1 mt-1 bg-green-100 rounded">
+                  <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
-                <p className="text-gray-400">
-                  Your account is being reviewed. Complete your subscription
-                  below to gain instant access.
+                <p className="text-gray-700">
+                  Your account is under review. Complete your subscription below
+                  to gain instant access.
                 </p>
               </div>
 
@@ -147,7 +149,7 @@ const PendingActivation = () => {
                   onClick={() =>
                     window.open("https://wa.me/31621573027", "_blank")
                   }
-                  className="inline-flex items-center px-4 py-2 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors text-sm font-medium group gap-2"
+                  className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors text-sm font-medium group gap-2"
                 >
                   <MessageCircle className="h-4 w-4" />
                   Contact Support
@@ -155,7 +157,7 @@ const PendingActivation = () => {
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="inline-flex items-center px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors border border-gray-800 rounded-lg hover:bg-gray-800"
+                  className="inline-flex items-center px-4 py-2 text-sm text-gray-700 hover:text-gray-900 transition-colors border border-gray-300 rounded-lg hover:bg-gray-200"
                 >
                   <LogOut className="h-4 w-4 mr-2" />
                   Logout
@@ -163,7 +165,7 @@ const PendingActivation = () => {
               </div>
             </div>
 
-            <div className="relative aspect-video bg-black rounded-xl overflow-hidden shadow-2xl">
+            <div className="relative aspect-video bg-gray-100 rounded-xl overflow-hidden shadow-2xl">
               <video
                 className="w-full h-full object-cover opacity-90"
                 autoPlay
@@ -179,7 +181,7 @@ const PendingActivation = () => {
       </section>
 
       {/* Subscription Section */}
-      <section className="py-12 bg-black">
+      <section className="py-12 bg-gray-100">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <SubscriptionCard
