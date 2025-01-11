@@ -93,7 +93,7 @@ const SubscriptionCard = ({
         </span>
       )}
       {isBestDeal && (
-        <span className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium">
+        <span className="absolute -top-3 left-4 bg-[#FF6B00] px-3 py-1 rounded-full text-white text-sm font-medium">
           Best Deal
         </span>
       )}
