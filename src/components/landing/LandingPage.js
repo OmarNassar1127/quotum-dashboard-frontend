@@ -165,8 +165,7 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-[#111] z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-20">
-          {/* Logo and brand name */}
-          <div className="flex items-center">
+          <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <img
               src={quotumLogo}
               alt="Quotum Logo"
@@ -791,7 +790,6 @@ const LandingPage = () => {
             {/* Quick Links - Centered Grid */}
             <div className="grid grid-cols-2 gap-8 md:gap-16 w-full md:w-auto md:max-w-md justify-center mx-auto md:mx-0">
               {/* Products */}
-              {/* Products */}
               <div className="flex flex-col space-y-3">
                 <h3 className="text-white font-semibold mb-2">Platform</h3>
                 <a
@@ -800,7 +798,7 @@ const LandingPage = () => {
                     e.preventDefault();
                     const element = document.getElementById("introduction");
                     if (element) {
-                      const offset = 80; // height of your fixed navbar
+                      const offset = 80;
                       const elementPosition =
                         element.getBoundingClientRect().top;
                       const offsetPosition =
@@ -821,7 +819,7 @@ const LandingPage = () => {
                     e.preventDefault();
                     const element = document.getElementById("pricing");
                     if (element) {
-                      const offset = 80; // height of your fixed navbar
+                      const offset = 80;
                       const elementPosition =
                         element.getBoundingClientRect().top;
                       const offsetPosition =
@@ -842,7 +840,7 @@ const LandingPage = () => {
                     e.preventDefault();
                     const element = document.getElementById("features");
                     if (element) {
-                      const offset = 80; // height of your fixed navbar
+                      const offset = 80;
                       const elementPosition =
                         element.getBoundingClientRect().top;
                       const offsetPosition =
@@ -895,7 +893,7 @@ const LandingPage = () => {
               {/* Social Links */}
               <div className="flex space-x-6 order-1 sm:order-2">
                 <a
-                  href="https://twitter.com/quotum"
+                  href="https://x.com/GodelTrabuco69"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
@@ -909,7 +907,7 @@ const LandingPage = () => {
                   </svg>
                 </a>
                 <a
-                  href="https://telegram.com/quotum"
+                  href="https://t.me/QuotumC"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
@@ -923,7 +921,7 @@ const LandingPage = () => {
                   </svg>
                 </a>
                 <a
-                  href="https://discord.gg/quotum"
+                  href="https://wa.me/31621573027"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-gray-400 hover:text-white transition-colors"
@@ -933,7 +931,7 @@ const LandingPage = () => {
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 01.078.01c.118.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.892.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                    <path d="M12.004 0C5.374 0 0 5.374 0 12c0 2.113.553 4.176 1.604 5.984L.059 23.97a.5.5 0 00.636.623l5.94-1.518A11.978 11.978 0 0012.004 24c6.63 0 12-5.374 12-12 0-6.63-5.37-12-12-12zm7.053 16.964c-.226.625-1.309 1.198-1.805 1.276-.497.08-1.084.11-1.732-.155a16.892 16.892 0 01-1.938-.854c-3.379-1.865-5.59-5.176-5.77-5.43-.18-.255-1.375-1.828-1.375-3.474 0-1.646.869-2.468 1.177-2.793.308-.326.679-.354.905-.354.225 0 .452.002.653.01.201.008.507-.09.792.603.285.695.967 2.402 1.048 2.578.082.176.137.384.025.617-.111.234-.167.382-.333.585-.164.202-.347.45-.49.603-.164.174-.335.363-.145.716.19.352.846 1.399 1.812 2.263.885.787 2.244 1.551 2.627 1.723.383.174.6.146.826-.087.225-.233.968-1.117 1.226-1.503.259-.385.516-.326.87-.196.354.13 2.231 1.053 2.614 1.242.382.19.637.288.733.45.096.163.096.946-.13 1.571z" />
                   </svg>
                 </a>
               </div>
