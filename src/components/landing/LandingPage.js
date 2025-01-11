@@ -166,7 +166,10 @@ const Navbar = () => {
     <nav className="fixed top-0 w-full bg-[#111] z-50">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16 md:h-20">
-          <div className="flex items-center cursor-pointer" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
             <img
               src={quotumLogo}
               alt="Quotum Logo"
@@ -411,8 +414,13 @@ const LandingPage = () => {
       <section className="py-20 bg-white overflow-hidden" id="features">
         {/* Centered Title */}
         <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Clear insights, big results
+          <h1 className="font-bold text-gray-900 mb-4">
+            <span className="text-4xl md:text-5xl lg:inline-block lg:text-6xl">
+              Clear insights,{" "}
+            </span>
+            <span className="block lg:inline text-4xl md:text-5xl lg:text-6xl ml-2">
+              Big results
+            </span>
           </h1>
         </div>
 
@@ -565,7 +573,7 @@ const LandingPage = () => {
             />
           </div>
         </div>
-        < TestimonialsSection />
+        <TestimonialsSection />
       </section>
 
       {/* Lock In Section */}
