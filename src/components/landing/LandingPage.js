@@ -23,6 +23,7 @@ import test2 from "../../assets/test2.svg";
 import quotumVideo from "../../assets/quotum-recording.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
 import { Menu, X } from "lucide-react";
+import TestimonialsSection from "./TestimonialsSection";
 
 // Basic Features (used for 1-month subscriptions)
 const basicFeatures = [
@@ -564,55 +565,7 @@ const LandingPage = () => {
             />
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-20">
-          <h2 className="text-4xl font-bold text-center mb-12">
-            What members write about the VIP
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <Testimonial
-              text="Insane value. I have been a member of the Stasher VIP since 2021. After all this time I can genuinely say that this isn't just a signal group... It goes way beyond that. You just feel it in the energy we get from Amir. He truly wants the best for his community and delivers so much value. Even outside of crypto. If you want to level up your life, keep yourself sharp and align yourself with those who have the same fire inside of them ; you would be crazy not to join. 10/10 Recommend."
-              author="TJ"
-              date="June 03, 2024"
-            />
-            <Testimonial
-              text="Real review of the VIP. I have been in VIP for over a year. Stasher is not normal! So committed to the community. Knows what he is talking about. A true visionary."
-              author="Pre Rich"
-              date="November 11, 2024"
-            />
-          </div>
-          <div className="flex justify-center mt-8 gap-4">
-            <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-100">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 19l-7-7 7-7"
-                />
-              </svg>
-            </button>
-            <button className="p-2 rounded-full border border-gray-300 hover:bg-gray-100">
-              <svg
-                className="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </button>
-          </div>
-        </div>
+        < TestimonialsSection />
       </section>
 
       {/* Lock In Section */}
