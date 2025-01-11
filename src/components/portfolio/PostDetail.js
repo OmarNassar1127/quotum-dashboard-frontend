@@ -92,7 +92,7 @@ const PostDetail = () => {
           }`}
         >
           <button
-            onClick={() => navigate(`/coin/${post.coin?.coingecko_id}`)}
+            onClick={() => navigate(`/dashboard/coin/${post.coin?.coingecko_id}`)}
             className="flex items-center space-x-2 text-sm sm:text-base font-medium text-gray-200 bg-[#333] px-3 py-2 rounded-lg hover:bg-[#444] transition-colors"
           >
             <ChevronLeft className="h-5 w-5" />

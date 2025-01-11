@@ -59,7 +59,7 @@ const WalletTrackingDetail = () => {
             Wallet Tracking Table
           </h2>
           <button
-            onClick={() => navigate("/wallet-tracking")}
+            onClick={() => navigate("/dashboard/wallet-tracking")}
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] transition-colors"
           >
             <svg

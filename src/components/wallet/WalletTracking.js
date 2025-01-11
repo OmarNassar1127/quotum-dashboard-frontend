@@ -79,7 +79,7 @@ const WalletTracking = () => {
               <CoinCard
                 key={coin.coin_id}
                 coin={coin}
-                onClick={() => navigate(`/wallet-tracking/${coin.coin_id}`)}
+                onClick={() => navigate(`/dashboard/wallet-tracking/${coin.coin_id}`)}
               />
             ))}
           </div>

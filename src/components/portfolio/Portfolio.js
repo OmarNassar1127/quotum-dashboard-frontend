@@ -27,7 +27,7 @@ const Portfolio = () => {
   };
 
   const handleCoinClick = (coingecko_id) => {
-    navigate(`/coin/${coingecko_id}`);
+    navigate(`/dashboard/coin/${coingecko_id}`);
   };
 
   if (loading) {
