@@ -22,7 +22,7 @@ import ThreeMonth from "../../assets/ThreeMonth.webp";
 import SixMonth from "../../assets/SixMonth.webp";
 import test from "../../assets/test.svg";
 import test2 from "../../assets/test2.svg";
-import quotumVideo from "../../assets/quotum-white.mp4";
+import quotumVideo from "../../assets/quotum-black.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
 import TestimonialsSection from "./TestimonialsSection";
 import VideoPlayer from "./VideoPlayer";
