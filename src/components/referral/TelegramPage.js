@@ -37,9 +37,6 @@ const TelegramPage = () => {
     }
   };
 
-  /**
-   * 1) "Start Journey" spinner (3 seconds).
-   */
   const startJourney = () => {
     setCurrentStep("loading");
     let currentProgress = 0;
@@ -55,9 +52,6 @@ const TelegramPage = () => {
     }, 90); // ~3s total
   };
 
-  /**
-   * 2) Save Telegram ID
-   */
   const handleTelegramIdSubmit = async () => {
     try {
       setLoading(true);
@@ -72,22 +66,17 @@ const TelegramPage = () => {
     }
   };
 
-  /**
-   * 3) Generate link with a guaranteed 2s spinner
-   */
   const generateInviteLink = async () => {
     try {
       setLoading(true);
       setProgress(0);
 
-      // Immediately change step so we see the spinner
       setCurrentStep("generate_loading");
 
-      // Create a spinner promise that increments progress from 0 → 100 in ~2s
       const spinnerPromise = new Promise((resolve) => {
         let p = 0;
         const interval = setInterval(() => {
-          p += 5; // 5% every 100ms => ~2 seconds total
+          p += 5;
           setProgress(Math.min(p, 100));
           if (p >= 100) {
             clearInterval(interval);
@@ -96,15 +85,12 @@ const TelegramPage = () => {
         }, 100);
       });
 
-      // Create an API promise to generate the link
       const apiPromise = axios
         .post(`/telegram/${userId}/generate-link`)
         .then(() => fetchStatus());
 
-      // Wait for both spinner + API to finish
       await Promise.all([spinnerPromise, apiPromise]);
 
-      // Now show the "join" step
       setCurrentStep("join");
     } catch (err) {
       setError("Failed to generate invite link");
@@ -113,9 +99,6 @@ const TelegramPage = () => {
     }
   };
 
-  /**
-   * 4) Mark link as clicked, open in new tab
-   */
   const handleInviteLinkClick = async () => {
     try {
       await axios.post(`/telegram/${userId}/link-clicked`);
@@ -125,14 +108,8 @@ const TelegramPage = () => {
     }
   };
 
-  /**
-   * Renders the content for each step
-   */
   const renderStep = () => {
     switch (currentStep) {
-      /**
-       * Step 1: "start"
-       */
       case "start":
         return (
           <div className="text-center space-y-6">
@@ -149,9 +126,6 @@ const TelegramPage = () => {
           </div>
         );
 
-      /**
-       * Step 2: "loading" -> 3s spinner
-       */
       case "loading": {
         const radius = 45;
         const circumference = 2 * Math.PI * radius;
@@ -198,9 +172,6 @@ const TelegramPage = () => {
         );
       }
 
-      /**
-       * Step 3: "telegram_id"
-       */
       case "telegram_id":
         return (
           <div className="space-y-6">
@@ -230,9 +201,6 @@ const TelegramPage = () => {
           </div>
         );
 
-      /**
-       * Step 4: "generate"
-       */
       case "generate":
         return (
           <div className="text-center space-y-6">
@@ -256,9 +224,6 @@ const TelegramPage = () => {
           </div>
         );
 
-      /**
-       * Step 5: "generate_loading" -> guaranteed 2s spinner
-       */
       case "generate_loading": {
         const radius = 45;
         const circumference = 2 * Math.PI * radius;
@@ -305,14 +270,13 @@ const TelegramPage = () => {
         );
       }
 
-      /**
-       * Step 6: "join"
-       */
       case "join":
         return (
           <div className="text-center space-y-6">
             <h2 className="text-2xl font-bold text-white">Join Our Group</h2>
-            <p className="text-gray-300">Your exclusive invite link is ready!</p>
+            <p className="text-gray-300">
+              Your exclusive invite link is ready!
+            </p>
             <div className="max-w-md mx-auto p-4 bg-[#222] rounded-lg border border-[#333]">
               <button
                 onClick={handleInviteLinkClick}
@@ -327,14 +291,10 @@ const TelegramPage = () => {
           </div>
         );
 
-      /**
-       * Step 7: "complete"
-       */
       case "complete":
         return (
           <div className="text-center space-y-6">
             <div className="flex justify-center">
-              {/* Magic swirl effect around the check icon */}
               <div className="bg-green-600/30 rounded-full p-4 relative animate-magic-swell">
                 <Check className="h-10 w-10 text-green-400 z-10 relative animate-swirl" />
               </div>
@@ -348,12 +308,15 @@ const TelegramPage = () => {
               alt="Success"
               className="mx-auto rounded-lg w-48"
             />
+            <button
+              onClick={handleInviteLinkClick}
+              className="flex items-center justify-center gap-2 text-blue-400 hover:text-blue-300 mx-auto mt-4"
+            >
+              Click to join the group <ExternalLink className="h-5 w-5" />
+            </button>
           </div>
         );
 
-      /**
-       * Fallback
-       */
       default:
         return (
           <div className="flex items-center justify-center">
@@ -368,7 +331,6 @@ const TelegramPage = () => {
       className="relative p-6 text-white overflow-hidden
                  bg-gradient-to-br from-[#181818] via-[#111] to-[#181818]"
     >
-      {/* STYLES for custom animations (you can place into your CSS or tailwind.config.js) */}
       <style>{`
         body {
           background-color: #0f0f0f;
@@ -387,8 +349,6 @@ const TelegramPage = () => {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-
-        /* Floating gradient bubbles */
         @keyframes float {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(20px); }
@@ -399,8 +359,6 @@ const TelegramPage = () => {
         .animate-float-slower {
           animation: float 10s ease-in-out infinite;
         }
-
-        /* The swirling check icon in the final step */
         @keyframes swirl {
           0% { transform: rotate(0deg) scale(1); }
           25% { transform: rotate(10deg) scale(1.1); }
@@ -411,8 +369,6 @@ const TelegramPage = () => {
         .animate-swirl {
           animation: swirl 2s infinite ease-in-out;
         }
-
-        /* The magic swell behind the check icon */
         @keyframes magicSwell {
           0% { transform: scale(1); opacity: 0.5; }
           50% { transform: scale(1.3); opacity: 0.2; }
@@ -423,10 +379,8 @@ const TelegramPage = () => {
         }
       `}</style>
 
-      {/* Optional star background */}
       <div className="stars" />
 
-      {/* Floating gradient orbs */}
       <div className="absolute w-72 h-72 bg-purple-600 rounded-full top-[-4rem] left-[-8rem] opacity-20 blur-2xl animate-float-slow" />
       <div className="absolute w-80 h-80 bg-blue-600 rounded-full bottom-[-8rem] right-[-8rem] opacity-20 blur-2xl animate-float-slower" />
 
