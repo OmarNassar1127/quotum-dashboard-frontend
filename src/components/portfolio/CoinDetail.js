@@ -117,7 +117,7 @@ const CoinDetail = () => {
         <div className="flex items-center justify-between">
           <h2 className="text-xl font-semibold text-gray-100">Latest Posts</h2>
           <button
-            onClick={() => navigate("/portfolio")}
+            onClick={() => navigate("/dashboard/portfolio")}
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white focus:outline-none transition-colors"
           >
             <svg
@@ -170,7 +170,7 @@ const CoinDetail = () => {
                       {new Date(post.created_at).toLocaleDateString()}
                     </span>
                     <Link
-                      to={`/post/${post.id}`}
+                      to={`/dashboard/post/${post.id}`}
                       className="text-blue-400 hover:text-blue-300 transition-colors mt-2 sm:mt-0"
                     >
                       Read more

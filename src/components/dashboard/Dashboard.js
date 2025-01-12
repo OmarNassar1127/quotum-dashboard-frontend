@@ -120,7 +120,7 @@ const Dashboard = () => {
   };
 
   const handlePostClick = (postId) => {
-    navigate(`/post/${postId}`);
+    navigate(`/dashboard/post/${postId}`);
   };
 
   const estimateMonthsUntilHalving = (currentDate) => {

@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader } from "lucide-react";
+import {
+  Loader,
+  TrendingUp,
+  ChevronDown,
+  ChevronUp,
+  Activity,
+  BarChart3,
+  PieChart,
+  Users,
+  ArrowUpDown,
+  Timer,
+  Coins,
+} from "lucide-react";
 import axios from "../../lib/axios";
 
 const Onchain = () => {
@@ -8,70 +20,86 @@ const Onchain = () => {
   const [coins, setCoins] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [openSections, setOpenSections] = useState({
+    favorites: true,
+    monthly: true,
+    other: false,
+  });
 
-  // Example on-chain tools data:
-  const tools = [
-    {
-      name: "Bitcoin Risk Levels",
-      description:
-        "Shows various risk levels projected onto the price. Useful for setting dynamic limit orders at different risk levels.",
-      route: "/onchain/bitcoin-risk-levels",
-    },
-    {
-      name: "Bitcoin Waves",
-      description:
-        "Shows wave bands following Bitcoin's halving cycles, mapping price oscillations onto logarithmic trends. Each band represents different market phases, helping identify potential tops and bottoms for strategic entry and exit points.",
-      route: "/onchain/bitcoin-waves",
-    },
-    {
-      name: "NUPL",
-      description:
-        "The Net Unrealized Profit Loss (NUPL) indicator is a powerful tool for analyzing Bitcoin market sentiment and cycles",
-      route: "/onchain/nupl",
-    },
-    {
-      name: "ETF Volumes",
-      description:
-        "The ETF Volumes shows the cumulative volume in Bitcoin ETFs, with this we now what major players of the markets are doing!",
-      route: "/onchain/etf",
-    },
-    {
-      name: "Bitcoin Short Term Holders",
-      description:
-        "Short Term Holders hold Bitcoin for under 155 days, reflecting immediate market sentiment and often moving coins in response to short-term price shifts.",
-      route: "/onchain/short-term-holders",
-    },
-    {
-      name: "Bitcoin Long Term Holders",
-      description:
-        "Long Term Holders retain Bitcoin for over 155 days, signaling greater market confidence and more stable accumulation patterns.",
-      route: "/onchain/long-term-holders",
-    },
-    {
-      name: "Bitcoin ETF Daily Flows",
-      description:
-        "The ETF Inflows shows the inflows volume in Bitcoin ETFs, by ETF holders, that way we can pin point who is buying and who is selling!",
-      route: "/onchain/etf-inflows",
-    },
-    {
-      name: "Bitcoin Active Addresses",
-      description:
-        "Bitcoin Active Addresses shows the number of unique addresses that are active in the network, this is a good indicator of the network health.",
-      route: "/onchain/bitcoin-active-addresses",
-    },
-    {
-      name: "Others.d vs BTC",
-      description:
-        "Shows the Others dominance vs BTC dominance, this is a good indicator of the market sentiment.",
-      route: "/onchain/others-vs-btc",
-    },
-    {
-      name: "Short term bubble",
-      description:
-        "The Short-Term Bubble Indicator (STBI) for Bitcoin provides a powerful visualization of price risk by comparing the closing price to the 20-week SMA.",
-      route: "/onchain/short-term-bubble",
-    },
-  ];
+  const tools = {
+    favorites: [
+      {
+        name: "Bitcoin Risk Levels",
+        description: "Dynamic risk levels for limit orders",
+        route: "/dashboard/onchain/bitcoin-risk-levels",
+        icon: <TrendingUp className="w-4 h-4" />,
+      },
+      {
+        name: "NUPL",
+        description: "Net Unrealized Profit/Loss analysis",
+        route: "/dashboard/onchain/nupl",
+        icon: <BarChart3 className="w-4 h-4" />,
+      },
+      {
+        name: "Short Term Bubble",
+        description: "Price risk visualization with 20-week SMA",
+        route: "/dashboard/onchain/short-term-bubble",
+        icon: <Activity className="w-4 h-4" />,
+      },
+      {
+        name: "Bitcoin Retail",
+        description: "Retail investor spending patterns",
+        route: "/dashboard/onchain/bitcoin-retail",
+        icon: <Coins className="w-4 h-4" />,
+      },
+    ],
+    monthly: [
+      {
+        name: "Others.d vs BTC",
+        description: "Market dominance analysis",
+        route: "/dashboard/onchain/others-vs-btc",
+        icon: <PieChart className="w-4 h-4" />,
+      },
+      {
+        name: "Bitcoin Waves",
+        description: "Halving cycles analysis",
+        route: "/dashboard/onchain/bitcoin-waves",
+        icon: <Activity className="w-4 h-4" />,
+      },
+      {
+        name: "ETF Daily Flows",
+        description: "Track ETF holder activities",
+        route: "/dashboard/onchain/etf-inflows",
+        icon: <ArrowUpDown className="w-4 h-4" />,
+      },
+    ],
+    other: [
+      {
+        name: "ETF Volumes",
+        description: "Cumulative ETF volume tracking",
+        route: "/dashboard/onchain/etf",
+        icon: <BarChart3 className="w-4 h-4" />,
+      },
+      {
+        name: "Short Term Holders",
+        description: "Under 155 days holder analysis",
+        route: "/dashboard/onchain/short-term-holders",
+        icon: <Timer className="w-4 h-4" />,
+      },
+      {
+        name: "Long Term Holders",
+        description: "Over 155 days holder patterns",
+        route: "/dashboard/onchain/long-term-holders",
+        icon: <Users className="w-4 h-4" />,
+      },
+      {
+        name: "Active Addresses",
+        description: "Network activity monitoring",
+        route: "/dashboard/onchain/bitcoin-active-addresses",
+        icon: <Users className="w-4 h-4" />,
+      },
+    ],
+  };
 
   useEffect(() => {
     fetchCoins();
@@ -90,29 +118,80 @@ const Onchain = () => {
     }
   };
 
+  const toggleSection = (section) => {
+    setOpenSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }));
+  };
+
+  const renderSection = (title, tools, section) => (
+    <div className="mb-6">
+      <button
+        onClick={() => toggleSection(section)}
+        className="w-full flex items-center justify-between py-3 px-3 text-gray-300 hover:text-white transition-all border border-[#222] rounded-lg hover:bg-[#222] hover:border-[#333] group"
+      >
+        <div className="flex items-center gap-2">
+          <span className="text-lg font-semibold text-white">{title}</span>
+        </div>
+        {openSections[section] ? (
+          <ChevronUp className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-all transform group-hover:-translate-y-0.5" />
+        ) : (
+          <ChevronDown className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100 transition-all transform group-hover:translate-y-0.5" />
+        )}
+      </button>
+
+      {openSections[section] && (
+        <div className="grid grid-cols-2 gap-4 mt-4">
+          {tools.map((tool) => (
+            <div
+              key={tool.name}
+              onClick={() => navigate(tool.route)}
+              className="bg-[#222] hover:bg-[#282828] border border-[#333] rounded-lg transition-all duration-200 cursor-pointer group overflow-hidden"
+            >
+              <div className="p-4">
+                <div className="flex items-center gap-3 mb-2">
+                  <div className="text-gray-400 group-hover:text-gray-200 transition-colors">
+                    {tool.icon}
+                  </div>
+                  <h3 className="text-sm font-medium text-white group-hover:text-white transition-colors">
+                    {tool.name}
+                  </h3>
+                </div>
+                <p className="text-sm text-gray-200 group-hover:text-gray-100 transition-colors">
+                  {tool.description}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64 bg-[#111] text-white">
-        <Loader className="h-8 w-8 animate-spin text-gray-300" />
+      <div className="flex items-center justify-center h-64 bg-[#111]">
+        <Loader className="h-5 w-5 animate-spin text-gray-400" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64 text-red-300 bg-[#111]">
+      <div className="flex items-center justify-center h-64 bg-[#111] text-red-300 text-sm">
         {error}
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6 bg-[#111] min-h-screen border border-[#222] text-white">
-      <div className="flex items-center justify-between">
+    <div className="p-6 bg-[#111] border border-[#222] text-white rounded-lg">
+      <div className="flex items-center justify-between mb-8">
         <h1 className="text-2xl font-bold text-gray-100">Bitcoin Onchain</h1>
         <button
           onClick={() => navigate("/")}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white focus:outline-none transition-colors"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-200 bg-[#222] border border-[#333] rounded-lg hover:bg-[#333] hover:text-white transition-colors"
         >
           <svg
             className="w-4 h-4 mr-2 text-gray-300"
@@ -131,20 +210,10 @@ const Onchain = () => {
         </button>
       </div>
 
-      {/* On-chain tools grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {tools.map((tool) => (
-          <div
-            key={tool.name}
-            onClick={() => navigate(tool.route)}
-            className="bg-[#222] border border-[#333] p-6 rounded-lg shadow-sm hover:bg-[#333] transition-colors cursor-pointer"
-          >
-            <h2 className="text-xl font-semibold mb-2 text-gray-100">
-              {tool.name}
-            </h2>
-            <p className="text-sm text-gray-300">{tool.description}</p>
-          </div>
-        ))}
+      <div className="space-y-8">
+        {renderSection("Quotum's Favorites", tools.favorites, "favorites")}
+        {renderSection("Monthly Analysis", tools.monthly, "monthly")}
+        {renderSection("Additional Indicators", tools.other, "other")}
       </div>
     </div>
   );
