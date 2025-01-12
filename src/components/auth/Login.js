@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { User, Lock, ArrowRight, Sun, Moon } from "lucide-react";
+import { User, Lock, ArrowRight, Sun, Moon, Loader2 } from "lucide-react";
 import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
 
@@ -8,6 +8,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [isForgotPassword, setIsForgotPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -29,6 +30,9 @@ const Login = () => {
     e.preventDefault();
     setError("");
 
+    if (isLoading) return; // Prevent multiple submissions
+    setIsLoading(true);
+
     try {
       if (isForgotPassword) {
         const response = await axios.post("/forgot-password", {
@@ -36,6 +40,12 @@ const Login = () => {
         });
         setForgotPasswordSuccess(response.data.message);
         setError("");
+
+        // Wait for 2 seconds to show success message
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // Refresh the page to return to login
+        window.location.reload();
         return;
       }
 
@@ -62,6 +72,8 @@ const Login = () => {
       }
     } catch (err) {
       setError(err.response?.data?.message || "Invalid credentials");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -173,6 +185,7 @@ const Login = () => {
                   name="email"
                   type="email"
                   required
+                  disabled={isLoading}
                   value={
                     isForgotPassword ? forgotPasswordEmail : formData.email
                   }
@@ -181,7 +194,9 @@ const Login = () => {
                     theme === "dark"
                       ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
                       : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors ${
+                    isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
                   placeholder="Email Address"
                 />
               </div>
@@ -196,13 +211,16 @@ const Login = () => {
                     name="password"
                     type="password"
                     required
+                    disabled={isLoading}
                     value={formData.password}
                     onChange={handleChange}
                     className={`w-full pl-10 pr-3 py-2 ${
                       theme === "dark"
                         ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
                         : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors ${
+                      isLoading ? "opacity-50 cursor-not-allowed" : ""
+                    }`}
                     placeholder="Password"
                   />
                 </div>
@@ -211,16 +229,30 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
+              disabled={isLoading}
+              className={`w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              {isForgotPassword ? "Send Reset Email" : "Log In"}
+              {isLoading ? (
+                <span className="flex items-center justify-center">
+                  <Loader2 className="h-5 w-5 animate-spin mr-2" />
+                  Please wait...
+                </span>
+              ) : isForgotPassword ? (
+                "Send Reset Email"
+              ) : (
+                "Log In"
+              )}
             </button>
           </form>
 
           {!isForgotPassword && (
             <p
-              className="text-sm text-blue-400 hover:text-blue-300 text-center cursor-pointer mt-4"
-              onClick={() => setIsForgotPassword(true)}
+              className={`text-sm text-blue-400 hover:text-blue-300 text-center cursor-pointer mt-4 ${
+                isLoading ? "pointer-events-none opacity-50" : ""
+              }`}
+              onClick={() => !isLoading && setIsForgotPassword(true)}
             >
               Forgot Password?
             </p>
@@ -228,8 +260,10 @@ const Login = () => {
 
           {isForgotPassword && (
             <p
-              className="text-sm text-blue-400 hover:text-blue-300 text-center cursor-pointer mt-4"
-              onClick={() => setIsForgotPassword(false)}
+              className={`text-sm text-blue-400 hover:text-blue-300 text-center cursor-pointer mt-4 ${
+                isLoading ? "pointer-events-none opacity-50" : ""
+              }`}
+              onClick={() => !isLoading && setIsForgotPassword(false)}
             >
               Back to Login
             </p>
@@ -243,7 +277,9 @@ const Login = () => {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="inline-flex items-center font-medium text-blue-400 hover:text-blue-300 transition-colors"
+              className={`inline-flex items-center font-medium text-blue-400 hover:text-blue-300 transition-colors ${
+                isLoading ? "pointer-events-none opacity-50" : ""
+              }`}
             >
               Sign up
               <ArrowRight className="ml-1 h-4 w-4" />
