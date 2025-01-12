@@ -105,6 +105,13 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
     let previousUpperBound = new Array(price_base.length).fill(0);
 
     bands.forEach((band) => {
+      if (
+        ["Still cheap", "Accumulate", "BUY!", "Fire sale!"].includes(band.label)
+      ) {
+        previousUpperBound = band.upperBound;
+        return;
+      }
+
       const bandData = band.upperBound.map(
         (upper, idx) => upper - previousUpperBound[idx]
       );
@@ -161,7 +168,6 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
       },
     }));
 
-    // --- Styling changes only ---
     const options = {
       backgroundColor: "#111",
       textStyle: { color: "#ccc" },
@@ -227,6 +233,12 @@ const BitcoinRainbowChart = ({ bitcoinData, chartError, chartLoading }) => {
         top: "5%",
         itemWidth: 15,
         itemHeight: 15,
+        selected: {
+          "Still cheap": false,
+          Accumulate: false,
+          "BUY!": false,
+          "Fire sale!": false,
+        },
       },
       grid: {
         left: "5%",
