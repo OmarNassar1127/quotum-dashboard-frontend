@@ -42,6 +42,7 @@ import ETFVolumeChart from "./components/onchain/ETFVolumeChart";
 import BitcoinSTH from "./components/onchain/BitcoinSTH";
 import BitcoinLTH from "./components/onchain/BitcoinLTH";
 import ETFInflow from "./components/onchain/ETFInflow";
+import BitcoinRetail from "./components/onchain/BitcoinRetail";
 import CoinManagement from "./components/admin/CoinManagement";
 import PostManagement from "./components/admin/PostManagement";
 import AdminDashboard from "./components/admin/AdminDashboard";
@@ -118,6 +119,7 @@ function App() {
               path="onchain/short-term-bubble"
               element={<ShortTermBubble />}
             />
+            <Route path="onchain/bitcoin-retail" element={<BitcoinRetail />} />
             <Route path="onchain/etf-inflows" element={<ETFInflow />} />
             <Route path="coin/:coinId" element={<CoinDetail />} />
             <Route path="post/:postId" element={<PostDetail />} />

@@ -7,7 +7,6 @@ import {
   ArrowUpDown,
   LineChart,
   Users,
-  Play,
   ChevronDown,
   RefreshCcw,
   Target,
@@ -23,9 +22,10 @@ import ThreeMonth from "../../assets/ThreeMonth.webp";
 import SixMonth from "../../assets/SixMonth.webp";
 import test from "../../assets/test.svg";
 import test2 from "../../assets/test2.svg";
-import quotumVideo from "../../assets/quotum-recording.mp4";
+import quotumVideo from "../../assets/quotum-white.mp4";
 import QuotumPortfolio from "./QuotumPortfolio";
 import TestimonialsSection from "./TestimonialsSection";
+import VideoPlayer from "./VideoPlayer";
 
 const fadeInUpVariants = {
   hidden: { opacity: 0, y: 60 },
@@ -422,18 +422,7 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
             <motion.div variants={slideInLeftVariants} className="space-y-6">
-              <div className="relative aspect-video bg-black rounded-xl overflow-hidden">
-                <button className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center">
-                    <Play className="h-12 w-12 text-white" />
-                  </div>
-                </button>
-                <img
-                  src="/api/placeholder/800/600"
-                  alt="Quotum Introduction"
-                  className="w-full h-full object-cover opacity-60"
-                />
-              </div>
+              <VideoPlayer />
               <div className="flex justify-center space-x-4">
                 <Link
                   to="/register"
