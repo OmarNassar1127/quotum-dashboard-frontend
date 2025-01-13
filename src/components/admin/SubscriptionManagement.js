@@ -207,6 +207,9 @@ const SubscriptionManagement = () => {
                   Telegram ID
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-400">
+                  Email
+                </th>
+                <th className="px-4 py-3 text-left font-medium text-gray-400">
                   Current Plan
                 </th>
                 <th className="px-4 py-3 text-left font-medium text-gray-400">
@@ -225,6 +228,7 @@ const SubscriptionManagement = () => {
                 >
                   <td className="px-4 py-3">{subscription.user.first_name}</td>
                   <td className="px-4 py-3">{subscription.user.telegram_user_id}</td>
+                  <td className="px-4 py-3">{subscription.user.email}</td>
                   <td className="px-4 py-3">{subscription.plan.name}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">
