@@ -194,7 +194,7 @@ const MainLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 px-4 md:px-12">
+      <div className="flex-1 px-4 md:px-12 py-8">
         <Outlet />
       </div>
 
