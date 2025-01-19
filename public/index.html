@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/quotum.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="google-site-verification" content="9GEwtXYWbNZInrE2Fstt1Mkqax5oIvMVLZ5vkYjqw2o" />
-    <meta name="theme-color" content="#000000" />
     <meta
-      name="description"
-      content="Get a competitive edge with Quotum"
+      name="google-site-verification"
+      content="9GEwtXYWbNZInrE2Fstt1Mkqax5oIvMVLZ5vkYjqw2o"
     />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Get a competitive edge with Quotum" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/quotum.ico" />
     <!--
       manifest.json provides metadata used when your web app is installed on a
@@ -27,6 +27,20 @@
     -->
     <title>Quotum - Dashboard</title>
   </head>
+  <!-- Google tag (gtag.js) -->
+  <script
+    async
+    src="https://www.googletagmanager.com/gtag/js?id=G-XGDYX0EENJ"
+  ></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+    gtag("js", new Date());
+
+    gtag("config", "G-XGDYX0EENJ");
+  </script>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>

@@ -35,6 +35,15 @@ const Register = () => {
     }
   }, [location]);
 
+  useEffect(() => {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "page_view", {
+        page_title: "Register Page",
+        page_path: "/register",
+      });
+    }
+  }, []);
+
   const toggleTheme = () => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   };

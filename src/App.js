@@ -24,6 +24,7 @@ import WalletTracking from "./components/wallet/WalletTracking";
 import WalletTrackingDetail from "./components/wallet/WalletTrackingDetail";
 import ProfilePage from "./components/referral/ProfilePage";
 import TelegramPage from "./components/referral/TelegramPage";
+import SellPage from "./components/sell-trigger/SellPage";
 import OneOnOne from "./components/oneonone/OneOnOne";
 import AdminReferralPage from "./components/admin/AdminReferralPage";
 import AdminLessonPage from "./components/admin/AdminLessonPage";
@@ -127,6 +128,7 @@ function App() {
             <Route path="help" element={<div>Help Page</div>} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="telegram" element={<TelegramPage />} />
+            <Route path="sell-trigger" element={<SellPage />} />
             <Route path="one-on-one" element={<OneOnOne />} />
           </Route>
         </Route>

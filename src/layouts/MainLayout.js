@@ -124,6 +124,17 @@ const MainLayout = () => {
               Telegram
             </NavLink>
             <NavLink
+              to="/dashboard/sell-trigger"
+              className={({ isActive }) =>
+                `${baseLinkClasses} ${
+                  isActive ? activeClasses : inactiveClasses
+                }`
+              }
+              onClick={toggleSidebar}
+            >
+              Sell triggers
+            </NavLink>
+            <NavLink
               to="/dashboard/one-on-one"
               className={({ isActive }) =>
                 `${baseLinkClasses} ${
@@ -183,7 +194,7 @@ const MainLayout = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 px-4 md:px-12 py-8">
+      <div className="flex-1 px-4 md:px-12">
         <Outlet />
       </div>
 
@@ -266,6 +277,15 @@ const MainLayout = () => {
             onClick={toggleSidebar}
           >
             Telegram
+          </NavLink>
+          <NavLink
+            to="/dashboard/sell-trigger"
+            className={({ isActive }) =>
+              `${baseLinkClasses} ${isActive ? activeClasses : inactiveClasses}`
+            }
+            onClick={toggleSidebar}
+          >
+            Sell triggers
           </NavLink>
           <NavLink
             to="/dashboard/one-on-one"

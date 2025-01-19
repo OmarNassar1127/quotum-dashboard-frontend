@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../lib/axios";
 import quotumLogo from "../../assets/quotum-no-bg.png";
@@ -8,6 +8,15 @@ const PaymentSelection = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "page_view", {
+        page_title: "Payment Selection",
+        page_path: `/payment/${plan}`,
+      });
+    }
+  }, [plan]);
 
   const handlePaymentMethodSelect = (method) => {
     setSelectedPaymentMethod(method);
@@ -31,7 +40,7 @@ const PaymentSelection = () => {
 
     try {
       const response = await axios.post("/create-checkout-session", {
-        plan, 
+        plan,
       });
 
       const { checkoutUrl } = response.data;
@@ -141,7 +150,8 @@ const PaymentSelection = () => {
                       className="text-[#FF6B00] underline hover:text-[#ff8533]"
                     >
                       terms and conditions
-                    </a>.
+                    </a>
+                    .
                   </>
                 ),
               },
