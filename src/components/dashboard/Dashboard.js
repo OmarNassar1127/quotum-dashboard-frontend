@@ -166,7 +166,7 @@ const Dashboard = () => {
   };
 
   const handleJoinTelegram = () => {
-    navigate("/telegram");
+    navigate("/dashboard/telegram");
   };
 
   const dismissToast = () => {
