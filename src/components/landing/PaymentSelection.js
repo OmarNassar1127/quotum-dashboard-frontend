@@ -135,7 +135,7 @@ const PaymentSelection = () => {
             </div>
 
             <h4 className="text-xl font-semibold text-gray-900">
-              Sell-trigger page is now live 😉
+              Sell-trigger page is live now! 😉
             </h4>
 
             {/* Feature Grid */}
