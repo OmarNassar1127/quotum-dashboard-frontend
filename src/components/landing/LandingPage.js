@@ -13,6 +13,7 @@ import {
   Building2,
   Shield,
   PieChart,
+  CheckCircle,
   Menu,
   X,
 } from "lucide-react";
@@ -97,7 +98,7 @@ const advancedFeatures = [
   "Market Exit Signals",
   "Whale Sell Signals",
   "1-on-1 direct support",
-  "Month 2 Upgrade",
+  "Sell-trigger page is live now!",
 ];
 
 const Navbar = () => {
@@ -227,77 +228,75 @@ const SubscriptionCard = ({
   image,
 }) => {
   const navigate = useNavigate();
+  const monthlyPrice = (price / months).toFixed(0);
+  const savings = ((1 - price / (75 * months)) * 100).toFixed(0);
 
   return (
     <motion.div
       variants={cardVariants}
       whileHover={{ scale: 1.03 }}
-      className="bg-black rounded-2xl p-6 flex flex-col relative cursor-pointer"
+      className="bg-black rounded-2xl p-6 flex flex-col relative cursor-pointer border-2 border-orange-500/20 hover:border-orange-500/40 transition-all"
       onClick={() =>
         navigate(`/payment/${months}month${months > 1 ? "s" : ""}`)
       }
     >
       {isPopular && (
-        <motion.span
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="absolute -top-3 left-4 bg-white px-3 py-1 rounded-full text-sm font-medium"
-        >
-          Most Popular
-        </motion.span>
+        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <div className="bg-gradient-to-r from-orange-600 to-orange-400 px-6 py-1 rounded-full text-sm font-medium text-white shadow-lg shadow-orange-500/30">
+            MOST POPULAR
+          </div>
+        </div>
       )}
       {isBestDeal && (
-        <motion.span
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="absolute -top-3 left-4 bg-[#FF6B00] px-3 py-1 rounded-full text-white text-sm font-medium"
-        >
-          Best Deal
-        </motion.span>
+        <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <div className="bg-gradient-to-r from-purple-600 to-purple-400 px-6 py-1 rounded-full text-sm font-medium text-white shadow-lg shadow-purple-500/30">
+            BEST VALUE
+          </div>
+        </div>
       )}
+
       <div className="flex flex-col h-full">
-        <motion.img
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          src={image}
-          alt={`${months}-month subscription`}
-          className="w-full h-32 object-cover rounded-lg mb-4"
-        />
-        <motion.div variants={fadeInUpVariants}>
-          <h3 className="text-2xl font-bold text-white mb-4">
-            {months} MONTHS
+        <div className="mb-6">
+          <h3 className="text-4xl font-bold text-white text-center mb-2">
+            {months} MONTH{months > 1 ? "S" : ""}
           </h3>
-          <p className="text-gray-400 mb-6">
-            {months === 1
-              ? "Get access to the basic features and see if QUOTUM VIP is the right fit for you!"
-              : `Go beyond the basics with advanced features, deeper insights, and extended support for your ${months}-month journey!`}
-          </p>
-          <ul className="text-gray-400 space-y-2 list-disc list-inside">
-            {features.map((feature, idx) => (
-              <motion.li
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 * idx }}
-              >
-                {feature}
-              </motion.li>
-            ))}
-          </ul>
-        </motion.div>
-        <motion.div className="mt-auto" variants={fadeInUpVariants}>
-          <p className="text-3xl font-bold text-white mb-4 mt-4">€{price}</p>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-full py-3 bg-[#FF6B00] text-white rounded-lg hover:bg-[#ff8533] transition-colors"
-          >
-            JOIN NOW
-          </motion.button>
-        </motion.div>
+          <div className="text-center">
+            <span className="text-orange-500 text-lg">€{monthlyPrice}</span>
+            <span className="text-gray-400 ml-2">/month</span>
+          </div>
+        </div>
+
+        <div className="relative h-48 w-full mb-6 overflow-hidden rounded-xl">
+          <img
+            src={image}
+            alt={`${months}-month subscription`}
+            className="w-full h-full object-cover absolute inset-0"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 to-black/40" />
+          <div className="absolute bottom-4 left-4 text-white">
+            <div className="text-3xl font-bold">€{price}</div>
+            {months > 1 && (
+              <div className="text-green-400 text-sm">Save {savings}%</div>
+            )}
+          </div>
+        </div>
+
+        <ul className="text-gray-300 space-y-3 flex-1 mb-8 px-2">
+          {features.map((feature, idx) => (
+            <li key={idx} className="flex items-start space-x-2">
+              <CheckCircle className="h-5 w-5 text-orange-500 flex-shrink-0 mt-1" />
+              <span className="text-lg">{feature}</span>
+            </li>
+          ))}
+        </ul>
+
+        <motion.button
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          className="w-full py-4 bg-gradient-to-r from-orange-600 to-orange-400 text-white rounded-xl hover:from-orange-500 hover:to-orange-300 transition-all shadow-lg shadow-orange-500/20 font-bold text-lg"
+        >
+          GET {months} MONTH ACCESS →
+        </motion.button>
       </div>
     </motion.div>
   );
@@ -648,7 +647,7 @@ const LandingPage = () => {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerChildrenVariants}
-        className="py-20 bg-white"
+        className="py-20 bg-gray-50"
         id="pricing"
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -656,8 +655,9 @@ const LandingPage = () => {
             variants={fadeInUpVariants}
             className="text-4xl font-bold text-center mb-12"
           >
-            Our Products
+            Choose Your Plan
           </motion.h2>
+
           <motion.div
             variants={staggerChildrenVariants}
             className="grid grid-cols-1 md:grid-cols-3 gap-8"

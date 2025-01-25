@@ -14,17 +14,17 @@ const PaymentSelection = () => {
 
   const features = [
     {
-      icon: <Shield className="w-8 h-8 text-green-500" />,
+      icon: <Shield className="w-8 h-8 text-[#FF6B00]" />,
       title: "Secure Tracking",
       description: "Enterprise-grade security protocols",
     },
     {
-      icon: <LineChart className="w-8 h-8 text-blue-500" />,
+      icon: <LineChart className="w-8 h-8 text-[#FF6B00]" />,
       title: "Trend Analysis",
       description: "Real-time position monitoring",
     },
     {
-      icon: <PieChart className="w-8 h-8 text-purple-500" />,
+      icon: <PieChart className="w-8 h-8 text-[#FF6B00]" />,
       title: "Portfolio Insights",
       description: "Comprehensive liquidity tracking",
     },
@@ -115,51 +115,7 @@ const PaymentSelection = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto min-h-[calc(100vh-5rem)] flex items-center justify-center px-4 sm:px-6 lg:px-8 pt-20">
         <div className="flex flex-col lg:flex-row gap-8 w-full">
-          {/* Features Section - Second on mobile, first on desktop */}
-          <div className="order-2 lg:order-none lg:w-1/2 flex flex-col gap-8 items-center text-center">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">
-              What You're Unlocking
-            </h2>
-            {/* Video Container */}
-            <div className="rounded-xl shadow-lg overflow-hidden bg-gray-800 aspect-video">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                className="w-full h-full object-cover opacity-90"
-              >
-                <source src={quotumVideo} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
-            </div>
-
-            <h4 className="text-xl font-semibold text-gray-900">
-              Sell-trigger page is live now! 😉
-            </h4>
-
-            {/* Feature Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {features.map((feature, idx) => (
-                <div
-                  key={idx}
-                  className="p-4 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
-                >
-                  <div className="flex flex-col items-center text-center">
-                    <div className="mb-3">{feature.icon}</div>
-                    <h4 className="text-base font-semibold text-gray-900 mb-1">
-                      {feature.title}
-                    </h4>
-                    <p className="text-sm text-gray-600">
-                      {feature.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Payment Section - First on mobile, second on desktop */}
+          {/* Payment Section */}
           <div className="order-1 lg:order-none lg:w-1/2 bg-white p-8 rounded-xl shadow-lg border border-gray-200">
             <div className="mb-8 text-center">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
@@ -270,6 +226,52 @@ const PaymentSelection = () => {
                 "Complete Subscription"
               )}
             </button>
+          </div>
+
+          {/* Features Section */}
+          <div className="order-2 lg:order-none lg:w-1/2 flex flex-col gap-8 items-center text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Professional Trading Dashboard
+            </h2>
+
+            {/* Video Container with Overlay */}
+            <div className="relative rounded-xl shadow-lg overflow-hidden bg-gray-800 aspect-video w-full">
+              <video
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover opacity-90"
+              >
+                <source src={quotumVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+              <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4">
+                <h3 className="text-white font-medium text-lg">
+                  Dashboard Preview
+                </h3>
+              </div>
+            </div>
+
+            {/* Feature Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full">
+              {features.map((feature, idx) => (
+                <div
+                  key={idx}
+                  className="p-4 bg-white rounded-xl shadow-md border border-gray-100 hover:shadow-lg transition-shadow"
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <div className="mb-3">{feature.icon}</div>
+                    <h4 className="text-base font-semibold text-gray-900 mb-1">
+                      {feature.title}
+                    </h4>
+                    <p className="text-sm text-gray-600">
+                      {feature.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
