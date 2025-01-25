@@ -155,7 +155,8 @@
 }
 
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -165,4 +166,14 @@
 
 .subscription-animation {
   animation: float 2s ease-in-out infinite;
+}
+
+.loader {
+  border-top-color: #3498db;
+  animation: spin 1s infinite linear;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

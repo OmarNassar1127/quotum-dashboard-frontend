@@ -8,6 +8,7 @@ const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false); // Added for loading spinner
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "dark");
 
   const [formData, setFormData] = useState({
@@ -57,6 +58,8 @@ const Register = () => {
       return;
     }
 
+    setIsLoading(true); // Start loading spinner
+
     try {
       const response = await axios.post("/register", {
         first_name: formData.first_name,
@@ -70,6 +73,8 @@ const Register = () => {
       navigate("/");
     } catch (err) {
       setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setIsLoading(false); // Stop loading spinner
     }
   };
 
@@ -163,142 +168,151 @@ const Register = () => {
             </div>
           )}
 
-          <form className="space-y-6 mt-6" onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              {/* First Name */}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                  <User className="h-5 w-5" />
-                </span>
-                <input
-                  id="first_name"
-                  name="first_name"
-                  type="text"
-                  required
-                  value={formData.first_name}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-2 ${
-                    theme === "dark"
-                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
-                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
-                  placeholder="First name"
-                />
-              </div>
-
-              {/* Last Name */}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                  <User className="h-5 w-5" />
-                </span>
-                <input
-                  id="last_name"
-                  name="last_name"
-                  type="text"
-                  required
-                  value={formData.last_name}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-2 ${
-                    theme === "dark"
-                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
-                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
-                  placeholder="Last name"
-                />
-              </div>
-
-              {/* Email */}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                  <Mail className="h-5 w-5" />
-                </span>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-2 ${
-                    theme === "dark"
-                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
-                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
-                  placeholder="Email address"
-                />
-              </div>
-
-              {/* Password */}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                  <Lock className="h-5 w-5" />
-                </span>
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-2 ${
-                    theme === "dark"
-                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
-                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
-                  placeholder="Password"
-                />
-              </div>
-
-              {/* Confirm Password */}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                  <Lock className="h-5 w-5" />
-                </span>
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  required
-                  value={formData.confirmPassword}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-2 ${
-                    theme === "dark"
-                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
-                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
-                  placeholder="Confirm password"
-                />
-              </div>
-
-              {/* Referral Code */}
-              <div className="relative">
-                <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
-                  <UserPlus className="h-5 w-5" />
-                </span>
-                <input
-                  id="referral_code"
-                  name="referral_code"
-                  type="text"
-                  value={formData.referral_code}
-                  onChange={handleChange}
-                  className={`w-full pl-10 pr-3 py-2 ${
-                    theme === "dark"
-                      ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
-                      : "text-gray-900 placeholder-gray-500 bg-white border-black"
-                  } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
-                  placeholder="Referral code (optional)"
-                />
-              </div>
+          {/* Loading Spinner */}
+          {isLoading && (
+            <div className="flex justify-center mt-4">
+              <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12"></div>
             </div>
+          )}
 
-            {/* Submit Button */}
-            <button
-              type="submit"
-              className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
-            >
-              Create account
-            </button>
-          </form>
+          {!isLoading && (
+            <form className="space-y-6 mt-6" onSubmit={handleSubmit}>
+              <div className="space-y-4">
+                {/* First Name */}
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                    <User className="h-5 w-5" />
+                  </span>
+                  <input
+                    id="first_name"
+                    name="first_name"
+                    type="text"
+                    required
+                    value={formData.first_name}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3 py-2 ${
+                      theme === "dark"
+                        ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                        : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    placeholder="First name"
+                  />
+                </div>
+
+                {/* Last Name */}
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                    <User className="h-5 w-5" />
+                  </span>
+                  <input
+                    id="last_name"
+                    name="last_name"
+                    type="text"
+                    required
+                    value={formData.last_name}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3 py-2 ${
+                      theme === "dark"
+                        ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                        : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    placeholder="Last name"
+                  />
+                </div>
+
+                {/* Email */}
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                    <Mail className="h-5 w-5" />
+                  </span>
+                  <input
+                    id="email"
+                    name="email"
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3 py-2 ${
+                      theme === "dark"
+                        ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                        : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    placeholder="Email address"
+                  />
+                </div>
+
+                {/* Password */}
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                    <Lock className="h-5 w-5" />
+                  </span>
+                  <input
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    value={formData.password}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3 py-2 ${
+                      theme === "dark"
+                        ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                        : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    placeholder="Password"
+                  />
+                </div>
+
+                {/* Confirm Password */}
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                    <Lock className="h-5 w-5" />
+                  </span>
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3 py-2 ${
+                      theme === "dark"
+                        ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                        : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    placeholder="Confirm password"
+                  />
+                </div>
+
+                {/* Referral Code */}
+                <div className="relative">
+                  <span className="absolute inset-y-0 left-3 flex items-center pointer-events-none text-gray-400">
+                    <UserPlus className="h-5 w-5" />
+                  </span>
+                  <input
+                    id="referral_code"
+                    name="referral_code"
+                    type="text"
+                    value={formData.referral_code}
+                    onChange={handleChange}
+                    className={`w-full pl-10 pr-3 py-2 ${
+                      theme === "dark"
+                        ? "text-white placeholder-gray-400 bg-[#1a1a1a] border-white"
+                        : "text-gray-900 placeholder-gray-500 bg-white border-black"
+                    } rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-colors`}
+                    placeholder="Referral code (optional)"
+                  />
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full py-2 px-4 rounded-md text-white font-medium bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all shadow-sm hover:shadow-md"
+              >
+                Create account
+              </button>
+            </form>
+          )}
         </div>
       </div>
     </div>
