@@ -220,6 +220,7 @@ const FAQ = ({ question, answer }) => {
 
 // Enhanced SubscriptionCard Component with animations
 const SubscriptionCard = ({
+  id,
   months,
   price,
   isPopular = false,
@@ -233,6 +234,7 @@ const SubscriptionCard = ({
 
   return (
     <motion.div
+      id={id}
       variants={cardVariants}
       whileHover={{ scale: 1.03 }}
       className="bg-black rounded-2xl p-6 flex flex-col relative cursor-pointer border-2 border-orange-500/20 hover:border-orange-500/40 transition-all"
@@ -346,15 +348,22 @@ const LandingPage = () => {
               variants={fadeInUpVariants}
               className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
             >
-              Ready to change your life?
+              Crypto Investing Made{" "}
+              <span className="text-[#FF6B00]">Stress-Free</span>
+              <br />
             </motion.h1>
+
             <motion.p
               variants={fadeInUpVariants}
               className="text-base sm:text-lg md:text-xl text-gray-300 max-w-3xl mb-8 md:mb-12"
             >
-              Take control of your crypto investments with advanced analytics,
-              whale tracking, and precise market indicators.
+              Your crypto cheat sheet:
+              <br />
+              <span className="text-white">When to Buy/Sell</span> •
+              <span className="text-white"> Copy Big Players </span> •
+              <span className="text-white"> Avoid Bad Markets</span>
             </motion.p>
+
             <motion.div
               variants={fadeInUpVariants}
               className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 w-full max-w-xl"
@@ -362,41 +371,21 @@ const LandingPage = () => {
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto"
-              >
-                <Link
-                  to="/register"
-                  className="w-full sm:w-auto px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors inline-flex items-center justify-center text-base sm:text-lg"
-                >
-                  JOIN QUOTUM VIP
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </motion.div>
-              <motion.div
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className="w-full sm:w-auto"
+                className="w-full sm:w-auto relative"
               >
                 <a
-                  href="#pricing"
+                  href="#6month-card"
                   onClick={(e) => {
                     e.preventDefault();
-                    const element = document.getElementById("pricing");
-                    if (element) {
-                      const offset = 80; // Adjust this value based on your header height
-                      const elementPosition =
-                        element.getBoundingClientRect().top;
-                      const offsetPosition =
-                        elementPosition + window.pageYOffset - offset;
-                      window.scrollTo({
-                        top: offsetPosition,
-                        behavior: "smooth",
-                      });
-                    }
+                    document.getElementById("6month-card")?.scrollIntoView({
+                      behavior: "smooth",
+                      block: "center",
+                    });
                   }}
-                  className="w-full sm:w-auto px-8 py-4 rounded-md border-2 border-white text-white font-medium hover:bg-white hover:text-black transition-colors inline-flex items-center justify-center text-base sm:text-lg"
+                  className="w-full sm:w-auto px-8 py-4 rounded-md bg-[#FF6B00] text-white font-medium hover:bg-[#ff8533] transition-colors inline-flex items-center justify-center text-base sm:text-lg"
                 >
-                  DISCOVER VIP
+                  Join VIP Now
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </a>
               </motion.div>
             </motion.div>
@@ -527,7 +516,7 @@ const LandingPage = () => {
                         <ChartBar className="h-4 w-4 text-[#FF6B00]" />
                       </div>
                       <span className="text-gray-600">
-                        Understand novel asset fundamentals
+                        Take profits on time
                       </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -535,7 +524,7 @@ const LandingPage = () => {
                         <LineChart className="h-4 w-4 text-[#FF6B00]" />
                       </div>
                       <span className="text-gray-600">
-                        Follow capital flows with precision
+                        Buy the best projects in the induustry
                       </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -543,7 +532,7 @@ const LandingPage = () => {
                         <ArrowUpDown className="h-4 w-4 text-[#FF6B00]" />
                       </div>
                       <span className="text-gray-600">
-                        Gauge true market sentiment
+                        Stay ahead of the market
                       </span>
                     </li>
                   </ul>
@@ -607,15 +596,15 @@ const LandingPage = () => {
                   {[
                     {
                       icon: <ChartBar />,
-                      text: "Curated analytics for streamlined market analysis",
+                      text: "Know Exactly When to Buy/Sell: Simple Red & Green Alerts Based on Market Cycles",
                     },
                     {
                       icon: <LineChart />,
-                      text: "Regular research diving deep into key market dynamics",
+                      text: "Follow the Smart Money: Get Alerts When Big Players Move (So You Can Too)",
                     },
                     {
-                      icon: <ArrowUpDown />,
-                      text: "Strategic, on-demand advice and solutions",
+                      icon: <Shield />,
+                      text: "Avoid Bad Investments: Bubble Warnings & Risk Levels Updated Every 1 Hours",
                     },
                   ].map((item, index) => (
                     <motion.li
@@ -676,6 +665,7 @@ const LandingPage = () => {
               features={advancedFeatures}
             />
             <SubscriptionCard
+              id="6month-card"
               months={6}
               price={330}
               isBestDeal={true}
