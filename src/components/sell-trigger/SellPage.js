@@ -53,6 +53,8 @@ const SellPage = () => {
   const [indicators, setIndicators] = useState(null);
   const [monthlyRsi, setMonthlyRsi] = useState(null);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [thresholdSet, setThresholdSet] = useState("omar");
+  const role = localStorage.getItem("role");
 
   // Your existing useEffect for market indicators
   useEffect(() => {
@@ -75,7 +77,7 @@ const SellPage = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Your existing useEffect for monthly RSI
+  // Fetch monthly prices for RSI
   useEffect(() => {
     const fetchMonthlyPrices = async () => {
       try {
@@ -97,44 +99,32 @@ const SellPage = () => {
     }
   }, [loading]);
 
+  // Threshold configurations
+  const thresholds = {
+    omar: {
+      coinbase: { green: 5, orange: 30, red: 31 },
+      phantom: { green: 5, orange: 30, red: 31 },
+      altseason: { green: 65, orange: 60, red: 50 },
+      nupl: { green: 0.71, orange: 0.6, red: 0.6 },
+      risk: { green: 0.75, orange: 0.6, red: 0.6 },
+      monthlyRsi: { green: 84, orange: 60, red: 60 },
+    },
+    robin: {
+      coinbase: { green: 3, orange: 10, red: 11 },
+      phantom: { green: 30, orange: 50, red: 51 },
+      altseason: { green: 80, orange: 75, red: 75 },
+      nupl: { green: 70, orange: 65, red: 65 },
+      risk: { green: 0.8, orange: 0.75, red: 0.75 },
+      monthlyRsi: { green: 86, orange: 83, red: 83 },
+    },
+  };
+
   const calculateTriggerStatus = (type, rawValue) => {
     const value =
       typeof rawValue === "number" ? rawValue : parseFloat(rawValue || 0);
 
-    const thresholds = {
-      coinbase: {
-        green: 5,
-        orange: 30,
-        red: 31,
-      },
-      phantom: {
-        green: 5,
-        orange: 30,
-        red: 31,
-      },
-      altseason: {
-        green: 65,
-        orange: 60,
-        red: 50,
-      },
-      nupl: {
-        green: 0.71,
-        orange: 0.6,
-        red: 0.6,
-      },
-      risk: {
-        green: 0.75,
-        orange: 0.6,
-        red: 0.6,
-      },
-      monthlyRsi: {
-        green: 84,
-        orange: 60,
-        red: 60,
-      },
-    };
-
-    const threshold = thresholds[type];
+    // Use the selected threshold set (Omar or Robin)
+    const threshold = thresholds[thresholdSet][type];
     if (!threshold) return "neutral";
 
     if (type === "coinbase" || type === "phantom") {
@@ -256,9 +246,36 @@ const SellPage = () => {
   return (
     <div className="min-h-screen bg-[#111] text-white p-6">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center gap-3 mb-8">
-          <ArrowDownCircle className="w-8 h-8 text-red-500" />
-          <h1 className="text-3xl font-bold">Market Sell Triggers</h1>
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center gap-3">
+            <ArrowDownCircle className="w-8 h-8 text-red-500" />
+            <h1 className="text-3xl font-bold">Market Sell Triggers</h1>
+          </div>
+          {/* Admin toggle buttons */}
+          {role === "admin" && (
+            <div className="flex gap-2 bg-[#222] p-1 rounded-lg">
+              <button
+                onClick={() => setThresholdSet("omar")}
+                className={`px-4 py-2 rounded-md ${
+                  thresholdSet === "omar"
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-400"
+                }`}
+              >
+                Omar
+              </button>
+              <button
+                onClick={() => setThresholdSet("robin")}
+                className={`px-4 py-2 rounded-md ${
+                  thresholdSet === "robin"
+                    ? "bg-blue-600 text-white"
+                    : "text-gray-400"
+                }`}
+              >
+                Robin
+              </button>
+            </div>
+          )}
         </div>
 
         {error && (
@@ -269,6 +286,7 @@ const SellPage = () => {
         )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          {/* Left Column - Triggers List */}
           <div className="space-y-6">
             <div className="grid grid-cols-2 gap-4 p-4 bg-[#222] rounded-xl border border-[#333] text-gray-400 font-medium">
               <div>Trigger Name</div>
@@ -283,21 +301,18 @@ const SellPage = () => {
                   status={coinbaseStatus}
                   current={indicators.app_rankings.coinbase.current_rank}
                 />
-
                 <TriggerRow
                   name="Phantom Wallet App Store Rank"
                   description="Tracks Phantom's app store rank as a proxy for retail interest"
                   status={phantomStatus}
                   current={indicators.app_rankings.phantom.current_rank}
                 />
-
                 <TriggerRow
                   name="Alt Season Index"
                   description="The Alt Season Index measures when altcoins outperform BTC"
                   status={altSeasonStatus}
                   current={indicators.altcoin_index?.value}
                 />
-
                 <TriggerRow
                   name="Bitcoin NUPL"
                   description="Net Unrealized Profit/Loss indicates market-wide profit taking"
@@ -310,7 +325,6 @@ const SellPage = () => {
                       : "0.00"
                   }
                 />
-
                 <TriggerRow
                   name="BTC Mathematical Risk Level"
                   description="Risk metric based on predefined price levels"
@@ -334,8 +348,8 @@ const SellPage = () => {
             )}
           </div>
 
+          {/* Right Column - Market Status */}
           <div className="space-y-6">
-            {/* Enhanced Overall Market Status */}
             <div className="p-6 bg-[#222] rounded-xl border border-[#333]">
               <div className="flex items-center justify-between mb-6">
                 <div>
