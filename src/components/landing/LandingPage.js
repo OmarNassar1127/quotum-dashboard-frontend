@@ -524,7 +524,7 @@ const LandingPage = () => {
                         <LineChart className="h-4 w-4 text-[#FF6B00]" />
                       </div>
                       <span className="text-gray-600">
-                        Buy the best projects in the induustry
+                        Buy the best projects in the industry
                       </span>
                     </li>
                     <li className="flex items-start gap-3">
